@@ -1,4 +1,4 @@
-namespace api;
+namespace MyTraining.API;
 
 public class WeatherForecast
 {
