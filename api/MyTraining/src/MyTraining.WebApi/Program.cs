@@ -1,15 +1,27 @@
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using MyTraining.API.Configurations;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// ConfigureServices
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    });
+builder.Services.AddDatabaseConfiguration(builder.Configuration);
+builder.Services.AddApiIdentityConfiguration(builder.Configuration);
+builder.Services.AddApiVersioningConfiguration();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddDependencyInjectionConfiguration();
+builder.Services.AddCompressionConfiguration();
+builder.Services.AddSwaggerConfiguration();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -18,8 +30,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseCompressionSetup();
+app.UseApiIdentitySetup();
 
 app.MapControllers();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwaggerSetup(app.Services.GetRequiredService<IApiVersionDescriptionProvider>());
+}
 
 app.Run();

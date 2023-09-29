@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "MyTraining.API": {
+    "MyTraining.WebApi": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
