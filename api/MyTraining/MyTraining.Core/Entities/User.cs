@@ -8,8 +8,6 @@ public class User : BaseEntity
         LastName = lastName;
         Email = email;
         Password = password;
-        CreatedAt = DateTime.Now;
-        UpdatedAt = DateTime.Now;
         Active = true;
     }
 
@@ -17,7 +15,14 @@ public class User : BaseEntity
     public string LastName { get; private set; }
     public string Email { get; private set; }
     public string Password { get; private set; }
-    public DateTime CreatedAt { get; private set; }
-    public DateTime UpdatedAt { get; private set; }
     public bool Active { get; private set; }
+
+    public void Update(string firstName, string lastName, string email, string password) 
+    {
+        base.Update();
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
+        Password = password;
+    }
 }
