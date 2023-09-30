@@ -17,7 +17,8 @@ public class UserController : MainController
     private readonly ILogger<UserController> _logger;
     private readonly IInsertUserUseCase _insertUserUseCase;
 
-    public UserController(ICurrentUser currentUser, ILogger<UserController> logger, IInsertUserUseCase insertUserUseCase) : base(currentUser)
+    public UserController(ICurrentUser currentUser, ILogger<UserController> logger,
+        IInsertUserUseCase insertUserUseCase) : base(currentUser)
     {
         _logger = logger;
         _insertUserUseCase = insertUserUseCase;

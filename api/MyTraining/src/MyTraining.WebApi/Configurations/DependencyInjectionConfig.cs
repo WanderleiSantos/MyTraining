@@ -1,6 +1,10 @@
 using FluentValidation;
 using MyTraining.API.Extensions;
 using MyTraining.Application.Shared.Configurations;
+using MyTraining.Application.UseCases;
+using MyTraining.Application.UseCases.InsertExercise;
+using MyTraining.Application.UseCases.InsertExercise.Commands;
+using MyTraining.Application.UseCases.InsertExercise.Validations;
 using MyTraining.Application.UseCases.InsertUser;
 using MyTraining.Application.UseCases.InsertUser.Commands;
 using MyTraining.Application.UseCases.InsertUser.Validations;
@@ -27,18 +31,20 @@ public static class DependencyInjectionConfig
         services.AddScoped<DefaultDbContext>();
 
         services.AddScoped<IUserRepository, UserRepository>();
-        
+        services.AddScoped<IExerciseRepository, ExerciseRepository>();
+
         services.AddScoped<IValidator<InsertUserCommand>, InsertUserCommandValidator>();
         services.AddScoped<IValidator<SignInCommand>, SignInCommandValidator>();
-        
+        services.AddScoped<IValidator<InsertExerciseCommand>, InsertExerciseCommandValidator>();
+                
         services.AddScoped<IInsertUserUseCase, InsertUserUseCase>();
         services.AddScoped<ISignInUseCase, SignInUseCase>();
-        
-        services.Configure<JwtConfiguration>(configuration.GetSection(JwtConfigurationSection));
-        services.AddScoped<IAuthenticationService, AuthenticationService>();
-        
+        services.AddScoped<IInsertExerciseUseCase, InsertExerciseUseCase>();
+           
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+        services.Configure<JwtConfiguration>(configuration.GetSection(JwtConfigurationSection));
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<ICurrentUser, CurrentUser>();
     }
 }
