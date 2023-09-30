@@ -30,7 +30,7 @@ public class AuthenticationService : IAuthenticationService
             IssuedAt = DateTime.UtcNow,
             Issuer = issuer,
             Audience = audience,
-            Subject = new ClaimsIdentity(new Claim[]
+            Subject = new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, id.ToString()),
                 new Claim(ClaimTypes.Name, username),

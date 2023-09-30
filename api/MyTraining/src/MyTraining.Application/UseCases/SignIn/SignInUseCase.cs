@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using MyTraining.Application.Shared.Extensions;
 using MyTraining.Application.Shared.Models;
 using MyTraining.Application.UseCases.SignIn.Commands;
+using MyTraining.Application.UseCases.SignIn.Responses;
 using MyTraining.Application.UseCases.SignIn.Services;
 using MyTraining.Core.Interfaces.Persistence.Repositories;
 
@@ -52,7 +53,13 @@ public class SignInUseCase : ISignInUseCase
                 nameof(SignInUseCase), command.Username);
 
             var token = _authenticationService.CreateToken(user.Id, user.Email);
-            output.AddResult(token);
+            var response = new SignInResponse
+            {
+                UserName = user.Email,
+                Token = token
+            };
+            
+            output.AddResult(response);
 
             _logger.LogInformation("{UseCase} - Token generated successfully; Name: {Username}",
                 nameof(SignInUseCase), command.Username);
