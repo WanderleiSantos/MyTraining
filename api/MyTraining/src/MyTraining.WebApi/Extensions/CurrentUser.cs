@@ -17,7 +17,7 @@ public class CurrentUser : ICurrentUser
     }
     
     public string? UserName => _identity?.FindFirst(ClaimTypes.Name)?.Value;
-    public string? UserId => IsAuthenticated() ? _identity?.FindFirst(ClaimTypes.NameIdentifier)?.Value : string.Empty;
+    public Guid UserId => IsAuthenticated() ? Guid.Parse(_identity?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty) : Guid.Empty;
     
     public bool IsAuthenticated() => _identity is { IsAuthenticated: true };
     
