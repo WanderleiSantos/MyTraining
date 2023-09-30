@@ -9,6 +9,8 @@ public class User : BaseEntity
         Email = email;
         Password = password;
         Active = true;
+
+        Exercises = new List<Exercise>();
     }
 
     public string FirstName { get; private set; }
@@ -17,6 +19,7 @@ public class User : BaseEntity
     public string Password { get; private set; }
     public bool Active { get; private set; }
     public string FullName => $"{FirstName} {LastName}";
+    public List<Exercise> Exercises { get; private set; }
 
     public void Update(string firstName, string lastName, string email, string password) 
     {
