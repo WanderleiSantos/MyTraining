@@ -13,13 +13,13 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public async Task AddAsync(User user)
+    public async Task AddAsync(User user, CancellationToken cancellationToken)
     {
-        await _context.Users.AddAsync(user);
+        await _context.Users.AddAsync(user, cancellationToken);
     }
 
-    public async Task<User?> GetByIdAsync(Guid id)
+    public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await _context.Users.SingleOrDefaultAsync(u => u.Id == id);
+        return await _context.Users.SingleOrDefaultAsync(u => u.Id == id, cancellationToken);
     }
 }
