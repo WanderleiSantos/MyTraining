@@ -1,4 +1,8 @@
+using FluentValidation;
 using MyTraining.API.Extensions;
+using MyTraining.Application.UseCases.InsertUser;
+using MyTraining.Application.UseCases.InsertUser.Commands;
+using MyTraining.Application.UseCases.InsertUser.Validations;
 using MyTraining.Core.Interfaces;
 using MyTraining.Core.Interfaces.Extensions;
 using MyTraining.Core.Interfaces.Persistence.Repositories;
@@ -16,6 +20,10 @@ public static class DependencyInjectionConfig
         services.AddScoped<DefaultDbContext>();
 
         services.AddScoped<IUserRepository, UserRepository>();
+        
+        services.AddScoped<IValidator<InsertUserCommand>, InsertUserCommandValidator>();
+        
+        services.AddScoped<IInsertUserUseCase, InsertUserUseCase>();
         
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

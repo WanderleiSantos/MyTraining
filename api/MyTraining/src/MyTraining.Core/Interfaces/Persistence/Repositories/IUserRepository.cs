@@ -4,6 +4,6 @@ namespace MyTraining.Core.Interfaces.Persistence.Repositories;
 
 public interface IUserRepository
 {
-    Task AddAsync(User user);
-    Task<User?> GetByIdAsync(Guid id);
+    Task AddAsync(User user, CancellationToken cancellationToken);
+    Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 }
