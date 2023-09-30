@@ -1,4 +1,5 @@
 using MyTraining.API.V1.Models;
+using MyTraining.Application.UseCases.InsertExercise.Commands;
 using MyTraining.Application.UseCases.InsertUser.Commands;
 
 namespace MyTraining.API.V1.Mappers;
@@ -11,5 +12,12 @@ public static class InputMappers
         LastName = input.LastName,
         Email = input.Email,
         Password = input.Password
+    };
+
+    public static InsertExerciseCommand MapToApplication(this InsertExerciseInput input) => new InsertExerciseCommand
+    {
+        Name = input.Name,
+        Link = input.Link,
+        UserId = input.UserId
     };
 }
