@@ -1,5 +1,9 @@
 using FluentValidation;
 using MyTraining.API.Extensions;
+using MyTraining.Application.UseCases;
+using MyTraining.Application.UseCases.InsertExercise;
+using MyTraining.Application.UseCases.InsertExercise.Commands;
+using MyTraining.Application.UseCases.InsertExercise.Validations;
 using MyTraining.Application.UseCases.InsertUser;
 using MyTraining.Application.UseCases.InsertUser.Commands;
 using MyTraining.Application.UseCases.InsertUser.Validations;
@@ -24,6 +28,12 @@ public static class DependencyInjectionConfig
         services.AddScoped<IValidator<InsertUserCommand>, InsertUserCommandValidator>();
         
         services.AddScoped<IInsertUserUseCase, InsertUserUseCase>();
+
+        services.AddScoped<IExerciseRepository, ExerciseRepository>();
+
+        services.AddScoped<IValidator<InsertExerciseCommand>, InsertExerciseCommandValidator>();
+
+        services.AddScoped<IInsertExerciseUseCase, InsertExerciseUseCase>();
         
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
