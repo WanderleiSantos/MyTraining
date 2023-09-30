@@ -22,4 +22,9 @@ public class UserRepository : IUserRepository
     {
         return await _context.Users.SingleOrDefaultAsync(u => u.Id == id, cancellationToken);
     }
+
+    public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
+    }
 }

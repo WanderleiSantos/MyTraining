@@ -11,6 +11,9 @@ public class InsertUserCommandValidator : AbstractValidator<InsertUserCommand>
         RuleFor(x => x.FirstName).NotEmpty().MinimumLength(3);
         RuleFor(x => x.LastName).NotEmpty().MinimumLength(3);
         RuleFor(x => x.Email).NotEmpty().EmailAddress();
-        RuleFor(x => x.Password).NotEmpty().Must(x => x.IsPassWordValid());
+        RuleFor(x => x.Password)
+            .NotEmpty()
+            .Must(x => x.IsPassWordValid())
+            .WithMessage("Password must contain at least 8 characters, one number, one uppercase letter, one lowercase letter and one special character");
     }
 }

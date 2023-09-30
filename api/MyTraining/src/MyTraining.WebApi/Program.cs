@@ -15,7 +15,7 @@ builder.Services.AddDatabaseConfiguration(builder.Configuration);
 builder.Services.AddApiIdentityConfiguration(builder.Configuration);
 builder.Services.AddApiVersioningConfiguration();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddDependencyInjectionConfiguration();
+builder.Services.AddDependencyInjectionConfiguration(builder.Configuration);
 builder.Services.AddCompressionConfiguration();
 builder.Services.AddSwaggerConfiguration();
 
