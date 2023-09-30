@@ -2,7 +2,7 @@ namespace MyTraining.Core.Entities;
 
 public class Exercise : BaseEntity
 {
-    public Exercise(string name, string link, int idUser)
+    public Exercise(string name, string link, Guid idUser)
     {
         Name = name;
         Link = link;
@@ -14,7 +14,7 @@ public class Exercise : BaseEntity
     public string Link { get; private set; }
     public bool Active { get; private set; }
     
-    public int IdUser { get; private set; }
+    public Guid IdUser { get; private set; }
     public User User { get; private set; }    
     
     public void Update(string name, string link) 

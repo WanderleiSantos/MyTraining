@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MyTraining.Application.Shared.Models;
 using MyTraining.Core.Interfaces;
+using MyTraining.Core.Interfaces.Extensions;
 
 namespace MyTraining.API.Controllers;
 

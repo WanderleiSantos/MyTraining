@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using System.Security.Principal;
 using MyTraining.Core.Interfaces;
+using MyTraining.Core.Interfaces.Extensions;
 
 namespace MyTraining.API.Extensions;
 

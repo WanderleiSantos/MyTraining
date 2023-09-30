@@ -9,6 +9,7 @@ public class UserMapping : IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder
+            .ToTable("user")
             .HasKey(x => x.Id);
     }
 }

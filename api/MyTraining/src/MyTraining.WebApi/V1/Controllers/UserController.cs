@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyTraining.API.Controllers;
 using MyTraining.Core.Interfaces;
+using MyTraining.Core.Interfaces.Extensions;
 
 namespace MyTraining.API.V1.Controllers;
 

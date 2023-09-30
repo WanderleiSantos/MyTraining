@@ -1,4 +1,4 @@
-namespace MyTraining.Core.Interfaces;
+namespace MyTraining.Core.Interfaces.Extensions;
 
 public interface ICurrentUser
 {

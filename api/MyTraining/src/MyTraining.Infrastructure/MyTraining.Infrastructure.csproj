@@ -16,4 +16,6 @@
       <ProjectReference Include="..\MyTraining.Core\MyTraining.Core.csproj" />
     </ItemGroup>
 
+
+
 </Project>

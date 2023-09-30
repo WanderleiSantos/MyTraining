@@ -1,4 +1,4 @@
-namespace MyTraining.Core.Repositories;
+namespace MyTraining.Core.Interfaces.Persistence;
 
 public interface IUnitOfWork
 {
