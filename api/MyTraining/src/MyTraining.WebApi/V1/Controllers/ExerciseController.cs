@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyTraining.API.Controllers;
@@ -24,7 +26,7 @@ public class ExerciseController : MainController
     }
 
     [HttpPost]
-    [AllowAnonymous]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Create(
         [FromBody] InsertExerciseInput input,
         CancellationToken cancellationToken
@@ -32,7 +34,7 @@ public class ExerciseController : MainController
     {
         try
         {
-            var output = await _insertExerciseUseCase.ExecuteAsync(input.MapToApplication(), cancellationToken);
+            var output = await _insertExerciseUseCase.ExecuteAsync(input.MapToApplication( this.CurrentUser.UserId), cancellationToken);
             if (output.IsValid)
                 return Ok(output.Result);
 
