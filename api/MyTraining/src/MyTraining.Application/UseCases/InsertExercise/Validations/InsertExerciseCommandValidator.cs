@@ -8,5 +8,6 @@ public class InsertExerciseCommandValidator : AbstractValidator<InsertExerciseCo
     public InsertExerciseCommandValidator()
     {
         RuleFor(x => x.Name).NotEmpty();
+        RuleFor(x => x.UserId).NotEmpty();
     }
 }

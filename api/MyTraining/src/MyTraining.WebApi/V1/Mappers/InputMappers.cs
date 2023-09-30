@@ -14,10 +14,10 @@ public static class InputMappers
         Password = input.Password
     };
 
-    public static InsertExerciseCommand MapToApplication(this InsertExerciseInput input) => new InsertExerciseCommand
+    public static InsertExerciseCommand MapToApplication(this InsertExerciseInput input, Guid userId) => new InsertExerciseCommand
     {
         Name = input.Name,
         Link = input.Link,
-        UserId = input.UserId
+        UserId = userId
     };
 }
