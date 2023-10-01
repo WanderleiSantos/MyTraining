@@ -24,6 +24,11 @@ public class ExerciseRepository : IExerciseRepository
         return await _context.Exercises.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
+    public async Task<IEnumerable<Exercise>> GetByName(string name, CancellationToken cancellationToken)
+    {
+        return await _context.Exercises.Where(x => EF.Functions.Like(x.Name, name)).ToListAsync(cancellationToken);
+    }
+    
     public async Task<IEnumerable<Exercise>> GetAllAsync(Guid idUser, CancellationToken cancellationToken)
     {
         return await _context.Exercises.Where(x => x.IdUser == idUser).ToListAsync(cancellationToken);
