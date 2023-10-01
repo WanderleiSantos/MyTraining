@@ -48,6 +48,14 @@ public class SignInUseCase : ISignInUseCase
                 _logger.LogWarning("{UseCase} - User does not exist", nameof(SignInUseCase));
                 return output;
             }
+            
+            if (!user.Active)
+            {
+                output.AddErrorMessage("Inactive user");
+                _logger.LogWarning("{UseCase} - Inactive user; Username: {Username}", 
+                    nameof(SignInUseCase), command.Username);
+                return output;
+            }
 
             _logger.LogInformation("{UseCase} - Generating authentication token; Username: {Username}",
                 nameof(SignInUseCase), command.Username);
