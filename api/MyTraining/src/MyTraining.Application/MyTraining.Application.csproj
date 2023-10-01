@@ -20,9 +20,6 @@
     
     <ItemGroup>
       <Folder Include="UseCases\Auth\" />
-      <Folder Include="UseCases\Exercises\SearchExerciseByName\Commands\" />
-      <Folder Include="UseCases\Exercises\SearchExerciseByName\Responses\" />
-      <Folder Include="UseCases\Exercises\SearchExerciseByName\Validations\" />
       <Folder Include="UseCases\Exercise\" />
       <Folder Include="UseCases\User\" />
     </ItemGroup>
