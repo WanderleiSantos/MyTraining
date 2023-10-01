@@ -8,12 +8,12 @@ using MyTraining.Application.UseCases.InsertExercise.Validations;
 using MyTraining.Application.UseCases.InsertUser;
 using MyTraining.Application.UseCases.InsertUser.Commands;
 using MyTraining.Application.UseCases.InsertUser.Validations;
+using MyTraining.Application.UseCases.SearchAllExercisesUseCase;
+using MyTraining.Application.UseCases.SearchAllExercisesUseCase.Commands;
+using MyTraining.Application.UseCases.SearchAllExercisesUseCase.Validations;
 using MyTraining.Application.UseCases.SearchExerciseById;
 using MyTraining.Application.UseCases.SearchExerciseById.Commands;
 using MyTraining.Application.UseCases.SearchExerciseById.Validations;
-using MyTraining.Application.UseCases.SearchExercisesByUserUseCase;
-using MyTraining.Application.UseCases.SearchExercisesByUserUseCase.Commands;
-using MyTraining.Application.UseCases.SearchExercisesByUserUseCase.Validations;
 using MyTraining.Application.UseCases.SearchUserById;
 using MyTraining.Application.UseCases.SearchUserById.Commands;
 using MyTraining.Application.UseCases.SearchUserById.Validations;
@@ -44,14 +44,14 @@ public static class DependencyInjectionConfig
         services.AddScoped<IValidator<SignInCommand>, SignInCommandValidator>();
         services.AddScoped<IValidator<InsertExerciseCommand>, InsertExerciseCommandValidator>();
         services.AddScoped<IValidator<SearchExerciseByIdCommand>, SearchExerciseByIdValidator>();
-        services.AddScoped<IValidator<SearchExerciseByUserCommand>, SearchExerciseByUserValidator>();
+        services.AddScoped<IValidator<SearchAllExercisesCommand>, SearchAllExercisesValidator>();
         services.AddScoped<IValidator<SearchUserByIdCommand>, SearchUserByIdValidator>();
         
         services.AddScoped<IInsertUserUseCase, InsertUserUseCase>();
         services.AddScoped<ISignInUseCase, SignInUseCase>();
         services.AddScoped<IInsertExerciseUseCase, InsertExerciseUseCase>();
         services.AddScoped<ISearchExerciseByIdUseCase, SearchExerciseByIdUseCase>();
-        services.AddScoped<ISearchExerciseByUserUseCase, SearchExerciseByUserUseCase>();
+        services.AddScoped<ISearchAllExercisesUseCase, SearchAllExercisesUseCase>();
         services.AddScoped<ISearchUserByIdUseCase, SearchUserByIdUseCase>();
            
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

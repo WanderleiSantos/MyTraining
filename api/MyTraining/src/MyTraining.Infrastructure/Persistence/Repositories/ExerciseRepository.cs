@@ -24,7 +24,7 @@ public class ExerciseRepository : IExerciseRepository
         return await _context.Exercises.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public async Task<IEnumerable<Exercise>> GetByUserAsync(Guid idUser, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Exercise>> GetAllAsync(Guid idUser, CancellationToken cancellationToken)
     {
         return await _context.Exercises.Where(x => x.IdUser == idUser).ToListAsync(cancellationToken);
     }
