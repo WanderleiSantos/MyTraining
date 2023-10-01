@@ -1,7 +1,7 @@
 using MyTraining.API.V1.Models;
-using MyTraining.Application.UseCases.InsertExercise.Commands;
-using MyTraining.Application.UseCases.InsertUser.Commands;
-using MyTraining.Application.UseCases.SignIn.Commands;
+using MyTraining.Application.UseCases.Auth.SignIn.Commands;
+using MyTraining.Application.UseCases.Exercises.InsertExercise.Commands;
+using MyTraining.Application.UseCases.Users.InsertUser.Commands;
 
 namespace MyTraining.API.V1.Mappers;
 

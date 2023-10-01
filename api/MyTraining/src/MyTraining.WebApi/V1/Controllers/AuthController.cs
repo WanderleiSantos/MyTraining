@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyTraining.API.Controllers;
 using MyTraining.API.V1.Mappers;
 using MyTraining.API.V1.Models;
-using MyTraining.Application.UseCases.SignIn;
+using MyTraining.Application.UseCases.Auth.SignIn;
 using MyTraining.Core.Interfaces.Extensions;
 
 namespace MyTraining.API.V1.Controllers;

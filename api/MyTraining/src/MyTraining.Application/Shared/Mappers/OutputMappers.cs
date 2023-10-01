@@ -1,6 +1,6 @@
-using MyTraining.Application.UseCases.SearchAllExercisesUseCase.Responses;
-using MyTraining.Application.UseCases.SearchExerciseById.Responses;
-using MyTraining.Application.UseCases.SearchUserById.Responses;
+using MyTraining.Application.UseCases.Exercises.SearchAllExercises.Responses;
+using MyTraining.Application.UseCases.Exercises.SearchExerciseById.Responses;
+using MyTraining.Application.UseCases.Users.SearchUserById.Responses;
 using MyTraining.Core.Entities;
 
 namespace MyTraining.Application.Shared.Mappers;

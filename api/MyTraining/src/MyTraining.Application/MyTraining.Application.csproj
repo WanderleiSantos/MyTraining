@@ -18,6 +18,12 @@
       <ProjectReference Include="..\MyTraining.Infrastructure\MyTraining.Infrastructure.csproj" />
     </ItemGroup>
     
+    <ItemGroup>
+      <Folder Include="UseCases\Auth\" />
+      <Folder Include="UseCases\Exercise\" />
+      <Folder Include="UseCases\User\" />
+    </ItemGroup>
+    
     
     
     

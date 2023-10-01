@@ -4,10 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using MyTraining.API.Controllers;
 using MyTraining.API.V1.Mappers;
 using MyTraining.API.V1.Models;
-using MyTraining.Application.UseCases.InsertUser;
-using MyTraining.Application.UseCases.SearchUserById;
-using MyTraining.Application.UseCases.SearchUserById.Commands;
-using MyTraining.Core.Interfaces;
+using MyTraining.Application.UseCases.Users.InsertUser;
+using MyTraining.Application.UseCases.Users.SearchUserById;
+using MyTraining.Application.UseCases.Users.SearchUserById.Commands;
 using MyTraining.Core.Interfaces.Extensions;
 
 namespace MyTraining.API.V1.Controllers;

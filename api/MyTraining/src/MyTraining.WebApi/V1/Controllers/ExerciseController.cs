@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using MyTraining.API.Controllers;
 using MyTraining.API.V1.Mappers;
 using MyTraining.API.V1.Models;
-using MyTraining.Application.UseCases.InsertExercise;
-using MyTraining.Application.UseCases.SearchAllExercisesUseCase;
-using MyTraining.Application.UseCases.SearchAllExercisesUseCase.Commands;
-using MyTraining.Application.UseCases.SearchExerciseById;
-using MyTraining.Application.UseCases.SearchExerciseById.Commands;
+using MyTraining.Application.UseCases.Exercises.InsertExercise;
+using MyTraining.Application.UseCases.Exercises.SearchAllExercises;
+using MyTraining.Application.UseCases.Exercises.SearchAllExercises.Commands;
+using MyTraining.Application.UseCases.Exercises.SearchExerciseById;
+using MyTraining.Application.UseCases.Exercises.SearchExerciseById.Commands;
 using MyTraining.Core.Interfaces.Extensions;
 
 namespace MyTraining.API.V1.Controllers;
