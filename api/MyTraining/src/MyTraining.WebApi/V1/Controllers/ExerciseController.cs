@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +5,8 @@ using MyTraining.API.Controllers;
 using MyTraining.API.V1.Mappers;
 using MyTraining.API.V1.Models;
 using MyTraining.Application.UseCases.InsertExercise;
+using MyTraining.Application.UseCases.SearchExerciseById;
+using MyTraining.Application.UseCases.SearchExerciseById.Commands;
 using MyTraining.Core.Interfaces.Extensions;
 
 namespace MyTraining.API.V1.Controllers;
@@ -17,12 +18,14 @@ public class ExerciseController : MainController
 {
     private readonly ILogger<ExerciseController> _logger;
     private readonly IInsertExerciseUseCase _insertExerciseUseCase;
+    private readonly ISearchExerciseByIdUseCase _searchExerciseByIdUseCase;
 
     public ExerciseController(ICurrentUser currentUser, ILogger<ExerciseController> logger,
-        IInsertExerciseUseCase insertExerciseUseCase) : base(currentUser)
+        IInsertExerciseUseCase insertExerciseUseCase, ISearchExerciseByIdUseCase searchExerciseByIdUseCase) : base(currentUser)
     {
         _logger = logger;
         _insertExerciseUseCase = insertExerciseUseCase;
+        _searchExerciseByIdUseCase = searchExerciseByIdUseCase;
     }
 
     [HttpPost]
@@ -34,15 +37,32 @@ public class ExerciseController : MainController
     {
         try
         {
-            var output = await _insertExerciseUseCase.ExecuteAsync(input.MapToApplication( this.CurrentUser.UserId), cancellationToken);
-            if (output.IsValid)
-                return Ok(output.Result);
+            var output = await _insertExerciseUseCase.ExecuteAsync(input.MapToApplication(this.CurrentUser.UserId),
+                cancellationToken);
 
-            return BadRequest(output);
+            return CustomResponse(output);
         }
         catch (Exception e)
         {
             _logger.LogError(e, "An unexpected error occurred.");
+            return BadRequest();
+        }
+    }
+
+    [HttpGet("{id:guid}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> Get(Guid id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var command = new SearchExerciseByIdCommand() { Id = id };
+            var output = await _searchExerciseByIdUseCase.ExecuteAsync(command, cancellationToken);
+
+            return CustomResponse(output);
+        }
+        catch (Exception e)
+        { 
+            _logger.LogError(e, "An unexpected error occurred");
             return BadRequest();
         }
     }

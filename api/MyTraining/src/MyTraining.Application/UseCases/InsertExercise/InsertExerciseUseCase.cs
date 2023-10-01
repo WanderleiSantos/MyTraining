@@ -1,13 +1,12 @@
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using MyTraining.Application.Shared.Models;
-using MyTraining.Application.UseCases.InsertExercise;
 using MyTraining.Application.UseCases.InsertExercise.Commands;
 using MyTraining.Core.Entities;
 using MyTraining.Core.Interfaces.Persistence.Repositories;
 using MyTraining.Infrastructure.Persistence;
 
-namespace MyTraining.Application.UseCases;
+namespace MyTraining.Application.UseCases.InsertExercise;
 
 public class InsertExerciseUseCase : IInsertExerciseUseCase
 {
@@ -48,14 +47,14 @@ public class InsertExerciseUseCase : IInsertExerciseUseCase
                 command.Name);
 
             output.AddResult($"Exercise inserted; Id: {exercise.Id}; Name: {exercise.Name}");
-            ;
+            
         }
         catch (Exception e)
         {
             _logger.LogError(e, "{UseCase} - An unexpected error has occurred;",
                 nameof(InsertExerciseUseCase));
 
-            output.AddErrorMessage($"An unexpected error occurred while inserting the exercise");  
+            output.AddErrorMessage($"An unexpected error occurred while inserting the exercise");
         }
 
         return output;
