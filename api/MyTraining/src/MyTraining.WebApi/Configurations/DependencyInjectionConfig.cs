@@ -10,6 +10,9 @@ using MyTraining.Application.UseCases.InsertUser.Validations;
 using MyTraining.Application.UseCases.SearchExerciseById;
 using MyTraining.Application.UseCases.SearchExerciseById.Commands;
 using MyTraining.Application.UseCases.SearchExerciseById.Validations;
+using MyTraining.Application.UseCases.SearchExercisesByUserUseCase;
+using MyTraining.Application.UseCases.SearchExercisesByUserUseCase.Commands;
+using MyTraining.Application.UseCases.SearchExercisesByUserUseCase.Validations;
 using MyTraining.Application.UseCases.SignIn;
 using MyTraining.Application.UseCases.SignIn.Commands;
 using MyTraining.Application.UseCases.SignIn.Services;
@@ -38,12 +41,13 @@ public static class DependencyInjectionConfig
         services.AddScoped<IValidator<SignInCommand>, SignInCommandValidator>();
         services.AddScoped<IValidator<InsertExerciseCommand>, InsertExerciseCommandValidator>();
         services.AddScoped<IValidator<SearchExerciseByIdCommand>, SearchExerciseByIdValidator>();
+        services.AddScoped<IValidator<SearchExerciseByUserCommand>, SearchExerciseByUserValidator>();
         
         services.AddScoped<IInsertUserUseCase, InsertUserUseCase>();
         services.AddScoped<ISignInUseCase, SignInUseCase>();
         services.AddScoped<IInsertExerciseUseCase, InsertExerciseUseCase>();
         services.AddScoped<ISearchExerciseByIdUseCase, SearchExerciseByIdUseCase>();
-        
+        services.AddScoped<ISearchExerciseByUserUseCase, SearchExerciseByUserUseCase>();
            
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
