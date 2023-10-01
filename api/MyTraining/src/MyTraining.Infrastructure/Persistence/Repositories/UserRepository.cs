@@ -27,4 +27,9 @@ public class UserRepository : IUserRepository
     {
         return await _context.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
     }
+
+    public async Task<bool> ExistsEmailRegisteredAsync(string email, CancellationToken cancellationToken)
+    {
+        return await _context.Users.AnyAsync(u => u.Email == email, cancellationToken);
+    }
 }

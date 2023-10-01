@@ -2,9 +2,9 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using MyTraining.Application.Shared.Extensions;
 using MyTraining.Application.Shared.Models;
+using MyTraining.Application.Shared.Services;
 using MyTraining.Application.UseCases.SignIn.Commands;
 using MyTraining.Application.UseCases.SignIn.Responses;
-using MyTraining.Application.UseCases.SignIn.Services;
 using MyTraining.Core.Interfaces.Persistence.Repositories;
 
 namespace MyTraining.Application.UseCases.SignIn;
@@ -37,31 +37,33 @@ public class SignInUseCase : ISignInUseCase
             if (!output.IsValid)
                 return output;
 
-            _logger.LogInformation("{UseCase} - Getting user; Name: {Username}",
+            _logger.LogInformation("{UseCase} - Getting user; Username: {Username}",
                 nameof(SignInUseCase), command.Username);
 
             var user = await _repository.GetByEmailAsync(command.Username, cancellationToken);
 
-            if (user == null || user.Password != command.Password.CreateSHA256Hash())
+            if (user == null || !command.Password.VerifyPassword(user.Password))
             {
                 output.AddErrorMessage("User does not exist");
-                _logger.LogWarning("User does not exist");
+                _logger.LogWarning("{UseCase} - User does not exist", nameof(SignInUseCase));
                 return output;
             }
 
-            _logger.LogInformation("{UseCase} - Generating authentication token; Name: {Username}",
+            _logger.LogInformation("{UseCase} - Generating authentication token; Username: {Username}",
                 nameof(SignInUseCase), command.Username);
 
-            var token = _authenticationService.CreateToken(user.Id, user.Email);
+            var token = _authenticationService.CreateAccessToken(user.Id, user.Email);
+            var refreshToken = _authenticationService.CreateRefreshToken(user.Id, user.Email);
             var response = new SignInResponse
             {
                 UserName = user.Email,
-                Token = token
+                Token = token,
+                RefreshToken = refreshToken
             };
             
             output.AddResult(response);
 
-            _logger.LogInformation("{UseCase} - Token generated successfully; Name: {Username}",
+            _logger.LogInformation("{UseCase} - Token generated successfully; Username: {Username}",
                 nameof(SignInUseCase), command.Username);
         }
         catch (Exception ex)

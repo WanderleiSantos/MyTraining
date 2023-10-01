@@ -36,23 +36,31 @@ public class InsertUserUseCase : IInsertUserUseCase
             if (!output.IsValid)
                 return output;
 
+            if (await _repository.ExistsEmailRegisteredAsync(command.Email, cancellationToken))
+            {
+                output.AddErrorMessage(new Notification("Email","E-mail already registered"));
+                _logger.LogWarning("{UseCase} - E-mail already registered; Email {email}", 
+                    nameof(InsertUserUseCase), command.Email);
+                return output;
+            }
+
             _logger.LogInformation("{UseCase} - Inserting user; Email: {Email}",
                 nameof(InsertUserUseCase), command.Email);
 
-            var user = new User(command.FirstName, command.LastName, command.Email, command.Password.CreateSHA256Hash());
+            var result = new User(command.FirstName, command.LastName, command.Email, command.Password.HashPassword());
 
-            await _repository.AddAsync(user, cancellationToken);
+            await _repository.AddAsync(result, cancellationToken);
 
             await _context.CommitAsync();
 
             _logger.LogInformation("{UseCase} - Inserted user successfully; Name: {Email}",
                 nameof(InsertUserUseCase), command.Email);
 
-            output.AddResult($"User inserted; Id: {user.Id}; Name: {user.FullName}");
+            output.AddResult($"User inserted; Id: {result.Id}; Name: {result.FullName}");
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            _logger.LogError(e, "{UseCase} - An unexpected error has occurred;",
+            _logger.LogError(ex, "{UseCase} - An unexpected error has occurred;",
                 nameof(InsertUserUseCase));
 
             output.AddErrorMessage($"An unexpected error occurred while inserting the user");

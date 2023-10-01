@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MyTraining.Application.Shared.Configurations;
 
-namespace MyTraining.Application.UseCases.SignIn.Services;
+namespace MyTraining.Application.Shared.Services;
 
 public class AuthenticationService : IAuthenticationService
 {
@@ -16,12 +16,21 @@ public class AuthenticationService : IAuthenticationService
         _configuration = configuration.Value;
     }
 
-    public string CreateToken(Guid id, string username)
+    public string CreateAccessToken(Guid id, string username)
+    {
+        return CreateToken(_configuration.Key, _configuration.TokenExpires, id, username);
+    }
+    
+    public string CreateRefreshToken(Guid id, string username)
+    {
+        return CreateToken(_configuration.Key, _configuration.TokenExpires, id, username);
+    }
+
+    private string CreateToken(string keyConfig, int expires, Guid id, string username)
     {
         var issuer = _configuration.Issuer;
         var audience = _configuration.Audience;
-        var key = Encoding.ASCII.GetBytes(_configuration.Key);
-        var expires = _configuration.TokenExpires;
+        var key = Encoding.ASCII.GetBytes(keyConfig);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {

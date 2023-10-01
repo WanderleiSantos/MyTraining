@@ -8,6 +8,7 @@
 
 
     <ItemGroup>
+      <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
       <PackageReference Include="FluentValidation" Version="11.7.1" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.22" />
     </ItemGroup>
@@ -16,6 +17,11 @@
       <ProjectReference Include="..\MyTraining.Core\MyTraining.Core.csproj" />
       <ProjectReference Include="..\MyTraining.Infrastructure\MyTraining.Infrastructure.csproj" />
     </ItemGroup>
+    
+    
+    
+    
+    
     
     
     

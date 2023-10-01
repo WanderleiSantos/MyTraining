@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using MyTraining.Application.Shared.Mappers;
 using MyTraining.Application.Shared.Models;
 using MyTraining.Application.UseCases.SearchExerciseById.Commands;
 using MyTraining.Core.Interfaces.Persistence.Repositories;
@@ -40,7 +41,7 @@ public class SearchExerciseByIdUseCase : ISearchExerciseByIdUseCase
             _logger.LogInformation("{UseCase} - Search Exercise finish successfully, id: {id}",
                 nameof(SearchExerciseByIdUseCase), command.Id);
 
-            output.AddResult(result);
+            output.AddResult(result?.MapToApplication());
         }
         catch (Exception e)
         {
