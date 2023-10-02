@@ -18,4 +18,16 @@
       <ProjectReference Include="..\MyTraining.Infrastructure\MyTraining.Infrastructure.csproj" />
     </ItemGroup>
     
+    <ItemGroup>
+      <Compile Remove="UseCases\Exercises\SearchExerciseByName\**" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <EmbeddedResource Remove="UseCases\Exercises\SearchExerciseByName\**" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <None Remove="UseCases\Exercises\SearchExerciseByName\**" />
+    </ItemGroup>
+    
 </Project>
