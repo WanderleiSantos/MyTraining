@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using MyTraining.Core.Entities;
+using MyTraining.Core.Interfaces.Pagination;
 using MyTraining.Core.Interfaces.Persistence.Repositories;
+using MyTraining.Infrastructure.Extensions;
 
 namespace MyTraining.Infrastructure.Persistence.Repositories;
 
@@ -32,5 +34,12 @@ public class ExerciseRepository : IExerciseRepository
     public async Task<IEnumerable<Exercise>> GetAllAsync(Guid idUser, CancellationToken cancellationToken)
     {
         return await _context.Exercises.Where(x => x.IdUser == idUser).ToListAsync(cancellationToken);
+    }
+
+    public async Task<IPaginated<Exercise>> GetAllAsync(Guid idUser, int pageNumber, int pageSize, CancellationToken cancellationToken)
+    {
+        return await _context.Exercises
+            .Where(x => x.IdUser == idUser)
+            .ToPaginatedAsync(pageNumber, pageSize);
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyTraining.API.Controllers;
 using MyTraining.API.V1.Mappers;
 using MyTraining.API.V1.Models;
+using MyTraining.API.V1.Queries;
 using MyTraining.Application.UseCases.Exercises.InsertExercise;
 using MyTraining.Application.UseCases.Exercises.SearchAllExercises;
 using MyTraining.Application.UseCases.Exercises.SearchAllExercises.Commands;
@@ -73,12 +74,13 @@ public class ExerciseController : MainController
 
     [HttpGet]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll(
+        [FromQuery] SearchAllExercisesQuery search,
+        CancellationToken cancellationToken)
     {
         try
         {
-            var command = new SearchAllExercisesCommand() { UserId = this.CurrentUser.UserId };
-            var output = await _searchAllExercisesUseCase.ExecuteAsync(command, cancellationToken);
+            var output = await _searchAllExercisesUseCase.ExecuteAsync(search.MapToApplication(CurrentUser.UserId), cancellationToken);
             return CustomResponse(output);
         }
         catch (Exception e)

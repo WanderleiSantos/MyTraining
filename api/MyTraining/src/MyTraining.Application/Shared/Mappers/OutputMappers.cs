@@ -24,9 +24,14 @@ public static class OutputMappers
         Email = input.Email
     };
     
-    public static List<SearchAllExercisesResponse> MapToApplication(this IEnumerable<Exercise> inputList)
+    public static IEnumerable<SearchAllExercisesResponse> MapToApplication(this IEnumerable<Exercise> inputList)
     {
         return inputList.Select(input => new SearchAllExercisesResponse
-            { Id = input.Id, Name = input.Name, Link = input.Link, Active = input.Active }).ToList();
+        {
+            Id = input.Id, 
+            Name = input.Name, 
+            Link = input.Link, 
+            Active = input.Active
+        }).ToList();
     }
 }

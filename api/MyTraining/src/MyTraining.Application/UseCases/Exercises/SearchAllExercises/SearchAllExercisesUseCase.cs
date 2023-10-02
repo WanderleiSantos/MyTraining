@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using MyTraining.Application.Shared.Mappers;
 using MyTraining.Application.Shared.Models;
 using MyTraining.Application.UseCases.Exercises.SearchAllExercises.Commands;
+using MyTraining.Application.UseCases.Exercises.SearchAllExercises.Responses;
 using MyTraining.Core.Interfaces.Persistence.Repositories;
 
 namespace MyTraining.Application.UseCases.Exercises.SearchAllExercises;
@@ -29,18 +30,20 @@ public class SearchAllExercisesUseCase : ISearchAllExercisesUseCase
         {
             var validationResult = await _validator.ValidateAsync(command, cancellationToken);
             output.AddValidationResult(validationResult);
+            
             if (!output.IsValid)
                 return output;
 
             _logger.LogInformation("{UseCase} - Search exercise by userId: {id}", nameof(SearchAllExercisesUseCase),
                 command.UserId);
 
-            var result = await _repository.GetAllAsync(command.UserId, cancellationToken);
+            var result = await _repository.GetAllAsync(command.UserId, command.PageNumber, command.PageSize, cancellationToken);
 
             _logger.LogInformation("{UseCase} - Search Exercises by user finish successfully, userId: {id}",
                 nameof(SearchAllExercisesUseCase), command.UserId);
 
-            output.AddResult(result?.MapToApplication());
+            output.AddResult(new PaginatedOutput<SearchAllExercisesResponse>(result, 
+                result.Items.MapToApplication()));
         }
         catch (Exception e)
         {

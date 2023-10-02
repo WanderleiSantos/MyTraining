@@ -44,7 +44,7 @@ public class SearchUserByIdUseCase : ISearchUserByIdUseCase
         }
         catch (Exception e)
         {
-            _logger.LogError("{UseCase} -  An unexpected error has occurred;", nameof(SearchUserByIdUseCase));
+            _logger.LogError(e,"{UseCase} -  An unexpected error has occurred;", nameof(SearchUserByIdUseCase));
             output.AddErrorMessage("An unexpected error occurred while searching the user.");
         }
 
