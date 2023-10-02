@@ -1,6 +1,7 @@
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using MyTraining.Application.Shared.Extensions;
+using MyTraining.Application.Shared.Mappers;
 using MyTraining.Application.Shared.Models;
 using MyTraining.Application.UseCases.Users.InsertUser.Commands;
 using MyTraining.Core.Entities;
@@ -56,7 +57,7 @@ public class InsertUserUseCase : IInsertUserUseCase
             _logger.LogInformation("{UseCase} - Inserted user successfully; Name: {Email}",
                 nameof(InsertUserUseCase), command.Email);
 
-            output.AddResult($"User inserted; Id: {result.Id}; Name: {result.FullName}");
+            output.AddResult(result.MapUserToInsertUserResponse());
         }
         catch (Exception ex)
         {

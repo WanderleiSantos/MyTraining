@@ -1,5 +1,6 @@
 using MyTraining.Application.UseCases.Exercises.SearchAllExercises.Responses;
 using MyTraining.Application.UseCases.Exercises.SearchExerciseById.Responses;
+using MyTraining.Application.UseCases.Users.InsertUser.Responses;
 using MyTraining.Application.UseCases.Users.SearchUserById.Responses;
 using MyTraining.Core.Entities;
 
@@ -13,6 +14,15 @@ public static class OutputMappers
         Name = input.Name,
         Link = input.Link,
         Active = input.Active
+    };
+    
+    public static InsertUserResponse MapUserToInsertUserResponse(this User input) => new()
+    {
+        Id = input.Id,
+        FirstName = input.FirstName,
+        LastName = input.LastName,
+        Active = input.Active,
+        Email = input.Email
     };
 
     public static SearchUserByIdResponse MapToApplication(this User input) => new()

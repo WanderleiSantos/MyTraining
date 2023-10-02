@@ -30,4 +30,5 @@
       <None Remove="UseCases\Exercises\SearchExerciseByName\**" />
     </ItemGroup>
     
+    
 </Project>

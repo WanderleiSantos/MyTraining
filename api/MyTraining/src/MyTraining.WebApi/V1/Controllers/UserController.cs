@@ -5,6 +5,7 @@ using MyTraining.API.Controllers;
 using MyTraining.API.V1.Mappers;
 using MyTraining.API.V1.Models;
 using MyTraining.Application.UseCases.Users.InsertUser;
+using MyTraining.Application.UseCases.Users.InsertUser.Responses;
 using MyTraining.Application.UseCases.Users.SearchUserById;
 using MyTraining.Application.UseCases.Users.SearchUserById.Commands;
 using MyTraining.Core.Interfaces.Extensions;
@@ -37,7 +38,7 @@ public class UserController : MainController
         {
             var output = await _insertUserUseCase.ExecuteAsync(input.MapToApplication(), cancellationToken);
             
-            return CustomResponse(output);
+            return CustomResponseCreate(nameof(GetById), new {Id =((InsertUserResponse)output.Result!).Id}, output);
         }
         catch (Exception ex)
         {

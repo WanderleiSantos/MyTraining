@@ -3,9 +3,9 @@ using MyTraining.Application.Shared.Models;
 
 namespace MyTraining.Application.Shared.Validators;
 
-public class PaginatedInputValidator<T> : AbstractValidator<T> where T : PaginatedInput
+public abstract class PaginatedInputValidator<T> : AbstractValidator<T> where T : PaginatedInput
 {
-    public PaginatedInputValidator()
+    protected PaginatedInputValidator()
     {
         RuleFor(x => x.PageSize)
             .LessThanOrEqualTo(100)

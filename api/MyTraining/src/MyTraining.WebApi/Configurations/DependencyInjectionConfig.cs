@@ -41,19 +41,19 @@ public static class DependencyInjectionConfig
         services.AddScoped<IExerciseRepository, ExerciseRepository>();
 
         services.AddScoped<IValidator<InsertUserCommand>, InsertUserCommandValidator>();
+        services.AddScoped<IValidator<SearchUserByIdCommand>, SearchUserByIdValidator>();
         services.AddScoped<IValidator<SignInCommand>, SignInCommandValidator>();
         services.AddScoped<IValidator<InsertExerciseCommand>, InsertExerciseCommandValidator>();
         services.AddScoped<IValidator<SearchExerciseByIdCommand>, SearchExerciseByIdValidator>();
         services.AddScoped<IValidator<SearchAllExercisesCommand>, SearchAllExercisesValidator>();
-        services.AddScoped<IValidator<SearchUserByIdCommand>, SearchUserByIdValidator>();
         
         services.AddScoped<IInsertUserUseCase, InsertUserUseCase>();
         services.AddScoped<ISignInUseCase, SignInUseCase>();
+        services.AddScoped<ISearchUserByIdUseCase, SearchUserByIdUseCase>();
         services.AddScoped<IInsertExerciseUseCase, InsertExerciseUseCase>();
         services.AddScoped<ISearchExerciseByIdUseCase, SearchExerciseByIdUseCase>();
         services.AddScoped<ISearchAllExercisesUseCase, SearchAllExercisesUseCase>();
-        services.AddScoped<ISearchUserByIdUseCase, SearchUserByIdUseCase>();
-           
+        
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
         services.Configure<JwtConfiguration>(configuration.GetSection(JwtConfigurationSection));
