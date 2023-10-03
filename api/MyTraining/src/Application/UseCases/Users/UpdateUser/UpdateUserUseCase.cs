@@ -8,11 +8,11 @@ namespace Application.UseCases.Users.UpdateUser;
 
 public class UpdateUserUseCase : IUpdateUserUseCase
 {
-    private readonly ILogger<UpdateUserCommand> _logger;
+    private readonly ILogger<UpdateUserUseCase> _logger;
     private readonly IUserRepository _repository;
     private readonly IValidator<UpdateUserCommand> _validator;
 
-    public UpdateUserUseCase(ILogger<UpdateUserCommand> logger, IUserRepository repository, IValidator<UpdateUserCommand> validator)
+    public UpdateUserUseCase(ILogger<UpdateUserUseCase> logger, IUserRepository repository, IValidator<UpdateUserCommand> validator)
     {
         _logger = logger;
         _repository = repository;
@@ -49,7 +49,7 @@ public class UpdateUserUseCase : IUpdateUserUseCase
             
             await _repository.UnitOfWork.CommitAsync();
             
-            _logger.LogInformation("{UseCase} - Car updated successfully; Id: {id}", nameof(UpdateUserCommand),
+            _logger.LogInformation("{UseCase} - User updated successfully; Id: {id}", nameof(UpdateUserCommand),
                 command.Id);
 
             output.AddResult(null);

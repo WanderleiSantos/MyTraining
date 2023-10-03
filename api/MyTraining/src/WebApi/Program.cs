@@ -1,6 +1,8 @@
+using System.Globalization;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using WebApi.Configurations;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDependencyInjectionConfiguration(builder.Configuration);
 builder.Services.AddCompressionConfiguration();
 builder.Services.AddSwaggerConfiguration();
+
+ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("en");
 
 var app = builder.Build();
 

@@ -1,3 +1,4 @@
+using System.Globalization;
 using Bogus;
 using FluentAssertions;
 using FluentValidation;
@@ -5,8 +6,11 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Application.UseCases.Users.InsertUser;
 using Application.UseCases.Users.InsertUser.Commands;
+using Application.UseCases.Users.InsertUser.Responses;
 using Application.UseCases.Users.InsertUser.Validations;
+using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
+using UnitTests.Application.UseCases.Users.Shared.Extensions;
 
 namespace UnitTests.Application.UseCases.Users;
 
@@ -21,6 +25,8 @@ public class InsertUserUseCaseTests
 
     public InsertUserUseCaseTests()
     {
+        ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("en");
+        
         _loggerMock = new Mock<ILogger<InsertUserUseCase>>();
         _repositoryMock = new Mock<IUserRepository>();
         _validator = new InsertUserCommandValidator();
@@ -39,10 +45,10 @@ public class InsertUserUseCaseTests
     {
         //Given
         var command = new InsertUserCommand();
-        var cancelationToken = CancellationToken.None;
+        var cancellationToken = CancellationToken.None;
 
         //Act
-        var output = await _useCase.ExecuteAsync(command, cancelationToken);
+        var output = await _useCase.ExecuteAsync(command, cancellationToken);
 
         //Assert
         output.IsValid.Should().BeFalse();
@@ -55,26 +61,100 @@ public class InsertUserUseCaseTests
         output.ErrorMessages.Should().Contain(e => e.Message.Contains("'Email' is not a valid email address.")).Which.Code.Should().Be("Email");
         output.ErrorMessages.Should().Contain(e => e.Message.Contains("Password must contain at least 8 characters, one number, one uppercase letter, one lowercase letter and one special character")).Which.Code.Should().Be("Password");
         output.ErrorMessages.Should().Contain(e => e.Message.Contains("'Password' must not be empty.")).Which.Code.Should().Be("Password");
-
     }
 
     [Fact]
-    public async Task ShouldReturnRrrorValidationIfTheEmailIsInvalid()
+    public async Task ShouldReturnErrorValidationIfTheEmailIsInvalid()
     {
-        var command = new InsertUserCommand() { FirstName = _faker.Random.String2(10), LastName = _faker.Random.String2(10), Password = _faker.Internet.Password(10), Email = "e-mail.com.br" };
-        var cancelationToken = CancellationToken.None;
+        const string email = "e-mail.com.br";
+        var command = CreateCommand(email);
+        var cancellationToken = CancellationToken.None;
 
-        var output = await _useCase.ExecuteAsync(command, cancelationToken);
+        var output = await _useCase.ExecuteAsync(command, cancellationToken);
 
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().Contain(e => e.Message.Contains("'Email' is not a valid email address.")).Which.Code.Should().Be("Email");
     }
+    
+    [Fact]
+    public async Task ShouldReturnErrorValidationIfTheEmailAlreadyExists()
+    {
+        const string email = "e-mail@email.com";
+        var command = CreateCommand(email);
+        var cancellationToken = CancellationToken.None;
 
+        _repositoryMock
+            .Setup(x => x.ExistsEmailRegisteredAsync(email, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+
+        var output = await _useCase.ExecuteAsync(command, cancellationToken);
+
+        output.IsValid.Should().BeFalse();
+        output.ErrorMessages.Should().Contain(e => e.Message.Contains("E-mail already registered")).Which.Code.Should().Be("Email");
+    }
+    
+    [Fact]
+    public async Task ShouldInsertSuccessfullyIfCommandIsValid()
+    {
+        // Given
+        var command = CreateCommand();
+        var cancellationToken = CancellationToken.None;
+        
+        _repositoryMock
+            .Setup(x => x.UnitOfWork.CommitAsync().Result).Returns(true);
+        _repositoryMock
+            .Setup(x => x.ExistsEmailRegisteredAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+
+        // Act
+        var output = await _useCase.ExecuteAsync(command, cancellationToken);
+
+        // Assert
+        output.IsValid.Should().BeTrue();
+        output.Result.Should().NotBeNull();
+        output.Result.Should().BeAssignableTo(typeof(InsertUserResponse));
+        
+        output.Result.Should().BeOfType<InsertUserResponse>()
+            .Which.FirstName.Should().Be(command.FirstName);
+        output.Result.Should().BeOfType<InsertUserResponse>()
+            .Which.LastName.Should().Be(command.LastName);
+        output.Result.Should().BeOfType<InsertUserResponse>()
+            .Which.Email.Should().Be(command.Email.ToLower());
+        output.Result.Should().BeOfType<InsertUserResponse>()
+            .Which.Active.Should().BeTrue();
+    }
+    
+    [Fact]
+    public async Task ShouldLogErrorWhenThrowException()
+    {
+        // Given
+        var command = CreateCommand();
+        var cancellationToken = CancellationToken.None;
+
+        _repositoryMock
+            .Setup(x => x.AddAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()))
+            .Throws(new Exception("ex"));
+
+        // Act
+        var output = await _useCase.ExecuteAsync(command, cancellationToken);
+
+        // Assert
+        output.IsValid.Should().BeFalse();
+        output.ErrorMessages.Should().Contain(e => e.Message.Contains("An unexpected error occurred while inserting the user"));
+    }
 
     private InsertUserCommand CreateCommand() => new InsertUserCommand
     {
         Email = _faker.Internet.Email(),
-        Password = _faker.Random.String2(10),
+        Password = _faker.Internet.PasswordCustom(9, 32),
+        FirstName = _faker.Random.String2(10),
+        LastName = _faker.Random.String2(10)
+    };
+    
+    private InsertUserCommand CreateCommand(string email) => new InsertUserCommand
+    {
+        Email = email,
+        Password = _faker.Internet.PasswordCustom(9, 32),
         FirstName = _faker.Random.String2(10),
         LastName = _faker.Random.String2(10)
     };
