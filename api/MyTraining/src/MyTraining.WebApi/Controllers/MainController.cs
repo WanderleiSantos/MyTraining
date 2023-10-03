@@ -21,12 +21,4 @@ public abstract class MainController : ControllerBase
 
         return BadRequest(output.ErrorMessages);
     }
-    
-    protected ActionResult CustomResponseCreate(string actionName, object routeValues, Output output)
-    {
-        if (output.IsValid)
-            return CreatedAtAction(actionName, routeValues, output.Result);
-
-        return BadRequest(output.ErrorMessages);
-    }
 }

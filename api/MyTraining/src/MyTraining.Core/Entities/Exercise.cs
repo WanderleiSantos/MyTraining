@@ -15,7 +15,7 @@ public class Exercise : BaseEntity
     public bool Active { get; private set; }
     
     public Guid IdUser { get; private set; }
-    public User User { get; private set; }    
+    public User? User { get; private set; }    
     
     public void Update(string name, string? link) 
     {

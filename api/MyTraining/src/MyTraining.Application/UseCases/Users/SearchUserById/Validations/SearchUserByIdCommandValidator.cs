@@ -3,9 +3,9 @@ using MyTraining.Application.UseCases.Users.SearchUserById.Commands;
 
 namespace MyTraining.Application.UseCases.Users.SearchUserById.Validations;
 
-public class SearchUserByIdValidator : AbstractValidator<SearchUserByIdCommand>
+public class SearchUserByIdCommandValidator : AbstractValidator<SearchUserByIdCommand>
 {
-    public SearchUserByIdValidator()
+    public SearchUserByIdCommandValidator()
     {
         RuleFor(x => x.Id).NotEmpty();
     }

@@ -12,7 +12,7 @@ public class User : BaseEntity
 
         Exercises = new List<Exercise>();
     }
-
+    
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
     public string Email { get; private set; }
@@ -21,13 +21,11 @@ public class User : BaseEntity
     public string FullName => $"{FirstName} {LastName}";
     public List<Exercise> Exercises { get; private set; }
 
-    public void Update(string firstName, string lastName, string email, string password) 
+    public void Update(string firstName, string lastName) 
     {
         base.Update();
         FirstName = firstName;
         LastName = lastName;
-        Email = email;
-        Password = password;
     }
     
     public void Activate()

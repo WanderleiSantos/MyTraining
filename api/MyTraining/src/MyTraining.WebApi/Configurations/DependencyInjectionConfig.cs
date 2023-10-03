@@ -23,6 +23,9 @@ using MyTraining.Application.UseCases.Users.InsertUser.Validations;
 using MyTraining.Application.UseCases.Users.SearchUserById;
 using MyTraining.Application.UseCases.Users.SearchUserById.Commands;
 using MyTraining.Application.UseCases.Users.SearchUserById.Validations;
+using MyTraining.Application.UseCases.Users.UpdateUser;
+using MyTraining.Application.UseCases.Users.UpdateUser.Commands;
+using MyTraining.Application.UseCases.Users.UpdateUser.Validations;
 using MyTraining.Core.Interfaces.Extensions;
 using MyTraining.Core.Interfaces.Persistence.Repositories;
 using MyTraining.Infrastructure.Persistence;
@@ -44,7 +47,8 @@ public static class DependencyInjectionConfig
         services.AddScoped<IExerciseRepository, ExerciseRepository>();
 
         services.AddScoped<IValidator<InsertUserCommand>, InsertUserCommandValidator>();
-        services.AddScoped<IValidator<SearchUserByIdCommand>, SearchUserByIdValidator>();
+        services.AddScoped<IValidator<SearchUserByIdCommand>, SearchUserByIdCommandValidator>();
+        services.AddScoped<IValidator<UpdateUserCommand>, UpdateUserCommandValidator>();
         services.AddScoped<IValidator<SignInCommand>, SignInCommandValidator>();
         services.AddScoped<IValidator<InsertExerciseCommand>, InsertExerciseCommandValidator>();
         services.AddScoped<IValidator<SearchExerciseByIdCommand>, SearchExerciseByIdValidator>();
@@ -52,8 +56,9 @@ public static class DependencyInjectionConfig
         services.AddScoped<IValidator<UpdateExerciseCommand>, UpdateExerciseValidator>();
         
         services.AddScoped<IInsertUserUseCase, InsertUserUseCase>();
-        services.AddScoped<ISignInUseCase, SignInUseCase>();
         services.AddScoped<ISearchUserByIdUseCase, SearchUserByIdUseCase>();
+        services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
+        services.AddScoped<ISignInUseCase, SignInUseCase>();
         services.AddScoped<IInsertExerciseUseCase, InsertExerciseUseCase>();
         services.AddScoped<ISearchExerciseByIdUseCase, SearchExerciseByIdUseCase>();
         services.AddScoped<ISearchAllExercisesUseCase, SearchAllExercisesUseCase>();

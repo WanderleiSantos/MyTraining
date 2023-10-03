@@ -3,6 +3,7 @@ using MyTraining.Application.UseCases.Auth.SignIn.Commands;
 using MyTraining.Application.UseCases.Exercises.InsertExercise.Commands;
 using MyTraining.Application.UseCases.Exercises.UpdateExercise.Commands;
 using MyTraining.Application.UseCases.Users.InsertUser.Commands;
+using MyTraining.Application.UseCases.Users.UpdateUser.Commands;
 
 namespace MyTraining.API.V1.Mappers;
 
@@ -16,6 +17,13 @@ public static class InputMappers
         Password = input.Password
     };
 
+    public static UpdateUserCommand MapToApplication(this UpdateUserInput input, Guid id) => new UpdateUserCommand
+    {
+        Id = id,
+        FirstName = input.FirstName,
+        LastName = input.LastName,
+    };
+    
     public static SignInCommand MapToApplication(this SignInInput input) => new SignInCommand
     {
         Username = input.Username,

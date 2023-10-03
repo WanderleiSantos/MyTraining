@@ -9,6 +9,7 @@ public class Output
 
     public object? Result { get; private set; }
     public bool IsValid => !_errorMessages.Any();
+    public bool HasMessages => _messages.Any();
     public IReadOnlyCollection<Notification> ErrorMessages => _errorMessages;
     public IReadOnlyCollection<Notification> Messages => _messages;
 
