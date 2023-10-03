@@ -47,6 +47,27 @@ public class InsertUserUseCaseTests
         //Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(8);
+        output.ErrorMessages.Should().Contain(e => e.Message.Contains("'First Name' must not be empty.")).Which.Code.Should().Be("FirstName");
+        output.ErrorMessages.Should().Contain(e => e.Message.Contains("The length of 'First Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("FirstName");
+        output.ErrorMessages.Should().Contain(e => e.Message.Contains("'Last Name' must not be empty.")).Which.Code.Should().Be("LastName");
+        output.ErrorMessages.Should().Contain(e => e.Message.Contains("The length of 'Last Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("LastName");
+        output.ErrorMessages.Should().Contain(e => e.Message.Contains("'Email' must not be empty.")).Which.Code.Should().Be("Email");
+        output.ErrorMessages.Should().Contain(e => e.Message.Contains("'Email' is not a valid email address.")).Which.Code.Should().Be("Email");
+        output.ErrorMessages.Should().Contain(e => e.Message.Contains("Password must contain at least 8 characters, one number, one uppercase letter, one lowercase letter and one special character")).Which.Code.Should().Be("Password");
+        output.ErrorMessages.Should().Contain(e => e.Message.Contains("'Password' must not be empty.")).Which.Code.Should().Be("Password");
+
+    }
+
+    [Fact]
+    public async Task ShouldReturnRrrorValidationIfTheEmailIsInvalid()
+    {
+        var command = new InsertUserCommand() { FirstName = _faker.Random.String2(10), LastName = _faker.Random.String2(10), Password = _faker.Internet.Password(10), Email = "e-mail.com.br" };
+        var cancelationToken = CancellationToken.None;
+
+        var output = await _useCase.ExecuteAsync(command, cancelationToken);
+
+        output.IsValid.Should().BeFalse();
+        output.ErrorMessages.Should().Contain(e => e.Message.Contains("'Email' is not a valid email address.")).Which.Code.Should().Be("Email");
     }
 
 
