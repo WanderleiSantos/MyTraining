@@ -1,14 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyTraining.WebApi", "src\MyTraining.WebApi\MyTraining.WebApi.csproj", "{4352A7EA-C11D-4988-81EC-4019E2CFCCE8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "src\WebApi\WebApi.csproj", "{4352A7EA-C11D-4988-81EC-4019E2CFCCE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyTraining.Core", "src\MyTraining.Core\MyTraining.Core.csproj", "{E2B8EE4B-7848-499A-85B7-38622385C7B1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "src\Core\Core.csproj", "{E2B8EE4B-7848-499A-85B7-38622385C7B1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0ECB3CE7-2B4E-49A5-913C-A9CD50C5F673}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyTraining.Application", "src\MyTraining.Application\MyTraining.Application.csproj", "{BCFFD1EB-32C5-4AE4-96D6-A6B930120D18}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "src\Application\Application.csproj", "{BCFFD1EB-32C5-4AE4-96D6-A6B930120D18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyTraining.Infrastructure", "src\MyTraining.Infrastructure\MyTraining.Infrastructure.csproj", "{FD3E6013-F774-4191-975D-2D58D7A6649D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{FD3E6013-F774-4191-975D-2D58D7A6649D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{58713DCC-E35F-4CDA-BD54-3B812E2D63AA}"
 EndProject

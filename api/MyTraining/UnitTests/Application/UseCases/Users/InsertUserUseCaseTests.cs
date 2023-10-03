@@ -3,10 +3,10 @@ using FluentAssertions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Moq;
-using MyTraining.Application.UseCases.Users.InsertUser;
-using MyTraining.Application.UseCases.Users.InsertUser.Commands;
-using MyTraining.Application.UseCases.Users.InsertUser.Validations;
-using MyTraining.Core.Interfaces.Persistence.Repositories;
+using Application.UseCases.Users.InsertUser;
+using Application.UseCases.Users.InsertUser.Commands;
+using Application.UseCases.Users.InsertUser.Validations;
+using Core.Interfaces.Persistence.Repositories;
 
 namespace UnitTests.Application.UseCases.Users;
 

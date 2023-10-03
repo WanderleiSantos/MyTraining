@@ -29,8 +29,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\src\MyTraining.Application\MyTraining.Application.csproj" />
-      <ProjectReference Include="..\src\MyTraining.Infrastructure\MyTraining.Infrastructure.csproj" />
+      <ProjectReference Include="..\src\Application\Application.csproj" />
+      <ProjectReference Include="..\src\Infrastructure\Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>
