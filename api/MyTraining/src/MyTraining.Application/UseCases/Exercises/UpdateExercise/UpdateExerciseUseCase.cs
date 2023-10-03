@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using MyTraining.Application.Shared.Models;
 using MyTraining.Application.UseCases.Exercises.UpdateExercise.Commands;
 using MyTraining.Core.Interfaces.Persistence.Repositories;
-using MyTraining.Infrastructure.Persistence;
 
 namespace MyTraining.Application.UseCases.Exercises.UpdateExercise;
 
