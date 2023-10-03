@@ -3,7 +3,7 @@ using MyTraining.Core.Interfaces.Pagination;
 
 namespace MyTraining.Core.Interfaces.Persistence.Repositories;
 
-public interface IExerciseRepository
+public interface IExerciseRepository : IRepository<Exercise>
 {
     Task AddAsync(Exercise exercise, CancellationToken cancellationToken);
     Task<Exercise?> GetByIdAsync(Guid id, CancellationToken cancellationToken);

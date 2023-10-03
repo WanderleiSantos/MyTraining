@@ -43,7 +43,7 @@ public class SearchAllExercisesUseCase : ISearchAllExercisesUseCase
                 nameof(SearchAllExercisesUseCase), command.UserId);
 
             output.AddResult(new PaginatedOutput<SearchAllExercisesResponse>(result, 
-                result.Items.MapToApplication()));
+                result.Items.MapExercisesToSearchAllExercisesResponse()));
         }
         catch (Exception e)
         {
