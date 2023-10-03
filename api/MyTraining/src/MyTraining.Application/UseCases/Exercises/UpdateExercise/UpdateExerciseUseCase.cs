@@ -14,7 +14,8 @@ public class UpdateExerciseUseCase : IUpdateExerciseUseCase
     private readonly IValidator<UpdateExerciseCommand> _validator;
     private readonly DefaultDbContext _context;
 
-    public UpdateExerciseUseCase(ILogger<UpdateExerciseUseCase> logger, IExerciseRepository repository, IValidator<UpdateExerciseCommand> validator, DefaultDbContext context)
+    public UpdateExerciseUseCase(ILogger<UpdateExerciseUseCase> logger, IExerciseRepository repository,
+        IValidator<UpdateExerciseCommand> validator, DefaultDbContext context)
     {
         _logger = logger;
         _repository = repository;
@@ -28,18 +29,20 @@ public class UpdateExerciseUseCase : IUpdateExerciseUseCase
         try
         {
             var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+
             output.AddValidationResult(validationResult);
+
             if (!output.IsValid)
                 return output;
-            
+
             _logger.LogInformation("{UseCase} - Updating Exercise; Name: {Name}", nameof(UpdateExerciseUseCase),
                 command.Name);
 
             var exercise = await _repository.GetByIdAsync(command.Id, cancellationToken);
             exercise?.Update(command.Name, command.Link);
-            
+
             await _context.CommitAsync();
-            
+
             _logger.LogInformation("{UseCase} - Updated Exercise; Name: {Name}", nameof(UpdateExerciseUseCase),
                 command.Name);
 
@@ -50,7 +53,7 @@ public class UpdateExerciseUseCase : IUpdateExerciseUseCase
             _logger.LogError(e, "{UseCase} - An unexpected error has occurred;",
                 nameof(UpdateExerciseUseCase));
 
-            output.AddErrorMessage($"An unexpected error occurred while inserting the exercise");
+            output.AddErrorMessage($"An unexpected error occurred while update the exercise");
         }
 
         return output;

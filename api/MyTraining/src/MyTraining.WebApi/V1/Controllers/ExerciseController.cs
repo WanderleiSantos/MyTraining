@@ -10,6 +10,7 @@ using MyTraining.Application.UseCases.Exercises.SearchAllExercises;
 using MyTraining.Application.UseCases.Exercises.SearchAllExercises.Commands;
 using MyTraining.Application.UseCases.Exercises.SearchExerciseById;
 using MyTraining.Application.UseCases.Exercises.SearchExerciseById.Commands;
+using MyTraining.Application.UseCases.Exercises.UpdateExercise;
 using MyTraining.Core.Interfaces.Extensions;
 
 namespace MyTraining.API.V1.Controllers;
@@ -23,14 +24,16 @@ public class ExerciseController : MainController
     private readonly IInsertExerciseUseCase _insertExerciseUseCase;
     private readonly ISearchExerciseByIdUseCase _searchExerciseByIdUseCase;
     private readonly ISearchAllExercisesUseCase _searchAllExercisesUseCase;
+    private readonly IUpdateExerciseUseCase _updateExerciseUseCase;
 
     public ExerciseController(ICurrentUser currentUser, ILogger<ExerciseController> logger,
-        IInsertExerciseUseCase insertExerciseUseCase, ISearchExerciseByIdUseCase searchExerciseByIdUseCase, ISearchAllExercisesUseCase searchAllExercisesUseCase) : base(currentUser)
+        IInsertExerciseUseCase insertExerciseUseCase, ISearchExerciseByIdUseCase searchExerciseByIdUseCase, ISearchAllExercisesUseCase searchAllExercisesUseCase, IUpdateExerciseUseCase updateExerciseUseCase) : base(currentUser)
     {
         _logger = logger;
         _insertExerciseUseCase = insertExerciseUseCase;
         _searchExerciseByIdUseCase = searchExerciseByIdUseCase;
         _searchAllExercisesUseCase = searchAllExercisesUseCase;
+        _updateExerciseUseCase = updateExerciseUseCase;
     }
 
     [HttpPost]
@@ -45,6 +48,22 @@ public class ExerciseController : MainController
             var output = await _insertExerciseUseCase.ExecuteAsync(input.MapToApplication(this.CurrentUser.UserId),
                 cancellationToken);
 
+            return CustomResponse(output);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "An unexpected error occurred.");
+            return BadRequest();
+        }
+    }
+
+    [HttpPatch("{id:guid}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateExerciseInput input, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var output = await _updateExerciseUseCase.ExecuteAsync(input.MapToApplication(id), cancellationToken);
             return CustomResponse(output);
         }
         catch (Exception e)
