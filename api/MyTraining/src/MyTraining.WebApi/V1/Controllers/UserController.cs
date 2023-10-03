@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using MyTraining.API.Controllers;
 using MyTraining.API.V1.Mappers;
 using MyTraining.API.V1.Models;
-using MyTraining.Application.Shared.Models;
 using MyTraining.Application.UseCases.Users.InsertUser;
 using MyTraining.Application.UseCases.Users.InsertUser.Responses;
 using MyTraining.Application.UseCases.Users.SearchUserById;
@@ -43,7 +42,7 @@ public class UserController : MainController
             var output = await _insertUserUseCase.ExecuteAsync(input.MapToApplication(), cancellationToken);
             
             return output.IsValid ? 
-                CreatedAtAction(nameof(GetById), new {Id =((InsertUserResponse)output.Result!).Id}, output.Result) : 
+                CreatedAtAction(nameof(GetById), new {((InsertUserResponse)output.Result!).Id}, output.Result) : 
                 CustomResponse(output);
         }
         catch (Exception ex)
