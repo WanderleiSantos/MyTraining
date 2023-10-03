@@ -40,7 +40,7 @@ public class SearchExerciseByIdUseCase : ISearchExerciseByIdUseCase
             _logger.LogInformation("{UseCase} - Search Exercise finish successfully, id: {id}",
                 nameof(SearchExerciseByIdUseCase), command.Id);
 
-            output.AddResult(result?.MapToApplication());
+            output.AddResult(result?.MapExerciseToSearchExerciseByIdResponse());
         }
         catch (Exception e)
         {

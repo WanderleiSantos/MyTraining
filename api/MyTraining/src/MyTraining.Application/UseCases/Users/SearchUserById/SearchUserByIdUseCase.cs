@@ -40,7 +40,7 @@ public class SearchUserByIdUseCase : ISearchUserByIdUseCase
             _logger.LogInformation("{UseCase} - Search user finish successfully, id: {id}",
                 nameof(SearchUserByIdUseCase), command.Id);
 
-            output.AddResult(result?.MapToApplication());
+            output.AddResult(result?.MapUserToSearchUserByIdResponse());
         }
         catch (Exception e)
         {

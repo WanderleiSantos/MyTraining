@@ -12,14 +12,12 @@ public class UpdateExerciseUseCase : IUpdateExerciseUseCase
     private readonly ILogger<UpdateExerciseUseCase> _logger;
     private readonly IExerciseRepository _repository;
     private readonly IValidator<UpdateExerciseCommand> _validator;
-    private readonly DefaultDbContext _context;
 
-    public UpdateExerciseUseCase(ILogger<UpdateExerciseUseCase> logger, IExerciseRepository repository, IValidator<UpdateExerciseCommand> validator, DefaultDbContext context)
+    public UpdateExerciseUseCase(ILogger<UpdateExerciseUseCase> logger, IExerciseRepository repository, IValidator<UpdateExerciseCommand> validator)
     {
         _logger = logger;
         _repository = repository;
         _validator = validator;
-        _context = context;
     }
 
     public async Task<Output> ExecuteAsync(UpdateExerciseCommand command, CancellationToken cancellationToken)
@@ -38,7 +36,7 @@ public class UpdateExerciseUseCase : IUpdateExerciseUseCase
             var exercise = await _repository.GetByIdAsync(command.Id, cancellationToken);
             exercise?.Update(command.Name, command.Link);
             
-            await _context.CommitAsync();
+            await _repository.UnitOfWork.CommitAsync();
             
             _logger.LogInformation("{UseCase} - Updated Exercise; Name: {Name}", nameof(UpdateExerciseUseCase),
                 command.Name);

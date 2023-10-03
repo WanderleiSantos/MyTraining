@@ -8,7 +8,7 @@ namespace MyTraining.Application.Shared.Mappers;
 
 public static class OutputMappers
 {
-    public static SearchExerciseByIdResponse MapToApplication(this Exercise input) => new()
+    public static SearchExerciseByIdResponse MapExerciseToSearchExerciseByIdResponse(this Exercise input) => new()
     {
         Id = input.Id,
         Name = input.Name,
@@ -25,7 +25,7 @@ public static class OutputMappers
         Email = input.Email
     };
 
-    public static SearchUserByIdResponse MapToApplication(this User input) => new()
+    public static SearchUserByIdResponse MapUserToSearchUserByIdResponse(this User input) => new()
     {
         Id = input.Id,
         FirstName = input.FirstName,
@@ -34,7 +34,7 @@ public static class OutputMappers
         Email = input.Email
     };
     
-    public static IEnumerable<SearchAllExercisesResponse> MapToApplication(this IEnumerable<Exercise> inputList)
+    public static IEnumerable<SearchAllExercisesResponse> MapExercisesToSearchAllExercisesResponse(this IEnumerable<Exercise> inputList)
     {
         return inputList.Select(input => new SearchAllExercisesResponse
         {

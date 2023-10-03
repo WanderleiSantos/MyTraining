@@ -15,14 +15,12 @@ public class InsertUserUseCase : IInsertUserUseCase
     private readonly ILogger<InsertUserUseCase> _logger;
     private readonly IUserRepository _repository;
     private readonly IValidator<InsertUserCommand> _validator;
-    private readonly DefaultDbContext _context;
 
-    public InsertUserUseCase(ILogger<InsertUserUseCase> logger, IUserRepository repository, IValidator<InsertUserCommand> validator, DefaultDbContext context)
+    public InsertUserUseCase(ILogger<InsertUserUseCase> logger, IUserRepository repository, IValidator<InsertUserCommand> validator)
     {
         _logger = logger;
         _repository = repository;
         _validator = validator;
-        _context = context;
     }
     
     public async Task<Output> ExecuteAsync(InsertUserCommand command, CancellationToken cancellationToken)
@@ -48,11 +46,11 @@ public class InsertUserUseCase : IInsertUserUseCase
             _logger.LogInformation("{UseCase} - Inserting user; Email: {Email}",
                 nameof(InsertUserUseCase), command.Email);
 
-            var result = new User(command.FirstName, command.LastName, command.Email, command.Password.HashPassword());
+            var result = new User(command.FirstName, command.LastName, command.Email.ToLower(), command.Password.HashPassword());
 
             await _repository.AddAsync(result, cancellationToken);
 
-            await _context.CommitAsync();
+            await _repository.UnitOfWork.CommitAsync();
 
             _logger.LogInformation("{UseCase} - Inserted user successfully; Name: {Email}",
                 nameof(InsertUserUseCase), command.Email);

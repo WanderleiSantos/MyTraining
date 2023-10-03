@@ -13,15 +13,13 @@ public class InsertExerciseUseCase : IInsertExerciseUseCase
     private readonly ILogger<InsertExerciseUseCase> _logger;
     private readonly IExerciseRepository _repository;
     private readonly IValidator<InsertExerciseCommand> _validator;
-    private readonly DefaultDbContext _context;
 
     public InsertExerciseUseCase(ILogger<InsertExerciseUseCase> logger, IExerciseRepository repository,
-        IValidator<InsertExerciseCommand> validator, DefaultDbContext context)
+        IValidator<InsertExerciseCommand> validator)
     {
         _logger = logger;
         _repository = repository;
         _validator = validator;
-        _context = context;
     }
 
     public async Task<Output> ExecuteAsync(InsertExerciseCommand command, CancellationToken cancellationToken)
@@ -41,7 +39,7 @@ public class InsertExerciseUseCase : IInsertExerciseUseCase
             var exercise = new Exercise(command.Name, command.Link, command.UserId);
 
             await _repository.AddAsync(exercise, cancellationToken);
-            await _context.CommitAsync();
+            await _repository.UnitOfWork.CommitAsync();
 
             _logger.LogInformation("{UseCase} - Inserted Exercise; Name: {Name}", nameof(InsertExerciseUseCase),
                 command.Name);
