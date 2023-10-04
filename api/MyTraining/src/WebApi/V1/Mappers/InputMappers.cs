@@ -1,3 +1,4 @@
+using Application.UseCases.Auth.RefreshToken.Commands;
 using Application.UseCases.Auth.SignIn.Commands;
 using Application.UseCases.Exercises.InsertExercise.Commands;
 using Application.UseCases.Exercises.UpdateExercise.Commands;
@@ -28,6 +29,11 @@ public static class InputMappers
     {
         Username = input.Username,
         Password = input.Password
+    };
+    
+    public static RefreshTokenCommand MapToApplication(this RefreshTokenInput input) => new RefreshTokenCommand
+    {
+        RefreshToken = input.RefreshToken
     };
 
     public static InsertExerciseCommand MapToApplication(this InsertExerciseInput input, Guid userId) =>

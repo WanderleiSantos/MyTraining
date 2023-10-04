@@ -1,3 +1,4 @@
+using Application.UseCases.Auth.RefreshToken;
 using Application.UseCases.Auth.SignIn;
 using Core.Interfaces.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -15,11 +16,13 @@ public class AuthController : MainController
 {
     private readonly ILogger<AuthController> _logger;
     private readonly ISignInUseCase _signInUseCase;
+    private readonly IRefreshTokenUseCase _refreshTokenUseCase;
 
-    public AuthController(ICurrentUser currentUser, ILogger<AuthController> logger, ISignInUseCase signInUseCase) : base(currentUser)
+    public AuthController(ICurrentUser currentUser, ILogger<AuthController> logger, ISignInUseCase signInUseCase, IRefreshTokenUseCase refreshTokenUseCase) : base(currentUser)
     {
         _logger = logger;
         _signInUseCase = signInUseCase;
+        _refreshTokenUseCase = refreshTokenUseCase;
     }
 
     [HttpPost("sign-in")]
@@ -31,6 +34,25 @@ public class AuthController : MainController
         try
         {
             var output = await _signInUseCase.ExecuteAsync(input.MapToApplication(), cancellationToken);
+
+            return CustomResponse(output);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An unexpected error occurred.");
+            return BadRequest();
+        }
+    }
+    
+    [HttpPost("refresh-token")]
+    [AllowAnonymous]
+    public async Task<IActionResult> RefreshToken(
+        [FromBody] RefreshTokenInput input,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var output = await _refreshTokenUseCase.ExecuteAsync(input.MapToApplication(), cancellationToken);
 
             return CustomResponse(output);
         }
