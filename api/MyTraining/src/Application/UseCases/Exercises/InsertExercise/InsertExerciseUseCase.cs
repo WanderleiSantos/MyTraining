@@ -45,7 +45,6 @@ public class InsertExerciseUseCase : IInsertExerciseUseCase
                 command.Name);
 
             output.AddResult($"Exercise inserted; Id: {exercise.Id}; Name: {exercise.Name}");
-            
         }
         catch (Exception e)
         {
