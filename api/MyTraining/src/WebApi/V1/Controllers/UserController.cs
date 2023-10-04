@@ -52,13 +52,13 @@ public class UserController : MainController
         }
     }
     
-    [HttpGet("{id:guid}")]
+    [HttpGet()]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetById(CancellationToken cancellationToken)
     {
         try
         {
-            var command = new SearchUserByIdCommand() { Id = id };
+            var command = new SearchUserByIdCommand() { Id = CurrentUser.UserId };
             var output = await _searchUserByIdUseCase.ExecuteAsync(command, cancellationToken);
 
             return output is { IsValid: true, Result: null } ? NotFound() : CustomResponse(output);
@@ -70,15 +70,15 @@ public class UserController : MainController
         }
     }
     
-    [HttpPut("{id:guid}")]
+    [HttpPut()]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public async Task<IActionResult> Update(Guid id, 
+    public async Task<IActionResult> Update(
         [FromBody] UpdateUserInput input,
         CancellationToken cancellationToken)
     {
         try
         {
-            var output = await _updateUserUseCase.ExecuteAsync(input.MapToApplication(id), cancellationToken);
+            var output = await _updateUserUseCase.ExecuteAsync(input.MapToApplication(CurrentUser.UserId), cancellationToken);
 
             if (output.IsValid)
                 return output.HasMessages ? NotFound() : NoContent();

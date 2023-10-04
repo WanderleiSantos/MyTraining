@@ -52,12 +52,12 @@ public class UpdateUserUseCaseTests
         //Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(6);
-        output.ErrorMessages.Should().Contain(e => e.Message.Contains("'Id' must not be empty.")).Which.Code.Should().Be("Id");
-        output.ErrorMessages.Should().Contain(e => e.Message.Contains("'Id' must not be equal to '00000000-0000-0000-0000-000000000000'.")).Which.Code.Should().Be("Id");
-        output.ErrorMessages.Should().Contain(e => e.Message.Contains("'First Name' must not be empty.")).Which.Code.Should().Be("FirstName");
-        output.ErrorMessages.Should().Contain(e => e.Message.Contains("The length of 'First Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("FirstName");
-        output.ErrorMessages.Should().Contain(e => e.Message.Contains("'Last Name' must not be empty.")).Which.Code.Should().Be("LastName");
-        output.ErrorMessages.Should().Contain(e => e.Message.Contains("The length of 'Last Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("LastName");
+        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Id' must not be empty.")).Which.Code.Should().Be("Id");
+        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Id' must not be equal to '00000000-0000-0000-0000-000000000000'.")).Which.Code.Should().Be("Id");
+        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'First Name' must not be empty.")).Which.Code.Should().Be("FirstName");
+        output.ErrorMessages.Should().Contain(e => e.Message.Equals("The length of 'First Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("FirstName");
+        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Last Name' must not be empty.")).Which.Code.Should().Be("LastName");
+        output.ErrorMessages.Should().Contain(e => e.Message.Equals("The length of 'Last Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("LastName");
     }
 
     [Fact]
@@ -75,7 +75,7 @@ public class UpdateUserUseCaseTests
         output.IsValid.Should().BeTrue();
         output.HasMessages.Should().BeTrue();
         output.Result.Should().BeNull();
-        output.Messages.Should().Contain(e => e.Message.Contains("User does not exist"));
+        output.Messages.Should().Contain(e => e.Message.Equals("User does not exist"));
     }
     
     [Fact]
@@ -123,7 +123,7 @@ public class UpdateUserUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Message.Contains("An unexpected error occurred while update the user"));
+        output.ErrorMessages.Should().Contain(e => e.Message.Equals("An unexpected error occurred while update the user"));
     }
     
     private UpdateUserCommand CreateCommand() => new UpdateUserCommand
