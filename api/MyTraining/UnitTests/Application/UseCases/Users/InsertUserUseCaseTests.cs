@@ -119,7 +119,7 @@ public class InsertUserUseCaseTests
         output.Result.Should().BeOfType<InsertUserResponse>()
             .Which.LastName.Should().Be(command.LastName);
         output.Result.Should().BeOfType<InsertUserResponse>()
-            .Which.Email.Should().Be(command.Email.ToLower());
+            .Which.Email.Should().Be(command.Email);
         output.Result.Should().BeOfType<InsertUserResponse>()
             .Which.Active.Should().BeTrue();
     }

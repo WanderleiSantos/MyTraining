@@ -80,7 +80,7 @@ public class UpdateUserUseCaseTests
     public async Task ShouldUpdateSuccessfullyIfCommandIsValid()
     {
         // Given
-        var user = CreateFakerUser();
+        var user = CreateFakeUser();
         var updatedAt = user.UpdatedAt;
         var command = CreateCommand(user.Id);
         var cancellationToken = CancellationToken.None;
@@ -137,10 +137,10 @@ public class UpdateUserUseCaseTests
         LastName = _faker.Random.String2(10)
     };
 
-    private User CreateFakerUser() => new User(
+    private User CreateFakeUser() => new User(
         _faker.Random.String2(10),
         _faker.Random.String2(10),
-        _faker.Internet.Email().ToLower(),
+        _faker.Internet.Email(),
         _faker.Internet.PasswordCustom(9, 32)
     );
 }

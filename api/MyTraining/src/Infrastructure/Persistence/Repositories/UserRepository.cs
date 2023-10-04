@@ -35,6 +35,6 @@ public class UserRepository : IUserRepository
 
     public async Task<bool> ExistsEmailRegisteredAsync(string email, CancellationToken cancellationToken)
     {
-        return await _dbSet.AnyAsync(u => u.Email == email, cancellationToken);
+        return await _dbSet.AnyAsync(u => string.Equals(u.Email, email, StringComparison.CurrentCultureIgnoreCase), cancellationToken);
     }
 }

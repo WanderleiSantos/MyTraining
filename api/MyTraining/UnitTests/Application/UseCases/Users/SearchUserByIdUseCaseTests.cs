@@ -77,7 +77,7 @@ public class SearchUserByIdUseCaseTests
     public async Task ShouldSearchUserByIdSuccessfully()
     {
         // Given
-        var user = CreateFakerUser();
+        var user = CreateFakeUser();
         var command = CreateCommand(user.Id);
         var cancellationToken = CancellationToken.None;
 
@@ -127,10 +127,10 @@ public class SearchUserByIdUseCaseTests
         Id = id
     };
     
-    private User CreateFakerUser() => new User(
+    private User CreateFakeUser() => new User(
         _faker.Random.String2(10),
         _faker.Random.String2(10),
-        _faker.Internet.Email().ToLower(),
+        _faker.Internet.Email(),
         _faker.Internet.PasswordCustom(9, 32)
     );
 }

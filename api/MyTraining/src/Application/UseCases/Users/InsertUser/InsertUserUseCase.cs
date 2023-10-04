@@ -46,7 +46,7 @@ public class InsertUserUseCase : IInsertUserUseCase
             _logger.LogInformation("{UseCase} - Inserting user; Email: {Email}",
                 nameof(InsertUserUseCase), command.Email);
 
-            var result = new User(command.FirstName, command.LastName, command.Email.ToLower(), command.Password.HashPassword());
+            var result = new User(command.FirstName, command.LastName, command.Email, command.Password.HashPassword());
 
             await _repository.AddAsync(result, cancellationToken);
 
