@@ -7,6 +7,6 @@ public class SearchUserByIdCommandValidator : AbstractValidator<SearchUserByIdCo
 {
     public SearchUserByIdCommandValidator()
     {
-        RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.Id).NotEmpty().NotEqual(Guid.Empty);
     }
 }

@@ -1,7 +1,8 @@
 using System.Globalization;
-using Application.UseCases.Users.UpdateUser;
-using Application.UseCases.Users.UpdateUser.Commands;
-using Application.UseCases.Users.UpdateUser.Validations;
+using Application.UseCases.Users.SearchUserById;
+using Application.UseCases.Users.SearchUserById.Commands;
+using Application.UseCases.Users.SearchUserById.Responses;
+using Application.UseCases.Users.SearchUserById.Validations;
 using Bogus;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
@@ -13,24 +14,24 @@ using UnitTests.Application.UseCases.Users.Shared.Extensions;
 
 namespace UnitTests.Application.UseCases.Users;
 
-public class UpdateUserUseCaseTests
+public class SearchUserByIdUseCaseTests
 {
-    private readonly Mock<ILogger<UpdateUserUseCase>> _loggerMock;
+    private readonly Mock<ILogger<SearchUserByIdUseCase>> _loggerMock;
     private readonly Mock<IUserRepository> _repositoryMock;
-    private readonly IValidator<UpdateUserCommand> _validator;
-    private readonly IUpdateUserUseCase _useCase;
+    private readonly IValidator<SearchUserByIdCommand> _validator;
+    private readonly ISearchUserByIdUseCase _useCase;
 
     private readonly Faker _faker;
-
-    public UpdateUserUseCaseTests()
+    
+    public SearchUserByIdUseCaseTests()
     {
         ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("en");
         
-        _loggerMock = new Mock<ILogger<UpdateUserUseCase>>();
+        _loggerMock = new Mock<ILogger<SearchUserByIdUseCase>>();
         _repositoryMock = new Mock<IUserRepository>();
-        _validator = new UpdateUserCommandValidator();
+        _validator = new SearchUserByIdCommandValidator();
 
-        _useCase = new UpdateUserUseCase(
+        _useCase = new SearchUserByIdUseCase(
             _loggerMock.Object,
             _repositoryMock.Object,
             _validator
@@ -43,7 +44,7 @@ public class UpdateUserUseCaseTests
     public async Task ShouldReturnErrorValidationIfCommandIsEmpty()
     {
         //Given
-        var command = new UpdateUserCommand();
+        var command = new SearchUserByIdCommand();
         var cancellationToken = CancellationToken.None;
 
         //Act
@@ -51,17 +52,13 @@ public class UpdateUserUseCaseTests
 
         //Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().HaveCount(6);
+        output.ErrorMessages.Should().HaveCount(2);
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Id' must not be empty.")).Which.Code.Should().Be("Id");
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Id' must not be equal to '00000000-0000-0000-0000-000000000000'.")).Which.Code.Should().Be("Id");
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'First Name' must not be empty.")).Which.Code.Should().Be("FirstName");
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("The length of 'First Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("FirstName");
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Last Name' must not be empty.")).Which.Code.Should().Be("LastName");
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("The length of 'Last Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("LastName");
     }
-
+    
     [Fact]
-    public async Task ShouldReturnErrorIfUserDoesNotExist()
+    public async Task ShouldReturnNullIfUserDoesNotExist()
     {
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
@@ -72,23 +69,20 @@ public class UpdateUserUseCaseTests
 
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
 
-        output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("User does not exist"));
+        output.IsValid.Should().BeTrue();
+        output.Result.Should().BeNull();
     }
     
     [Fact]
-    public async Task ShouldUpdateSuccessfullyIfCommandIsValid()
+    public async Task ShouldSearchUserByIdSuccessfully()
     {
         // Given
         var user = CreateFakerUser();
-        var updatedAt = user.UpdatedAt;
         var command = CreateCommand(user.Id);
         var cancellationToken = CancellationToken.None;
-        
+
         _repositoryMock
-            .Setup(x => x.UnitOfWork.CommitAsync().Result).Returns(true);
-        _repositoryMock
-            .Setup(x => x.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetByIdAsync(command.Id, cancellationToken))
             .ReturnsAsync(user);
 
         // Act
@@ -96,12 +90,12 @@ public class UpdateUserUseCaseTests
 
         // Assert
         output.IsValid.Should().BeTrue();
-        output.Result.Should().BeNull();
-        user.FirstName.Should().Be(command.FirstName);
-        user.LastName.Should().Be(command.LastName);
-        user.Id.Should().Be(command.Id);
-        user.UpdatedAt.Should().NotBe(updatedAt);
-        user.UpdatedAt.Should().BeAfter(updatedAt);
+        output.Result.Should().BeAssignableTo(typeof(SearchUserByIdResponse));
+        ((SearchUserByIdResponse)output.Result!).Id.Should().Be(user.Id);
+        ((SearchUserByIdResponse)output.Result!).FirstName.Should().Be(user.FirstName);
+        ((SearchUserByIdResponse)output.Result!).LastName.Should().Be(user.LastName);
+        ((SearchUserByIdResponse)output.Result!).Email.Should().Be(user.Email);
+        ((SearchUserByIdResponse)output.Result!).Active.Should().Be(user.Active);
     }
     
     [Fact]
@@ -120,23 +114,19 @@ public class UpdateUserUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("An unexpected error occurred while update the user"));
+        output.ErrorMessages.Should().Contain(e => e.Message.Equals("An unexpected error occurred while searching the user."));
     }
     
-    private UpdateUserCommand CreateCommand() => new UpdateUserCommand
+    private static SearchUserByIdCommand CreateCommand() => new SearchUserByIdCommand
     {
-        Id = _faker.Random.Guid(),
-        FirstName = _faker.Random.String2(10),
-        LastName = _faker.Random.String2(10)
+        Id = Guid.NewGuid()
     };
     
-    private UpdateUserCommand CreateCommand(Guid id) => new UpdateUserCommand
+    private static SearchUserByIdCommand CreateCommand(Guid id) => new SearchUserByIdCommand
     {
-        Id = id,
-        FirstName = _faker.Random.String2(10),
-        LastName = _faker.Random.String2(10)
+        Id = id
     };
-
+    
     private User CreateFakerUser() => new User(
         _faker.Random.String2(10),
         _faker.Random.String2(10),

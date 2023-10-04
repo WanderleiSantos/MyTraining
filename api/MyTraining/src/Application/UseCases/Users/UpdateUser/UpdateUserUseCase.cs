@@ -37,7 +37,7 @@ public class UpdateUserUseCase : IUpdateUserUseCase
             var result = await _repository.GetByIdAsync(command.Id, cancellationToken);
             if (result == null)
             {
-                output.AddMessage("User does not exist");
+                output.AddErrorMessage("User does not exist");
                 _logger.LogWarning("User does not exist");
                 return output;
             }

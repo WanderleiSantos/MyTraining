@@ -80,10 +80,7 @@ public class UserController : MainController
         {
             var output = await _updateUserUseCase.ExecuteAsync(input.MapToApplication(CurrentUser.UserId), cancellationToken);
 
-            if (output.IsValid)
-                return output.HasMessages ? NotFound() : NoContent();
-            
-            return CustomResponse(output);
+            return output.IsValid ? NoContent() : CustomResponse(output);
         }
         catch (Exception e)
         { 
