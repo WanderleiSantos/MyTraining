@@ -30,11 +30,11 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
-        return await _dbSet.FirstOrDefaultAsync(u => string.Equals(u.Email, email, StringComparison.CurrentCultureIgnoreCase), cancellationToken);
+        return await _dbSet.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower(), cancellationToken);
     }
 
     public async Task<bool> ExistsEmailRegisteredAsync(string email, CancellationToken cancellationToken)
     {
-        return await _dbSet.AnyAsync(u => string.Equals(u.Email, email, StringComparison.CurrentCultureIgnoreCase), cancellationToken);
+        return await _dbSet.AnyAsync(u => u.Email.ToLower() == email.ToLower(), cancellationToken);
     }
 }

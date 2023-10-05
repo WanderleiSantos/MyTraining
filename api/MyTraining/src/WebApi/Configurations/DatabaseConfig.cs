@@ -11,9 +11,11 @@ public static class DatabaseConfig
 
         var connectionString = configuration.GetConnectionString("DbContext");
 
+        services.AddDbContext<DefaultDbContext>(options => options.UseNpgsql(connectionString));
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+        
         // services.AddDbContext<DefaultDbContext>(options =>
-        //     options.UseNpgsql(connectionString));
-        services.AddDbContext<DefaultDbContext>(options =>
-            options.UseInMemoryDatabase("Default"));
+        //     options.UseInMemoryDatabase("Default"));
     }
 }

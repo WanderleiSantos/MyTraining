@@ -9,7 +9,7 @@ public class TrainingSheetMapping : IEntityTypeConfiguration<TrainingSheet>
     public void Configure(EntityTypeBuilder<TrainingSheet> builder)
     {
         builder
-            .ToTable("exercise")
+            .ToTable("training_sheet")
             .HasKey(x => x.Id);
         
         builder
