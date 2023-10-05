@@ -11,6 +11,7 @@ public class User : BaseEntity
         Active = true;
 
         Exercises = new List<Exercise>();
+        TrainingSheets = new List<TrainingSheet>();
     }
     
     public string FirstName { get; private set; }
@@ -20,6 +21,7 @@ public class User : BaseEntity
     public bool Active { get; private set; }
     public string FullName => $"{FirstName} {LastName}";
     public List<Exercise> Exercises { get; private set; }
+    public List<TrainingSheet> TrainingSheets { get; private set; }
 
     public void Update(string firstName, string lastName) 
     {

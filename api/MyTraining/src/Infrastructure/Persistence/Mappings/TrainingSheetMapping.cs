@@ -1,12 +1,12 @@
+using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Core.Entities;
 
 namespace Infrastructure.Persistence.Mappings;
 
-public class ExerciseMapping : IEntityTypeConfiguration<Exercise>
+public class TrainingSheetMapping : IEntityTypeConfiguration<TrainingSheet>
 {
-    public void Configure(EntityTypeBuilder<Exercise> builder)
+    public void Configure(EntityTypeBuilder<TrainingSheet> builder)
     {
         builder
             .ToTable("exercise")
@@ -17,7 +17,7 @@ public class ExerciseMapping : IEntityTypeConfiguration<Exercise>
             .HasColumnName("id");
 
         builder
-            .Property(x => x.IdUser)
+            .Property(x => x.UserId)
             .HasColumnName("user_id")
             .IsRequired();
 
@@ -27,8 +27,8 @@ public class ExerciseMapping : IEntityTypeConfiguration<Exercise>
             .IsRequired();
 
         builder
-            .Property(x => x.Link)
-            .HasColumnName("link");
+            .Property(x => x.TimeExchange)
+            .HasColumnName("time_exchange");
         
         builder
             .Property(x => x.Active)
@@ -44,12 +44,11 @@ public class ExerciseMapping : IEntityTypeConfiguration<Exercise>
         builder
             .Property(x => x.UpdatedAt)
             .HasColumnName("updated_at")
-            .IsRequired();
-        
-        builder
-            .HasOne(exercise => exercise.User)
-            .WithMany(user => user.Exercises)
-            .HasForeignKey(exercise => exercise.IdUser)
+            .IsRequired();        
+
+        builder.HasOne(x => x.User)
+            .WithMany(x => x.TrainingSheets)
+            .HasForeignKey(x => x.UserId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
