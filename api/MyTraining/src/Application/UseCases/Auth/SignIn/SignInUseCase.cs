@@ -37,10 +37,10 @@ public class SignInUseCase : ISignInUseCase
             if (!output.IsValid)
                 return output;
 
-            _logger.LogInformation("{UseCase} - Getting user; Username: {Username}",
-                nameof(SignInUseCase), command.Username);
+            _logger.LogInformation("{UseCase} - Getting user; Email: {Email}",
+                nameof(SignInUseCase), command.Email);
 
-            var user = await _repository.GetByEmailAsync(command.Username, cancellationToken);
+            var user = await _repository.GetByEmailAsync(command.Email, cancellationToken);
 
             if (user == null || !command.Password.VerifyPassword(user.Password))
             {
@@ -52,27 +52,27 @@ public class SignInUseCase : ISignInUseCase
             if (!user.Active)
             {
                 output.AddErrorMessage("Inactive user");
-                _logger.LogWarning("{UseCase} - Inactive user; Username: {Username}", 
-                    nameof(SignInUseCase), command.Username);
+                _logger.LogWarning("{UseCase} - Inactive user; Email: {Email}", 
+                    nameof(SignInUseCase), command.Email);
                 return output;
             }
 
-            _logger.LogInformation("{UseCase} - Generating authentication token; Username: {Username}",
-                nameof(SignInUseCase), command.Username);
+            _logger.LogInformation("{UseCase} - Generating authentication token; Email: {Email}",
+                nameof(SignInUseCase), command.Email);
 
             var token = _authenticationService.CreateAccessToken(user.Id, user.Email);
             var refreshToken = _authenticationService.CreateRefreshToken(user.Id, user.Email);
             var response = new SignInResponse
             {
-                UserName = user.Email,
+                Email = user.Email,
                 Token = token,
                 RefreshToken = refreshToken
             };
             
             output.AddResult(response);
 
-            _logger.LogInformation("{UseCase} - Token generated successfully; Username: {Username}",
-                nameof(SignInUseCase), command.Username);
+            _logger.LogInformation("{UseCase} - Token generated successfully; Email: {Email}",
+                nameof(SignInUseCase), command.Email);
         }
         catch (Exception ex)
         {

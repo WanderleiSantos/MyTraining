@@ -27,7 +27,7 @@ public static class InputMappers
     
     public static SignInCommand MapToApplication(this SignInInput input) => new SignInCommand
     {
-        Username = input.Username,
+        Email = input.Email,
         Password = input.Password
     };
     

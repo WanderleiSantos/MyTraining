@@ -38,27 +38,27 @@ public class RefreshTokenUseCase : IRefreshTokenUseCase
 
             _logger.LogInformation("{UseCase} - Validating token", nameof(RefreshTokenUseCase));
 
-            var (validToken, username) = _authenticationService.ValidateRefreshToken(command.RefreshToken);
+            var (validToken, email) = _authenticationService.ValidateRefreshToken(command.RefreshToken);
 
-            if (!validToken || username == null)
+            if (!validToken || email == null)
             {
                 output.AddErrorMessage("Token is expired or User is not valid");
                 _logger.LogWarning("{UseCase} - Token is expired or User is not valid", nameof(RefreshTokenUseCase));
                 return output;
             }
             
-            var user = await _repository.GetByEmailAsync(username, cancellationToken);
+            var user = await _repository.GetByEmailAsync(email, cancellationToken);
 
             if (user is not { Active: true })
             {
                 output.AddErrorMessage("User does not exist or inactive");
-                _logger.LogWarning("{UseCase} - User does not exist or inactive; Username {username}", 
-                    nameof(RefreshTokenUseCase), username);
+                _logger.LogWarning("{UseCase} - User does not exist or inactive; Email {Email}", 
+                    nameof(RefreshTokenUseCase), email);
                 return output;
             }
 
-            _logger.LogInformation("{UseCase} - Generating authentication token; Username: {Username}",
-                nameof(RefreshTokenUseCase), username);
+            _logger.LogInformation("{UseCase} - Generating authentication token; Email: {Email}",
+                nameof(RefreshTokenUseCase), email);
 
             var token = _authenticationService.CreateAccessToken(user.Id, user.Email);
             var refreshToken = _authenticationService.CreateRefreshToken(user.Id, user.Email);
@@ -70,8 +70,8 @@ public class RefreshTokenUseCase : IRefreshTokenUseCase
             
             output.AddResult(response);
 
-            _logger.LogInformation("{UseCase} - Token generated successfully; Username: {Username}",
-                nameof(RefreshTokenUseCase), username);
+            _logger.LogInformation("{UseCase} - Token generated successfully; Email: {Email}",
+                nameof(RefreshTokenUseCase), email);
         }
         catch (Exception ex)
         {

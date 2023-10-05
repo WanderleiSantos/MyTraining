@@ -71,6 +71,8 @@ public class SearchUserByIdUseCaseTests
 
         output.IsValid.Should().BeTrue();
         output.Result.Should().BeNull();
+        output.HasMessages.Should().BeTrue();
+        output.Messages.Should().Contain(e => e.Message.Equals("User does not exist"));
     }
     
     [Fact]

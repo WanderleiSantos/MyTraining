@@ -57,9 +57,10 @@ public class SignInUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().HaveCount(4);
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Username' must not be empty.")).Which.Code.Should().Be("Username");
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("The length of 'Username' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("Username");
+        output.ErrorMessages.Should().HaveCount(5);
+        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Email' must not be empty.")).Which.Code.Should().Be("Email");
+        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Email' is not a valid email address.")).Which.Code.Should().Be("Email");
+        output.ErrorMessages.Should().Contain(e => e.Message.Equals("The length of 'Email' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("Email");
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Password' must not be empty.")).Which.Code.Should().Be("Password");
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("The length of 'Password' must be at least 8 characters. You entered 0 characters.")).Which.Code.Should().Be("Password");
     }
@@ -71,7 +72,7 @@ public class SignInUseCaseTests
         var cancellationToken = CancellationToken.None;
 
         _repositoryMock
-            .Setup(x => x.GetByEmailAsync(command.Username, It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetByEmailAsync(command.Email, It.IsAny<CancellationToken>()))
             .ReturnsAsync((User?)null);
 
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
@@ -88,7 +89,7 @@ public class SignInUseCaseTests
         var cancellationToken = CancellationToken.None;
 
         _repositoryMock
-            .Setup(x => x.GetByEmailAsync(command.Username, cancellationToken))
+            .Setup(x => x.GetByEmailAsync(command.Email, cancellationToken))
             .ReturnsAsync(CreateFakeUser());
 
         // Act
@@ -105,11 +106,11 @@ public class SignInUseCaseTests
         // Given
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
-        var user = CreateFakeUser(command.Username, command.Password.HashPassword());
+        var user = CreateFakeUser(command.Email, command.Password.HashPassword());
         user.Deactivate();
 
         _repositoryMock
-            .Setup(x => x.GetByEmailAsync(command.Username, cancellationToken))
+            .Setup(x => x.GetByEmailAsync(command.Email, cancellationToken))
             .ReturnsAsync(user);
 
         // Act
@@ -130,8 +131,8 @@ public class SignInUseCaseTests
         var expectedRefreshToken = _faker.Random.String2(50);
 
         _repositoryMock
-            .Setup(x => x.GetByEmailAsync(command.Username, cancellationToken))
-            .ReturnsAsync(CreateFakeUser(command.Username, command.Password.HashPassword()));
+            .Setup(x => x.GetByEmailAsync(command.Email, cancellationToken))
+            .ReturnsAsync(CreateFakeUser(command.Email, command.Password.HashPassword()));
 
         _authenticationServiceMock
             .Setup(x => x.CreateAccessToken(It.IsAny<Guid>(), It.IsAny<string>()))
@@ -146,7 +147,7 @@ public class SignInUseCaseTests
         // Assert
         output.IsValid.Should().BeTrue();
         output.Result.Should().BeAssignableTo(typeof(SignInResponse));
-        ((SignInResponse)output.Result!).UserName.Should().Be(command.Username);
+        ((SignInResponse)output.Result!).Email.Should().Be(command.Email);
         ((SignInResponse)output.Result!).Token.Should().Be(expectedToken);
         ((SignInResponse)output.Result!).RefreshToken.Should().Be(expectedRefreshToken);
     }
@@ -172,7 +173,7 @@ public class SignInUseCaseTests
     
     private SignInCommand CreateCommand() => new SignInCommand
     {
-        Username = _faker.Random.String2(10),
+        Email = _faker.Internet.Email(),
         Password = _faker.Internet.Password()
     };
     

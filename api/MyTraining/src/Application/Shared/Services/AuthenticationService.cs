@@ -18,14 +18,14 @@ public class AuthenticationService : IAuthenticationService
         _configuration = configuration.Value;
     }
 
-    public string CreateAccessToken(Guid id, string username)
+    public string CreateAccessToken(Guid id, string email)
     {
-        return CreateToken(_configuration.Key, _configuration.TokenExpires, id, username);
+        return CreateToken(_configuration.Key, _configuration.TokenExpires, id, email);
     }
     
-    public string CreateRefreshToken(Guid id, string username)
+    public string CreateRefreshToken(Guid id, string email)
     {
-        return CreateToken(_configuration.Refresh, _configuration.RefreshExpires, id, username);
+        return CreateToken(_configuration.Refresh, _configuration.RefreshExpires, id, email);
     }
 
     public (bool, string?) ValidateRefreshToken(string token)
@@ -50,7 +50,7 @@ public class AuthenticationService : IAuthenticationService
         return result.IsValid ? (result.IsValid, result.Claims[JwtRegisteredClaimNames.Email].ToString()) : (false, null);
     }
 
-    private string CreateToken(string keyConfig, int expires, Guid id, string username)
+    private string CreateToken(string keyConfig, int expires, Guid id, string email)
     {
         var issuer = _configuration.Issuer;
         var audience = _configuration.Audience;
@@ -66,7 +66,7 @@ public class AuthenticationService : IAuthenticationService
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim(JwtRegisteredClaimNames.NameId, id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, username),
+                new Claim(JwtRegisteredClaimNames.Email, email),
             }),
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
