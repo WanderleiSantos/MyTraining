@@ -1,5 +1,6 @@
 using Application.UseCases.Exercises.SearchAllExercises.Responses;
 using Application.UseCases.Exercises.SearchExerciseById.Responses;
+using Application.UseCases.TrainingSheets.InsertTrainingSheet.Responses;
 using Application.UseCases.Users.InsertUser.Responses;
 using Application.UseCases.Users.SearchUserById.Responses;
 using Core.Entities;
@@ -44,4 +45,14 @@ public static class OutputMappers
             Active = input.Active
         }).ToList();
     }
+    
+    public static InsertTrainingSheetResponse MapTrainingSheetToInsertTrainingSheetResponse(this TrainingSheet input) => new()
+    {
+        Id = input.Id,
+        UserId = input.UserId,
+        Name = input.Name,
+        TimeExchange = input.TimeExchange,
+        Active = input.Active
+    };
+
 }

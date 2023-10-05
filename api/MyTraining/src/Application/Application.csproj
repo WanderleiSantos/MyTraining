@@ -18,6 +18,10 @@
       <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     </ItemGroup>
     
+    <ItemGroup>
+      <Compile Remove="UseCases\TrainingSheets\InsertTrainingSheet\Validations.cs" />
+    </ItemGroup>
+    
     
     
 </Project>
