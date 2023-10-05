@@ -37,6 +37,13 @@ public class SearchUserByIdUseCase : ISearchUserByIdUseCase
 
             var result = await _repository.GetByIdAsync(command.Id, cancellationToken);
 
+            if (result == null)
+            {
+                output.AddMessage("User does not exist");
+                _logger.LogWarning("User does not exist");
+                return output;
+            }
+
             _logger.LogInformation("{UseCase} - Search user finish successfully, id: {id}",
                 nameof(SearchUserByIdUseCase), command.Id);
 

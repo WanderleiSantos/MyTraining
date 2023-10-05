@@ -61,7 +61,7 @@ public class UserController : MainController
             var command = new SearchUserByIdCommand() { Id = CurrentUser.UserId };
             var output = await _searchUserByIdUseCase.ExecuteAsync(command, cancellationToken);
 
-            return output is { IsValid: true, Result: null } ? NotFound() : CustomResponse(output);
+            return output is { IsValid: true, Result: null } ? NotFound(output.Messages) : CustomResponse(output);
         }
         catch (Exception e)
         { 

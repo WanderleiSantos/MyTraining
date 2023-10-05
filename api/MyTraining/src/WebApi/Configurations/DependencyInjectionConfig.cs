@@ -1,5 +1,8 @@
 using Application.Shared.Configurations;
 using Application.Shared.Services;
+using Application.UseCases.Auth.RefreshToken;
+using Application.UseCases.Auth.RefreshToken.Commands;
+using Application.UseCases.Auth.RefreshToken.Validations;
 using Application.UseCases.Auth.SignIn;
 using Application.UseCases.Auth.SignIn.Commands;
 using Application.UseCases.Auth.SignIn.Validations;
@@ -50,6 +53,7 @@ public static class DependencyInjectionConfig
         services.AddScoped<IValidator<SearchUserByIdCommand>, SearchUserByIdCommandValidator>();
         services.AddScoped<IValidator<UpdateUserCommand>, UpdateUserCommandValidator>();
         services.AddScoped<IValidator<SignInCommand>, SignInCommandValidator>();
+        services.AddScoped<IValidator<RefreshTokenCommand>, RefreshTokenCommandValidator>();
         services.AddScoped<IValidator<InsertExerciseCommand>, InsertExerciseCommandValidator>();
         services.AddScoped<IValidator<SearchExerciseByIdCommand>, SearchExerciseByIdValidator>();
         services.AddScoped<IValidator<SearchAllExercisesCommand>, SearchAllExercisesValidator>();
@@ -59,6 +63,7 @@ public static class DependencyInjectionConfig
         services.AddScoped<ISearchUserByIdUseCase, SearchUserByIdUseCase>();
         services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
         services.AddScoped<ISignInUseCase, SignInUseCase>();
+        services.AddScoped<IRefreshTokenUseCase, RefreshTokenUseCase>();
         services.AddScoped<IInsertExerciseUseCase, InsertExerciseUseCase>();
         services.AddScoped<ISearchExerciseByIdUseCase, SearchExerciseByIdUseCase>();
         services.AddScoped<ISearchAllExercisesUseCase, SearchAllExercisesUseCase>();

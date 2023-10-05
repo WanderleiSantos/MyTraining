@@ -3,7 +3,9 @@ using System.Security.Claims;
 using System.Text;
 using Application.Shared.Configurations;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames;
 
 namespace Application.Shared.Services;
 
@@ -16,17 +18,39 @@ public class AuthenticationService : IAuthenticationService
         _configuration = configuration.Value;
     }
 
-    public string CreateAccessToken(Guid id, string username)
+    public string CreateAccessToken(Guid id, string email)
     {
-        return CreateToken(_configuration.Key, _configuration.TokenExpires, id, username);
+        return CreateToken(_configuration.Key, _configuration.TokenExpires, id, email);
     }
     
-    public string CreateRefreshToken(Guid id, string username)
+    public string CreateRefreshToken(Guid id, string email)
     {
-        return CreateToken(_configuration.Key, _configuration.TokenExpires, id, username);
+        return CreateToken(_configuration.Refresh, _configuration.RefreshExpires, id, email);
     }
 
-    private string CreateToken(string keyConfig, int expires, Guid id, string username)
+    public (bool, string?) ValidateRefreshToken(string token)
+    {
+        return Validate(token, _configuration.Refresh);
+    }
+
+    private (bool, string?) Validate(string token, string key)
+    {
+        var codedKey = Encoding.ASCII.GetBytes(key);
+        
+        var handler = new JsonWebTokenHandler();
+        
+        var result = handler.ValidateToken(token, new TokenValidationParameters()
+        {
+            ValidIssuer = _configuration.Issuer,
+            ValidAudience = _configuration.Audience,
+            RequireSignedTokens = false,
+            IssuerSigningKey = new SymmetricSecurityKey(codedKey)
+        });
+        
+        return result.IsValid ? (result.IsValid, result.Claims[JwtRegisteredClaimNames.Email].ToString()) : (false, null);
+    }
+
+    private string CreateToken(string keyConfig, int expires, Guid id, string email)
     {
         var issuer = _configuration.Issuer;
         var audience = _configuration.Audience;
@@ -41,8 +65,8 @@ public class AuthenticationService : IAuthenticationService
             Audience = audience,
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, id.ToString()),
-                new Claim(ClaimTypes.Name, username),
+                new Claim(JwtRegisteredClaimNames.NameId, id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, email),
             }),
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
