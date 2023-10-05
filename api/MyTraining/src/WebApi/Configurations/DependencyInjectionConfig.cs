@@ -48,6 +48,7 @@ public static class DependencyInjectionConfig
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IExerciseRepository, ExerciseRepository>();
+        services.AddScoped<ITrainingSheetRepository, TrainingSheetRepository>();
 
         services.AddScoped<IValidator<InsertUserCommand>, InsertUserCommandValidator>();
         services.AddScoped<IValidator<SearchUserByIdCommand>, SearchUserByIdCommandValidator>();

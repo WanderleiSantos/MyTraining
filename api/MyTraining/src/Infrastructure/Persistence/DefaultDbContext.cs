@@ -14,6 +14,7 @@ public class DefaultDbContext : DbContext, IUnitOfWork
 
     public DbSet<User> Users { get; set; } = default!;
     public DbSet<Exercise> Exercises { get; set; } = default!;
+    public DbSet<TrainingSheet> TrainingSheets { get; set; } = default!;
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
