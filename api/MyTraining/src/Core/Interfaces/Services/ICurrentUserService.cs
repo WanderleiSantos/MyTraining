@@ -1,6 +1,6 @@
-namespace Core.Interfaces.Extensions;
+namespace Core.Interfaces.Services;
 
-public interface ICurrentUser
+public interface ICurrentUserService
 {
     string? UserName { get; }
     Guid UserId { get; }

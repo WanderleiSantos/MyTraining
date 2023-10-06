@@ -3,7 +3,7 @@ using Application.UseCases.Exercises.SearchAllExercises;
 using Application.UseCases.Exercises.SearchExerciseById;
 using Application.UseCases.Exercises.SearchExerciseById.Commands;
 using Application.UseCases.Exercises.UpdateExercise;
-using Core.Interfaces.Extensions;
+using Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,8 +25,8 @@ public class ExerciseController : MainController
     private readonly ISearchAllExercisesUseCase _searchAllExercisesUseCase;
     private readonly IUpdateExerciseUseCase _updateExerciseUseCase;
 
-    public ExerciseController(ICurrentUser currentUser, ILogger<ExerciseController> logger,
-        IInsertExerciseUseCase insertExerciseUseCase, ISearchExerciseByIdUseCase searchExerciseByIdUseCase, ISearchAllExercisesUseCase searchAllExercisesUseCase, IUpdateExerciseUseCase updateExerciseUseCase) : base(currentUser)
+    public ExerciseController(ICurrentUserService currentUserService, ILogger<ExerciseController> logger,
+        IInsertExerciseUseCase insertExerciseUseCase, ISearchExerciseByIdUseCase searchExerciseByIdUseCase, ISearchAllExercisesUseCase searchAllExercisesUseCase, IUpdateExerciseUseCase updateExerciseUseCase) : base(currentUserService)
     {
         _logger = logger;
         _insertExerciseUseCase = insertExerciseUseCase;
@@ -44,7 +44,7 @@ public class ExerciseController : MainController
     {
         try
         {
-            var output = await _insertExerciseUseCase.ExecuteAsync(input.MapToApplication(this.CurrentUser.UserId),
+            var output = await _insertExerciseUseCase.ExecuteAsync(input.MapToApplication(this.CurrentUserService.UserId),
                 cancellationToken);
 
             return CustomResponse(output);
@@ -98,7 +98,7 @@ public class ExerciseController : MainController
     {
         try
         {
-            var output = await _searchAllExercisesUseCase.ExecuteAsync(search.MapToApplication(CurrentUser.UserId), cancellationToken);
+            var output = await _searchAllExercisesUseCase.ExecuteAsync(search.MapToApplication(CurrentUserService.UserId), cancellationToken);
             return CustomResponse(output);
         }
         catch (Exception e)

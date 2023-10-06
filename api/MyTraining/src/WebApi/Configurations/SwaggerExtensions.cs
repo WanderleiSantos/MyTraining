@@ -3,9 +3,9 @@ using Microsoft.OpenApi.Models;
 
 namespace WebApi.Configurations;
 
-public static class SwaggerConfig
+public static class SwaggerExtensions
 {
-    public static void AddSwaggerConfiguration(this IServiceCollection services)
+    public static IServiceCollection AddSwagger(this IServiceCollection services)
     {
         services.AddSwaggerGen(options =>
         {
@@ -36,6 +36,8 @@ public static class SwaggerConfig
         });
 
         services.ConfigureOptions<SwaggerConfigureOptions>();
+
+        return services;
     }
 
     public static void UseSwaggerSetup(this IApplicationBuilder app, IApiVersionDescriptionProvider provider)

@@ -27,29 +27,18 @@ using Application.UseCases.Users.SearchUserById.Validations;
 using Application.UseCases.Users.UpdateUser;
 using Application.UseCases.Users.UpdateUser.Commands;
 using Application.UseCases.Users.UpdateUser.Validations;
-using Core.Interfaces.Extensions;
-using Core.Interfaces.Persistence.Repositories;
 using FluentValidation;
-using Infrastructure.Persistence;
-using Infrastructure.Persistence.Repositories;
-using WebApi.Extensions;
 
 namespace WebApi.Configurations;
 
-public static class DependencyInjectionConfig
+public static class ApplicationExtensions
 {
     private const string JwtConfigurationSection = "JwtConfiguration";
     
-    public static void AddDependencyInjectionConfiguration(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddApplicationConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
-            
-        services.AddScoped<DefaultDbContext>();
-
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IExerciseRepository, ExerciseRepository>();
-        services.AddScoped<ITrainingSheetRepository, TrainingSheetRepository>();
-
+        
         services.AddScoped<IValidator<InsertUserCommand>, InsertUserCommandValidator>();
         services.AddScoped<IValidator<SearchUserByIdCommand>, SearchUserByIdCommandValidator>();
         services.AddScoped<IValidator<UpdateUserCommand>, UpdateUserCommandValidator>();
@@ -70,10 +59,9 @@ public static class DependencyInjectionConfig
         services.AddScoped<ISearchAllExercisesUseCase, SearchAllExercisesUseCase>();
         services.AddScoped<IUpdateExerciseUseCase, UpdateExerciseUseCase>();
         
-        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
         services.Configure<JwtConfiguration>(configuration.GetSection(JwtConfigurationSection));
         services.AddScoped<IAuthenticationService, AuthenticationService>();
-        services.AddScoped<ICurrentUser, CurrentUser>();
+        
+        return services;
     }
 }

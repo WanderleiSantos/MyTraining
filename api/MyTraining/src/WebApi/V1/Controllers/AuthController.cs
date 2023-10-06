@@ -1,6 +1,6 @@
 using Application.UseCases.Auth.RefreshToken;
 using Application.UseCases.Auth.SignIn;
-using Core.Interfaces.Extensions;
+using Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Controllers;
@@ -18,7 +18,7 @@ public class AuthController : MainController
     private readonly ISignInUseCase _signInUseCase;
     private readonly IRefreshTokenUseCase _refreshTokenUseCase;
 
-    public AuthController(ICurrentUser currentUser, ILogger<AuthController> logger, ISignInUseCase signInUseCase, IRefreshTokenUseCase refreshTokenUseCase) : base(currentUser)
+    public AuthController(ICurrentUserService currentUserService, ILogger<AuthController> logger, ISignInUseCase signInUseCase, IRefreshTokenUseCase refreshTokenUseCase) : base(currentUserService)
     {
         _logger = logger;
         _signInUseCase = signInUseCase;

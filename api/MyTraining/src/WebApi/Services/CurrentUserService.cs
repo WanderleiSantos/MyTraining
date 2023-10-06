@@ -1,14 +1,14 @@
 using System.Security.Claims;
-using Core.Interfaces.Extensions;
+using Core.Interfaces.Services;
 
-namespace WebApi.Extensions;
+namespace WebApi.Services;
 
-public class CurrentUser : ICurrentUser
+public class CurrentUserService : ICurrentUserService
 {
     private readonly IHttpContextAccessor _accessor;
     private readonly ClaimsIdentity? _identity;
     
-    public CurrentUser(IHttpContextAccessor accessor)
+    public CurrentUserService(IHttpContextAccessor accessor)
     {
         _accessor = accessor;
         _identity = _accessor.HttpContext?.User.Identity as ClaimsIdentity;

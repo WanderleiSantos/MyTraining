@@ -2,10 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Configurations;
 
-public static class ApiVersioningConfig
+public static class ApiVersioningExtensions
 {
-    public static void AddApiVersioningConfiguration(this IServiceCollection services)
+    public static IServiceCollection AddApiVersioningConfiguration(this IServiceCollection services)
     {
+        if (services == null) throw new ArgumentNullException(nameof(services));
+        
         services.AddApiVersioning(options =>
         {
             // Retorna os headers "api-supported-versions" e "api-deprecated-versions"
@@ -28,5 +30,7 @@ public static class ApiVersioningConfig
             // can also be used to control the format of the API version in route templates
             options.SubstituteApiVersionInUrl = true;
         });
+        
+        return services;
     }
 }
