@@ -63,6 +63,10 @@ public class SignInUseCaseTests
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("The length of 'Email' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("Email");
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Password' must not be empty.")).Which.Code.Should().Be("Password");
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("The length of 'Password' must be at least 8 characters. You entered 0 characters.")).Which.Code.Should().Be("Password");
+        
+        A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
+        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     [Fact]

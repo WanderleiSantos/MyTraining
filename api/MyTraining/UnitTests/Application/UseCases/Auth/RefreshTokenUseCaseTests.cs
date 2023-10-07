@@ -60,6 +60,11 @@ public class RefreshTokenUseCaseTests
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(1);
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Refresh Token' must not be empty.")).Which.Code.Should().Be("RefreshToken");
+        
+        A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
+        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     [Fact]
@@ -78,6 +83,11 @@ public class RefreshTokenUseCaseTests
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(1);
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("Token is expired or User is not valid"));
+        
+        A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
+        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     [Fact]
@@ -96,11 +106,17 @@ public class RefreshTokenUseCaseTests
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(1);
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("Token is expired or User is not valid"));
+        
+        A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
+        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     [Fact]
     public async Task ShouldReturnErrorIfUserDoesNotExist()
     {
+        // Given
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
         var email = _faker.Internet.Email();
@@ -108,16 +124,24 @@ public class RefreshTokenUseCaseTests
         A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(command.RefreshToken)).Returns((true, email));
         A.CallTo(() => _repositoryMock.GetByEmailAsync(email, A<CancellationToken>._)).Returns((User?)null);
 
+        // Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
 
+        // Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(1);
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("User does not exist or inactive"));
+        
+        A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     [Fact]
     public async Task ShouldReturnErrorIfUserInactive()
     {
+        // Given
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
         var user = CreateFakeUser();
@@ -126,16 +150,24 @@ public class RefreshTokenUseCaseTests
         A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(command.RefreshToken)).Returns((true, user.Email));
         A.CallTo(() => _repositoryMock.GetByEmailAsync(user.Email, A<CancellationToken>._)).Returns(user);
 
+        // Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
 
+        // Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(1);
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("User does not exist or inactive"));
+        
+        A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     [Fact]
     public async Task ShouldCreateTokenSuccessfully()
     {
+        // Given
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
         var user = CreateFakeUser();
@@ -147,12 +179,19 @@ public class RefreshTokenUseCaseTests
         A.CallTo(() => _authenticationServiceMock.CreateAccessToken(user.Id, user.Email)).Returns(expectedToken);
         A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(user.Id, user.Email)).Returns(expectedRefreshToken);
 
+        // Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
 
+        // Assert
         output.IsValid.Should().BeTrue();
         output.Result.Should().BeAssignableTo(typeof(RefreshTokenResponse));
         ((RefreshTokenResponse)output.Result!).Token.Should().Be(expectedToken);
         ((RefreshTokenResponse)output.Result!).RefreshToken.Should().Be(expectedRefreshToken);
+        
+        A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustHaveHappenedOnceExactly();
     }
     
     [Fact]
@@ -170,6 +209,11 @@ public class RefreshTokenUseCaseTests
         // Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("An unexpected error has occurred"));
+        
+        A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
+        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     private RefreshTokenCommand CreateCommand() => new RefreshTokenCommand
