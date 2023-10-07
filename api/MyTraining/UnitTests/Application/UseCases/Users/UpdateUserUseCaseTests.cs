@@ -63,6 +63,7 @@ public class UpdateUserUseCaseTests
     [Fact]
     public async Task ShouldReturnErrorIfUserDoesNotExist()
     {
+        //Given
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
 
@@ -70,8 +71,10 @@ public class UpdateUserUseCaseTests
             .Setup(x => x.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync((User?)null);
 
+        //Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
 
+        //Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("User does not exist"));
     }

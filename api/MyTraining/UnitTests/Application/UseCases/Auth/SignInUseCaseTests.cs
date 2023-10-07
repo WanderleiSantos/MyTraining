@@ -8,19 +8,19 @@ using Application.UseCases.Auth.SignIn.Validations;
 using Bogus;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
+using FakeItEasy;
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using Moq;
 using UnitTests.Application.UseCases.Users.Shared.Extensions;
 
 namespace UnitTests.Application.UseCases.Auth;
 
 public class SignInUseCaseTests
 {
-    private readonly Mock<ILogger<SignInUseCase>> _loggerMock;
-    private readonly Mock<IUserRepository> _repositoryMock;
-    private readonly Mock<IAuthenticationService> _authenticationServiceMock;
+    private readonly ILogger<SignInUseCase> _loggerMock;
+    private readonly IUserRepository _repositoryMock;
+    private readonly IAuthenticationService _authenticationServiceMock;
     private readonly IValidator<SignInCommand> _validator;
     private readonly ISignInUseCase _useCase;
 
@@ -30,16 +30,16 @@ public class SignInUseCaseTests
     {
         ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("en");
         
-        _loggerMock = new Mock<ILogger<SignInUseCase>>();
-        _repositoryMock = new Mock<IUserRepository>();
-        _authenticationServiceMock = new Mock<IAuthenticationService>();
+        _loggerMock = A.Fake<ILogger<SignInUseCase>>();
+        _repositoryMock = A.Fake<IUserRepository>();
+        _authenticationServiceMock = A.Fake<IAuthenticationService>();
         _validator = new SignInCommandValidator();
 
         _useCase = new SignInUseCase(
-            _loggerMock.Object,
-            _repositoryMock.Object,
+            _loggerMock,
+            _repositoryMock,
             _validator,
-            _authenticationServiceMock.Object
+            _authenticationServiceMock
         );
 
         _faker = new Faker();
@@ -68,17 +68,22 @@ public class SignInUseCaseTests
     [Fact]
     public async Task ShouldReturnErrorIfUserDoesNotExist()
     {
+        // Given
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
 
-        _repositoryMock
-            .Setup(x => x.GetByEmailAsync(command.Email, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((User?)null);
+        A.CallTo(() => _repositoryMock.GetByEmailAsync(command.Email, A<CancellationToken>._)).Returns((User?)null);
 
+        // Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
 
+        // Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("User does not exist"));
+        
+        A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     [Fact]
@@ -88,9 +93,7 @@ public class SignInUseCaseTests
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
 
-        _repositoryMock
-            .Setup(x => x.GetByEmailAsync(command.Email, cancellationToken))
-            .ReturnsAsync(CreateFakeUser());
+        A.CallTo(() => _repositoryMock.GetByEmailAsync(command.Email, A<CancellationToken>._)).Returns(CreateFakeUser());
 
         // Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
@@ -98,6 +101,10 @@ public class SignInUseCaseTests
         // Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("User does not exist"));
+        
+        A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     [Fact]
@@ -109,9 +116,7 @@ public class SignInUseCaseTests
         var user = CreateFakeUser(command.Email, command.Password.HashPassword());
         user.Deactivate();
 
-        _repositoryMock
-            .Setup(x => x.GetByEmailAsync(command.Email, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(user);
+        A.CallTo(() => _repositoryMock.GetByEmailAsync(command.Email, A<CancellationToken>._)).Returns(user);
 
         // Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
@@ -119,6 +124,10 @@ public class SignInUseCaseTests
         // Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("Inactive user"));
+        
+        A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     [Fact]
@@ -129,16 +138,13 @@ public class SignInUseCaseTests
         var cancellationToken = CancellationToken.None;
         var expectedToken = _faker.Random.String2(50);
         var expectedRefreshToken = _faker.Random.String2(50);
+        var user = CreateFakeUser(command.Email, command.Password.HashPassword()); 
 
-        _repositoryMock
-            .Setup(x => x.GetByEmailAsync(command.Email, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(CreateFakeUser(command.Email, command.Password.HashPassword()));
-
-        _authenticationServiceMock
-            .Setup(x => x.CreateAccessToken(It.IsAny<Guid>(), It.IsAny<string>()))
+        A.CallTo(() => _repositoryMock.GetByEmailAsync(command.Email, A<CancellationToken>._))
+            .Returns(user);
+        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(user.Id, user.Email))
             .Returns(expectedToken);
-        _authenticationServiceMock
-            .Setup(x => x.CreateRefreshToken(It.IsAny<Guid>(), It.IsAny<string>()))
+        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(user.Id, user.Email))
             .Returns(expectedRefreshToken);
 
         // Act
@@ -150,6 +156,10 @@ public class SignInUseCaseTests
         ((SignInResponse)output.Result!).Email.Should().Be(command.Email);
         ((SignInResponse)output.Result!).Token.Should().Be(expectedToken);
         ((SignInResponse)output.Result!).RefreshToken.Should().Be(expectedRefreshToken);
+        
+        A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustHaveHappenedOnceExactly();
     }
     
     [Fact]
@@ -159,8 +169,7 @@ public class SignInUseCaseTests
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
 
-        _repositoryMock
-            .Setup(x => x.GetByEmailAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._))
             .Throws(new Exception("ex"));
 
         // Act
@@ -169,6 +178,10 @@ public class SignInUseCaseTests
         // Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("An unexpected error has occurred"));
+        
+        A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     private SignInCommand CreateCommand() => new SignInCommand

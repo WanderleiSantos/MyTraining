@@ -60,7 +60,7 @@ public class ChangeUserPasswordUseCaseTests
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("'New Password' must contain at least 8 characters, one number, one uppercase letter, one lowercase letter and one special character.")).Which.Code.Should().Be("NewPassword");
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("'New Password' must not be empty.")).Which.Code.Should().Be("NewPassword");
         
-        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, A<CancellationToken>._)).MustNotHaveHappened();
+        A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustNotHaveHappened();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
     }
     
@@ -80,7 +80,8 @@ public class ChangeUserPasswordUseCaseTests
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(1);
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("User does not exist"));
-        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
+        
+        A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
     }
     
@@ -101,7 +102,8 @@ public class ChangeUserPasswordUseCaseTests
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(1);
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("Old password does not match"));
-        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
+        
+        A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
     }
     
@@ -124,7 +126,7 @@ public class ChangeUserPasswordUseCaseTests
         output.IsValid.Should().BeTrue();
         output.Result.Should().BeNull();
         
-        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustHaveHappenedOnceExactly();
     }
     
@@ -143,8 +145,10 @@ public class ChangeUserPasswordUseCaseTests
         // Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("An unexpected error occurred while update the user password"));
+        
+        A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
     }
-
     
     private ChangeUserPasswordCommand CreateCommand(Guid? id = null, string? oldPassword = null) => new ChangeUserPasswordCommand
     {
