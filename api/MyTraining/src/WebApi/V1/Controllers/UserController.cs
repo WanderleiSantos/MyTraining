@@ -42,7 +42,7 @@ public class UserController : MainController
             var output = await _insertUserUseCase.ExecuteAsync(input.MapToApplication(), cancellationToken);
             
             return output.IsValid ? 
-                CreatedAtAction(nameof(GetById), new {((InsertUserResponse)output.Result!).Id}, output.Result) : 
+                CreatedAtAction(nameof(GetById), null) : 
                 CustomResponse(output);
         }
         catch (Exception ex)

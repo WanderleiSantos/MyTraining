@@ -111,17 +111,7 @@ public class InsertUserUseCaseTests
 
         // Assert
         output.IsValid.Should().BeTrue();
-        output.Result.Should().NotBeNull();
-        output.Result.Should().BeAssignableTo(typeof(InsertUserResponse));
-        
-        output.Result.Should().BeOfType<InsertUserResponse>()
-            .Which.FirstName.Should().Be(command.FirstName);
-        output.Result.Should().BeOfType<InsertUserResponse>()
-            .Which.LastName.Should().Be(command.LastName);
-        output.Result.Should().BeOfType<InsertUserResponse>()
-            .Which.Email.Should().Be(command.Email);
-        output.Result.Should().BeOfType<InsertUserResponse>()
-            .Which.Active.Should().BeTrue();
+        output.Result.Should().BeNull();
     }
     
     [Fact]

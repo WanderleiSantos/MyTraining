@@ -2,10 +2,6 @@ namespace Core.Entities;
 
 public class Exercise : BaseEntity
 {
-    public Exercise()
-    {
-    }
-
     public Exercise(string name, string? link, Guid idUser)
     {
         Name = name;

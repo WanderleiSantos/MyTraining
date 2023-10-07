@@ -55,7 +55,7 @@ public class InsertUserUseCase : IInsertUserUseCase
             _logger.LogInformation("{UseCase} - Inserted user successfully; Name: {Email}",
                 nameof(InsertUserUseCase), command.Email);
 
-            output.AddResult(result.MapUserToInsertUserResponse());
+            output.AddResult(null);
         }
         catch (Exception ex)
         {

@@ -45,7 +45,7 @@ public class InsertTrainingSheetUseCase: IInsertTrainingSheetUseCase
             _logger.LogInformation("{UseCase} - Inserted TrainingSheet; Name: {Name}",
                 nameof(InsertTrainingSheetUseCase), command.Name);
             
-            output.AddResult(trainingSheet.MapTrainingSheetToInsertTrainingSheetResponse());
+            output.AddResult(trainingSheet.MapToResponse());
         }
         catch (Exception e)
         {

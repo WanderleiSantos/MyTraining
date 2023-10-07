@@ -1,7 +1,6 @@
 using Application.UseCases.Exercises.SearchAllExercises.Responses;
 using Application.UseCases.Exercises.SearchExerciseById.Responses;
 using Application.UseCases.TrainingSheets.InsertTrainingSheet.Responses;
-using Application.UseCases.Users.InsertUser.Responses;
 using Application.UseCases.Users.SearchUserById.Responses;
 using Core.Entities;
 
@@ -9,24 +8,15 @@ namespace Application.Shared.Mappers;
 
 public static class OutputMappers
 {
-    public static SearchExerciseByIdResponse MapExerciseToSearchExerciseByIdResponse(this Exercise input) => new()
+    public static SearchExerciseByIdResponse MapToResponse(this Exercise input) => new()
     {
         Id = input.Id,
         Name = input.Name,
         Link = input.Link,
         Active = input.Active
     };
-    
-    public static InsertUserResponse MapUserToInsertUserResponse(this User input) => new()
-    {
-        Id = input.Id,
-        FirstName = input.FirstName,
-        LastName = input.LastName,
-        Active = input.Active,
-        Email = input.Email
-    };
 
-    public static SearchUserByIdResponse MapUserToSearchUserByIdResponse(this User input) => new()
+    public static SearchUserByIdResponse MapToResponse(this User input) => new()
     {
         Id = input.Id,
         FirstName = input.FirstName,
@@ -35,7 +25,7 @@ public static class OutputMappers
         Email = input.Email
     };
     
-    public static IEnumerable<SearchAllExercisesResponse> MapExercisesToSearchAllExercisesResponse(this IEnumerable<Exercise> inputList)
+    public static IEnumerable<SearchAllExercisesResponse> MapToResponse(this IEnumerable<Exercise> inputList)
     {
         return inputList.Select(input => new SearchAllExercisesResponse
         {
@@ -46,7 +36,7 @@ public static class OutputMappers
         }).ToList();
     }
     
-    public static InsertTrainingSheetResponse MapTrainingSheetToInsertTrainingSheetResponse(this TrainingSheet input) => new()
+    public static InsertTrainingSheetResponse MapToResponse(this TrainingSheet input) => new()
     {
         Id = input.Id,
         UserId = input.UserId,

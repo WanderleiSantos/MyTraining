@@ -105,10 +105,7 @@ public class SearchAllExercisesUseCaseTests
     private static List<Exercise> CreateFakeListExercise(int sizeList)
     {
         var fakeExercise = new Faker<Exercise>()
-            .RuleFor(e => e.Name, f => f.Random.String2(10))
-            .RuleFor(e => e.Link, f => f.Internet.Url())
-            .RuleFor(e => e.IdUser, f => f.Random.Guid())
-            .RuleFor(e => e.Active, true);
+            .CustomInstantiator(f => new Exercise(f.Random.String2(10), f.Internet.Url(), f.Random.Guid()));
         
         return fakeExercise.Generate(sizeList);
     }
