@@ -110,7 +110,7 @@ public class SignInUseCaseTests
         user.Deactivate();
 
         _repositoryMock
-            .Setup(x => x.GetByEmailAsync(command.Email, cancellationToken))
+            .Setup(x => x.GetByEmailAsync(command.Email, It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
 
         // Act
@@ -131,7 +131,7 @@ public class SignInUseCaseTests
         var expectedRefreshToken = _faker.Random.String2(50);
 
         _repositoryMock
-            .Setup(x => x.GetByEmailAsync(command.Email, cancellationToken))
+            .Setup(x => x.GetByEmailAsync(command.Email, It.IsAny<CancellationToken>()))
             .ReturnsAsync(CreateFakeUser(command.Email, command.Password.HashPassword()));
 
         _authenticationServiceMock

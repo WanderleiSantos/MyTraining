@@ -1,5 +1,5 @@
 using Application.Shared.Models;
-using Core.Interfaces.Extensions;
+using Core.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
@@ -7,11 +7,11 @@ namespace WebApi.Controllers;
 [ApiController]
 public abstract class MainController : ControllerBase
 {
-    protected readonly ICurrentUser CurrentUser;
+    protected readonly ICurrentUserService CurrentUserService;
 
-    protected MainController(ICurrentUser currentUser)
+    protected MainController(ICurrentUserService currentUserService)
     {
-        CurrentUser = currentUser;
+        CurrentUserService = currentUserService;
     }
     
     protected ActionResult CustomResponse(Output output)

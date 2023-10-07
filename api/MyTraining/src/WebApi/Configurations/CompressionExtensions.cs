@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.ResponseCompression;
 
 namespace WebApi.Configurations;
 
-public static class CompressionConfig
+public static class CompressionExtensions
 {
-    public static void AddCompressionConfiguration(this IServiceCollection services)
+    public static IServiceCollection AddCompressionConfiguration(this IServiceCollection services)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
 
@@ -13,6 +13,8 @@ public static class CompressionConfig
             options.Providers.Add<BrotliCompressionProvider>();
             options.Providers.Add<GzipCompressionProvider>();
         });
+
+        return services;
     }
 
     public static void UseCompressionSetup(this IApplicationBuilder app)

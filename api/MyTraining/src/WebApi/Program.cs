@@ -6,36 +6,35 @@ using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
+ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("en");
+
 // ConfigureServices
+builder.Services.AddAuthenticationConfiguration(builder.Configuration);
+builder.Services.AddAuthorization();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
-builder.Services.AddDatabaseConfiguration(builder.Configuration);
-builder.Services.AddApiIdentityConfiguration(builder.Configuration);
-builder.Services.AddApiVersioningConfiguration();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddDependencyInjectionConfiguration(builder.Configuration);
+builder.Services.AddApiVersioningConfiguration();
 builder.Services.AddCompressionConfiguration();
-builder.Services.AddSwaggerConfiguration();
 
-ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("en");
+builder.Services.AddWebApiConfiguration(builder.Configuration);
+builder.Services.AddApplicationConfiguration(builder.Configuration);
+builder.Services.AddInfrastructureConfiguration(builder.Configuration);
+
+builder.Services.AddSwagger();
 
 var app = builder.Build();
 
 // Configure
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 // app.UseHttpsRedirection();
 
 app.UseCompressionSetup();
-app.UseApiIdentitySetup();
+app.UseAuthenticationSetup();
 
 app.MapControllers();
 

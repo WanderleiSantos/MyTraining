@@ -3,7 +3,7 @@ using Application.UseCases.Users.InsertUser.Responses;
 using Application.UseCases.Users.SearchUserById;
 using Application.UseCases.Users.SearchUserById.Commands;
 using Application.UseCases.Users.UpdateUser;
-using Core.Interfaces.Extensions;
+using Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +23,7 @@ public class UserController : MainController
     private readonly ISearchUserByIdUseCase _searchUserByIdUseCase;
     private readonly IUpdateUserUseCase _updateUserUseCase;
 
-    public UserController(ICurrentUser currentUser, ILogger<UserController> logger, IInsertUserUseCase insertUserUseCase, ISearchUserByIdUseCase searchUserByIdUseCase, IUpdateUserUseCase updateUserUseCase) : base(currentUser)
+    public UserController(ICurrentUserService currentUserService, ILogger<UserController> logger, IInsertUserUseCase insertUserUseCase, ISearchUserByIdUseCase searchUserByIdUseCase, IUpdateUserUseCase updateUserUseCase) : base(currentUserService)
     {
         _logger = logger;
         _insertUserUseCase = insertUserUseCase;
@@ -58,7 +58,7 @@ public class UserController : MainController
     {
         try
         {
-            var command = new SearchUserByIdCommand() { Id = CurrentUser.UserId };
+            var command = new SearchUserByIdCommand() { Id = CurrentUserService.UserId };
             var output = await _searchUserByIdUseCase.ExecuteAsync(command, cancellationToken);
 
             return output is { IsValid: true, Result: null } ? NotFound(output.Messages) : CustomResponse(output);
@@ -78,7 +78,7 @@ public class UserController : MainController
     {
         try
         {
-            var output = await _updateUserUseCase.ExecuteAsync(input.MapToApplication(CurrentUser.UserId), cancellationToken);
+            var output = await _updateUserUseCase.ExecuteAsync(input.MapToApplication(CurrentUserService.UserId), cancellationToken);
 
             return output.IsValid ? NoContent() : CustomResponse(output);
         }

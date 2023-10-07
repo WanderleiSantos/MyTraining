@@ -4,10 +4,12 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace WebApi.Configurations;
 
-public static class ApiIdentityConfig
+public static class AuthenticationExtensions
 {
-    public static void AddApiIdentityConfiguration(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddAuthenticationConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
+        if (services == null) throw new ArgumentNullException(nameof(services));
+        
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -24,13 +26,15 @@ public static class ApiIdentityConfig
                     ValidateLifetime = true,
                 };
             });
+        
+        return services;
     }
 
-    public static void UseApiIdentitySetup(this IApplicationBuilder app)
+    public static void UseAuthenticationSetup(this IApplicationBuilder app)
     {
         if (app == null) throw new ArgumentNullException(nameof(app));
 
-        app.UseAuthentication();
         app.UseAuthorization();
+        app.UseAuthentication();
     }
 }
