@@ -2,6 +2,7 @@ using Application.UseCases.Auth.RefreshToken.Commands;
 using Application.UseCases.Auth.SignIn.Commands;
 using Application.UseCases.Exercises.InsertExercise.Commands;
 using Application.UseCases.Exercises.UpdateExercise.Commands;
+using Application.UseCases.Users.ChangeUserPassword.Commands;
 using Application.UseCases.Users.InsertUser.Commands;
 using Application.UseCases.Users.UpdateUser.Commands;
 using WebApi.V1.Models;
@@ -23,6 +24,13 @@ public static class InputMappers
         Id = id,
         FirstName = input.FirstName,
         LastName = input.LastName,
+    };
+    
+    public static ChangeUserPasswordCommand MapToApplication(this ChangeUserPasswordInput input, Guid id) => new ChangeUserPasswordCommand
+    {
+        Id = id,
+        OldPassword = input.OldPassword,
+        NewPassword = input.NewPassword
     };
     
     public static SignInCommand MapToApplication(this SignInInput input) => new SignInCommand

@@ -1,5 +1,5 @@
+using Application.UseCases.Users.ChangeUserPassword;
 using Application.UseCases.Users.InsertUser;
-using Application.UseCases.Users.InsertUser.Responses;
 using Application.UseCases.Users.SearchUserById;
 using Application.UseCases.Users.SearchUserById.Commands;
 using Application.UseCases.Users.UpdateUser;
@@ -22,13 +22,15 @@ public class UserController : MainController
     private readonly IInsertUserUseCase _insertUserUseCase;
     private readonly ISearchUserByIdUseCase _searchUserByIdUseCase;
     private readonly IUpdateUserUseCase _updateUserUseCase;
+    private readonly IChangeUserPasswordUseCase _changeUserPasswordUseCase;
 
-    public UserController(ICurrentUserService currentUserService, ILogger<UserController> logger, IInsertUserUseCase insertUserUseCase, ISearchUserByIdUseCase searchUserByIdUseCase, IUpdateUserUseCase updateUserUseCase) : base(currentUserService)
+    public UserController(ICurrentUserService currentUserService, ILogger<UserController> logger, IInsertUserUseCase insertUserUseCase, ISearchUserByIdUseCase searchUserByIdUseCase, IUpdateUserUseCase updateUserUseCase, IChangeUserPasswordUseCase changeUserPasswordUseCase) : base(currentUserService)
     {
         _logger = logger;
         _insertUserUseCase = insertUserUseCase;
         _searchUserByIdUseCase = searchUserByIdUseCase;
         _updateUserUseCase = updateUserUseCase;
+        _changeUserPasswordUseCase = changeUserPasswordUseCase;
     }
 
     [HttpPost]
@@ -79,6 +81,25 @@ public class UserController : MainController
         try
         {
             var output = await _updateUserUseCase.ExecuteAsync(input.MapToApplication(CurrentUserService.UserId), cancellationToken);
+
+            return output.IsValid ? NoContent() : CustomResponse(output);
+        }
+        catch (Exception e)
+        { 
+            _logger.LogError(e, "An unexpected error occurred");
+            return BadRequest();
+        }
+    }
+    
+    [HttpPut( "password")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> ChangePassword(
+        [FromBody] ChangeUserPasswordInput input,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var output = await _changeUserPasswordUseCase.ExecuteAsync(input.MapToApplication(CurrentUserService.UserId), cancellationToken);
 
             return output.IsValid ? NoContent() : CustomResponse(output);
         }

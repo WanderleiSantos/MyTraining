@@ -1,7 +1,6 @@
 using Application.UseCases.Exercises.InsertExercise;
 using Application.UseCases.Exercises.InsertExercise.Commands;
 using Application.UseCases.Exercises.InsertExercise.Validations;
-using Application.UseCases.Users.InsertUser.Responses;
 using Bogus;
 using Core.Interfaces.Persistence.Repositories;
 using FluentAssertions;

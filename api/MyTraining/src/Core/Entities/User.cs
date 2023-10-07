@@ -30,6 +30,12 @@ public class User : BaseEntity
         LastName = lastName;
     }
     
+    public void UpdatePassword(string password) 
+    {
+        base.Update();
+        Password = password;
+    }
+    
     public void Activate()
     {
         base.Update();

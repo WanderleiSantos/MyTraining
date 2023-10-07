@@ -58,7 +58,7 @@ public class InsertUserUseCaseTests
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("The length of 'Last Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("LastName");
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Email' must not be empty.")).Which.Code.Should().Be("Email");
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Email' is not a valid email address.")).Which.Code.Should().Be("Email");
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("Password must contain at least 8 characters, one number, one uppercase letter, one lowercase letter and one special character")).Which.Code.Should().Be("Password");
+        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Password' must contain at least 8 characters, one number, one uppercase letter, one lowercase letter and one special character.")).Which.Code.Should().Be("Password");
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Password' must not be empty.")).Which.Code.Should().Be("Password");
         
         A.CallTo(() => _repositoryMock.ExistsEmailRegisteredAsync(command.Email, A<CancellationToken>._)).MustNotHaveHappened();

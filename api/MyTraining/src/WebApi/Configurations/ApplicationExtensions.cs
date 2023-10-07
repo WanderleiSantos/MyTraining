@@ -18,6 +18,9 @@ using Application.UseCases.Exercises.SearchExerciseById.Validations;
 using Application.UseCases.Exercises.UpdateExercise;
 using Application.UseCases.Exercises.UpdateExercise.Commands;
 using Application.UseCases.Exercises.UpdateExercise.Validations;
+using Application.UseCases.Users.ChangeUserPassword;
+using Application.UseCases.Users.ChangeUserPassword.Commands;
+using Application.UseCases.Users.ChangeUserPassword.Validations;
 using Application.UseCases.Users.InsertUser;
 using Application.UseCases.Users.InsertUser.Commands;
 using Application.UseCases.Users.InsertUser.Validations;
@@ -42,6 +45,7 @@ public static class ApplicationExtensions
         services.AddScoped<IValidator<InsertUserCommand>, InsertUserCommandValidator>();
         services.AddScoped<IValidator<SearchUserByIdCommand>, SearchUserByIdCommandValidator>();
         services.AddScoped<IValidator<UpdateUserCommand>, UpdateUserCommandValidator>();
+        services.AddScoped<IValidator<ChangeUserPasswordCommand>, ChangeUserPasswordCommandValidator>();
         services.AddScoped<IValidator<SignInCommand>, SignInCommandValidator>();
         services.AddScoped<IValidator<RefreshTokenCommand>, RefreshTokenCommandValidator>();
         services.AddScoped<IValidator<InsertExerciseCommand>, InsertExerciseCommandValidator>();
@@ -52,6 +56,7 @@ public static class ApplicationExtensions
         services.AddScoped<IInsertUserUseCase, InsertUserUseCase>();
         services.AddScoped<ISearchUserByIdUseCase, SearchUserByIdUseCase>();
         services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
+        services.AddScoped<IChangeUserPasswordUseCase, ChangeUserPasswordUseCase>();
         services.AddScoped<ISignInUseCase, SignInUseCase>();
         services.AddScoped<IRefreshTokenUseCase, RefreshTokenUseCase>();
         services.AddScoped<IInsertExerciseUseCase, InsertExerciseUseCase>();
