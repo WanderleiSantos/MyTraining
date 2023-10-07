@@ -35,6 +35,14 @@ public class UpdateExerciseUseCase : IUpdateExerciseUseCase
                 command.Name);
 
             var exercise = await _repository.GetByIdAsync(command.Id, cancellationToken);
+            
+            if (exercise == null)
+            {
+                output.AddErrorMessage("Exercise does not exist.");
+                _logger.LogWarning("Exercise does not exist.");
+                return output;
+            }
+            
             exercise?.Update(command.Name, command.Link);
             
             await _repository.UnitOfWork.CommitAsync();
@@ -42,7 +50,7 @@ public class UpdateExerciseUseCase : IUpdateExerciseUseCase
             _logger.LogInformation("{UseCase} - Updated Exercise; Name: {Name}", nameof(UpdateExerciseUseCase),
                 command.Name);
 
-            output.AddResult($"Exercise updated; Id: {exercise?.Id}; Name: {exercise?.Name}");
+            output.AddResult(null);
         }
         catch (Exception e)
         {

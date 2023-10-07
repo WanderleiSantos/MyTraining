@@ -19,7 +19,7 @@ namespace UnitTests.Application.UseCases.Exercises;
 public class SearchAllExercisesUseCaseTests
 {
     private readonly ILogger<SearchAllExercisesUseCase> _loggerMock;
-    private readonly IExerciseRepository _repository;
+    private readonly IExerciseRepository _repositoryMock;
     private readonly IValidator<SearchAllExercisesCommand> _validator;
     private readonly ISearchAllExercisesUseCase _useCase;
 
@@ -30,11 +30,11 @@ public class SearchAllExercisesUseCaseTests
         ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("en");
 
         _loggerMock = A.Fake<ILogger<SearchAllExercisesUseCase>>();
-        _repository = A.Fake<IExerciseRepository>();
+        _repositoryMock = A.Fake<IExerciseRepository>();
         _validator = new SearchAllExercisesValidator();
 
         _useCase = new SearchAllExercisesUseCase(
-            _loggerMock, _repository, _validator
+            _loggerMock, _repositoryMock, _validator
         );
 
         _faker = new Faker();
@@ -66,7 +66,7 @@ public class SearchAllExercisesUseCaseTests
         var paginatedExerciseMock = A.Fake<IPaginated<Exercise>>();
         A.CallTo(() => paginatedExerciseMock.Items).Returns(new List<Exercise>());
         A.CallTo(() =>
-                _repository.GetAllAsync(command.UserId, command.PageNumber, command.PageSize, A<CancellationToken>._))
+                _repositoryMock.GetAllAsync(command.UserId, command.PageNumber, command.PageSize, A<CancellationToken>._))
             .Returns(paginatedExerciseMock);
 
         //Act
@@ -91,7 +91,7 @@ public class SearchAllExercisesUseCaseTests
         var paginatedExercisesMock = A.Fake<IPaginated<Exercise>>();
         A.CallTo(() => paginatedExercisesMock.Items).Returns(listExercises);
         A.CallTo(() =>
-                _repository.GetAllAsync(command.UserId, command.PageNumber, command.PageSize, A<CancellationToken>._))
+                _repositoryMock.GetAllAsync(command.UserId, command.PageNumber, command.PageSize, A<CancellationToken>._))
             .Returns(paginatedExercisesMock);
         
         //Act
