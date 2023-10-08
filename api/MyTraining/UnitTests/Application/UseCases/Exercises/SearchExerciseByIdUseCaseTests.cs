@@ -6,17 +6,17 @@ using Application.UseCases.Exercises.SearchExerciseById.Validations;
 using Bogus;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
+using FakeItEasy;
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using Moq;
 
 namespace UnitTests.Application.UseCases.Exercises;
 
 public class SearchExerciseByIdUseCaseTests
 {
-    private readonly Mock<ILogger<SearchExerciseByIdUseCase>> _loggerMock;
-    private readonly Mock<IExerciseRepository> _repositoryMock;
+    private readonly ILogger<SearchExerciseByIdUseCase> _loggerMock;
+    private readonly IExerciseRepository _repositoryMock;
     private readonly IValidator<SearchExerciseByIdCommand> _validator;
     private readonly ISearchExerciseByIdUseCase _useCase;
 
@@ -25,14 +25,13 @@ public class SearchExerciseByIdUseCaseTests
     public SearchExerciseByIdUseCaseTests()
     {
         ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("en");
-
-        _loggerMock = new Mock<ILogger<SearchExerciseByIdUseCase>>();
-        _repositoryMock = new Mock<IExerciseRepository>();
+        _loggerMock = A.Fake<ILogger<SearchExerciseByIdUseCase>>();
+        _repositoryMock = A.Fake<IExerciseRepository>();
         _validator = new SearchExerciseByIdValidator();
 
         _useCase = new SearchExerciseByIdUseCase(
-            _loggerMock.Object,
-            _repositoryMock.Object,
+            _loggerMock,
+            _repositoryMock,
             _validator
         );
 
@@ -62,8 +61,9 @@ public class SearchExerciseByIdUseCaseTests
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
 
-        _repositoryMock.Setup(x => x.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Exercise?)null);
+
+        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, A<CancellationToken>._))
+            .Returns((Exercise?)null);
 
         //Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
@@ -81,8 +81,8 @@ public class SearchExerciseByIdUseCaseTests
         var command = CreateCommand(exercise.Id);
         var cancellationToken = CancellationToken.None;
 
-        _repositoryMock.Setup(x => x.GetByIdAsync(command.Id, cancellationToken))
-            .ReturnsAsync(exercise);
+        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, A<CancellationToken>._))
+            .Returns(exercise);
 
         //Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
@@ -100,12 +100,11 @@ public class SearchExerciseByIdUseCaseTests
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
 
-        _repositoryMock.Setup(x => x.GetByIdAsync(command.Id, cancellationToken))
-            .Throws(new Exception("ex"));
-        
+        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, A<CancellationToken>._)).Throws(new Exception("ex"));
+
         //Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
-        
+
         //Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should()
