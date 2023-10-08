@@ -2,6 +2,7 @@ using Application.UseCases.Auth.RefreshToken.Commands;
 using Application.UseCases.Auth.SignIn.Commands;
 using Application.UseCases.Exercises.InsertExercise.Commands;
 using Application.UseCases.Exercises.UpdateExercise.Commands;
+using Application.UseCases.TrainingSheets.InsertTrainingSheet.Commands;
 using Application.UseCases.Users.ChangeUserPassword.Commands;
 using Application.UseCases.Users.InsertUser.Commands;
 using Application.UseCases.Users.UpdateUser.Commands;
@@ -25,20 +26,21 @@ public static class InputMappers
         FirstName = input.FirstName,
         LastName = input.LastName,
     };
-    
-    public static ChangeUserPasswordCommand MapToApplication(this ChangeUserPasswordInput input, Guid id) => new ChangeUserPasswordCommand
-    {
-        Id = id,
-        OldPassword = input.OldPassword,
-        NewPassword = input.NewPassword
-    };
-    
+
+    public static ChangeUserPasswordCommand MapToApplication(this ChangeUserPasswordInput input, Guid id) =>
+        new ChangeUserPasswordCommand
+        {
+            Id = id,
+            OldPassword = input.OldPassword,
+            NewPassword = input.NewPassword
+        };
+
     public static SignInCommand MapToApplication(this SignInInput input) => new SignInCommand
     {
         Email = input.Email,
         Password = input.Password
     };
-    
+
     public static RefreshTokenCommand MapToApplication(this RefreshTokenInput input) => new RefreshTokenCommand
     {
         RefreshToken = input.RefreshToken
@@ -58,5 +60,13 @@ public static class InputMappers
             Id = id,
             Link = input.Link,
             Name = input.Name
+        };
+
+    public static InsertTrainingSheetCommand MapToApplication(this InsertTrainingSheetInput input, Guid userId) =>
+        new InsertTrainingSheetCommand()
+        {
+            Name = input.Name,
+            TimeExchange = input.TimeExchange,
+            UserId = userId
         };
 }

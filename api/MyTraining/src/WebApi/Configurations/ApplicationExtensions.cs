@@ -18,6 +18,9 @@ using Application.UseCases.Exercises.SearchExerciseById.Validations;
 using Application.UseCases.Exercises.UpdateExercise;
 using Application.UseCases.Exercises.UpdateExercise.Commands;
 using Application.UseCases.Exercises.UpdateExercise.Validations;
+using Application.UseCases.TrainingSheets.InsertTrainingSheet;
+using Application.UseCases.TrainingSheets.InsertTrainingSheet.Commands;
+using Application.UseCases.TrainingSheets.InsertTrainingSheet.Validations;
 using Application.UseCases.Users.ChangeUserPassword;
 using Application.UseCases.Users.ChangeUserPassword.Commands;
 using Application.UseCases.Users.ChangeUserPassword.Validations;
@@ -52,6 +55,7 @@ public static class ApplicationExtensions
         services.AddScoped<IValidator<SearchExerciseByIdCommand>, SearchExerciseByIdValidator>();
         services.AddScoped<IValidator<SearchAllExercisesCommand>, SearchAllExercisesValidator>();
         services.AddScoped<IValidator<UpdateExerciseCommand>, UpdateExerciseValidator>();
+        services.AddScoped<IValidator<InsertTrainingSheetCommand>, InsertTrainingSheetCommandValidator>();
         
         services.AddScoped<IInsertUserUseCase, InsertUserUseCase>();
         services.AddScoped<ISearchUserByIdUseCase, SearchUserByIdUseCase>();
@@ -63,6 +67,7 @@ public static class ApplicationExtensions
         services.AddScoped<ISearchExerciseByIdUseCase, SearchExerciseByIdUseCase>();
         services.AddScoped<ISearchAllExercisesUseCase, SearchAllExercisesUseCase>();
         services.AddScoped<IUpdateExerciseUseCase, UpdateExerciseUseCase>();
+        services.AddScoped<IInsertTrainingSheetUseCase, InsertTrainingSheetUseCase>();
         
         services.Configure<JwtConfiguration>(configuration.GetSection(JwtConfigurationSection));
         services.AddScoped<IAuthenticationService, AuthenticationService>();
