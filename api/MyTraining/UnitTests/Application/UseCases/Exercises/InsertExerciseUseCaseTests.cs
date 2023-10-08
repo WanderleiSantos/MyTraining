@@ -7,7 +7,6 @@ using FakeItEasy;
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using Moq;
 
 namespace UnitTests.Application.UseCases.Exercises;
 
