@@ -3,6 +3,7 @@ using Application.UseCases.Exercises.InsertExercise.Commands;
 using Application.UseCases.Exercises.InsertExercise.Validations;
 using Bogus;
 using Core.Interfaces.Persistence.Repositories;
+using FakeItEasy;
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
@@ -12,19 +13,19 @@ namespace UnitTests.Application.UseCases.Exercises;
 
 public class InsertExerciseUseCaseTests
 {
-    private readonly Mock<ILogger<InsertExerciseUseCase>> _loggerMock;
-    private readonly Mock<IExerciseRepository> _repositoryMock;
+    private readonly ILogger<InsertExerciseUseCase> _loggerMock;
+    private readonly IExerciseRepository _repositoryMock;
     private readonly IValidator<InsertExerciseCommand> _validator;
     private readonly IInsertExerciseUseCase _useCase;
     private readonly Faker _faker;
 
     public InsertExerciseUseCaseTests()
     {
-        _loggerMock = new Mock<ILogger<InsertExerciseUseCase>>();
-        _repositoryMock = new Mock<IExerciseRepository>();
+        _loggerMock = A.Fake<ILogger<InsertExerciseUseCase>>();
+        _repositoryMock = A.Fake<IExerciseRepository>();
         _validator = new InsertExerciseCommandValidator();
 
-        _useCase = new InsertExerciseUseCase(_loggerMock.Object, _repositoryMock.Object, _validator);
+        _useCase = new InsertExerciseUseCase(_loggerMock, _repositoryMock, _validator);
 
         _faker = new Faker();
     }
@@ -87,8 +88,8 @@ public class InsertExerciseUseCaseTests
         //Given
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
-
-        _repositoryMock.Setup(x => x.UnitOfWork.CommitAsync().Result).Returns(true);
+        
+        A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).Returns(true);
 
         //Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
