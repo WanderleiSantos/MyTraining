@@ -1,50 +1,38 @@
+using AspNetCore.IQueryable.Extensions.Sort;
 using Microsoft.EntityFrameworkCore;
 using Core.Entities;
 using Core.Interfaces.Pagination;
-using Core.Interfaces.Persistence;
 using Core.Interfaces.Persistence.Repositories;
 using Infrastructure.Extensions;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class ExerciseRepository : IExerciseRepository
+public class ExerciseRepository : Repository<Exercise>, IExerciseRepository
 {
-    private readonly DefaultDbContext _context;
-    private readonly DbSet<Exercise> _dbSet;
-
-    public ExerciseRepository(DefaultDbContext context)
+    public ExerciseRepository(DefaultDbContext context) : base(context)
     {
-        _context = context;
-        _dbSet = _context.Set<Exercise>();
     }
-    
-    public IUnitOfWork UnitOfWork => _context;
 
     public async Task AddAsync(Exercise exercise, CancellationToken cancellationToken)
     {
-        await _dbSet.AddAsync(exercise, cancellationToken);
+        await DbSet.AddAsync(exercise, cancellationToken);
     }
 
     public async Task AddRangeAsync(IEnumerable<Exercise> exercises, CancellationToken cancellationToken)
     {
-        await _dbSet.AddRangeAsync(exercises, cancellationToken);
+        await DbSet.AddRangeAsync(exercises, cancellationToken);
     }
 
     public async Task<Exercise?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await _dbSet.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
-    }
-    
-    public async Task<IEnumerable<Exercise>> GetAllAsync(Guid idUser, CancellationToken cancellationToken)
-    {
-        return await _dbSet.AsTracking().Where(x => x.IdUser == idUser).ToListAsync(cancellationToken);
+        return await DbSet.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public async Task<IPaginated<Exercise>> GetAllAsync(Guid idUser, int pageNumber, int pageSize, CancellationToken cancellationToken)
+    public async Task<IPaginated<Exercise>> GetAllAsync(Guid idUser, IQuerySort search, int pageNumber, int pageSize,
+        CancellationToken cancellationToken)
     {
-        return await _dbSet
-            .AsTracking()
+        return await PrepareQuery(search, search.Sort)
             .Where(x => x.IdUser == idUser)
-            .ToPaginatedAsync(pageNumber, pageSize);
+            .ToPaginatedAsync(pageNumber, pageSize, cancellationToken);
     }
 }

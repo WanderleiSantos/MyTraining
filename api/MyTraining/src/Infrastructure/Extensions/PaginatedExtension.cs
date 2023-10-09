@@ -5,8 +5,8 @@ namespace Infrastructure.Extensions;
 
 public static class PaginatedExtension
 {
-    public static async Task<IPaginated<T>> ToPaginatedAsync<T>(this IQueryable<T> source, int pageNumber, int pageSize)
+    public static async Task<IPaginated<T>> ToPaginatedAsync<T>(this IQueryable<T> source, int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
-        return await Paginated<T>.CreateAsync(source, pageNumber, pageSize);
+        return await Paginated<T>.CreateAsync(source, pageNumber, pageSize, cancellationToken);
     }
 }

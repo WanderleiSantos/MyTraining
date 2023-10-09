@@ -5,7 +5,7 @@ namespace Infrastructure.Pagination;
 
 public class Paginated<T> : IPaginated<T>
 {
-    private readonly IList<T> _items = new List<T>();
+    private readonly List<T> _items = new();
     
     private Paginated(IEnumerable<T> items, int count, int pageNumber, int pageSize)
     {
@@ -21,7 +21,7 @@ public class Paginated<T> : IPaginated<T>
         var numberOfLastItemOnPage = FirstItemOnPage + PageSize - 1;
         LastItemOnPage = numberOfLastItemOnPage > TotalItemCount ? TotalItemCount : numberOfLastItemOnPage;
 
-        ((List<T>)_items).AddRange(items);
+        _items.AddRange(items);
     }
     
     public int PageCount { get; }
@@ -34,14 +34,14 @@ public class Paginated<T> : IPaginated<T>
     public bool IsLastPage { get; }
     public int FirstItemOnPage { get; }
     public int LastItemOnPage { get; }
-    public IReadOnlyCollection<T> Items => _items.ToList();
+    public IReadOnlyCollection<T> Items => _items;
     
-    public static async Task<IPaginated<T>> CreateAsync(IQueryable<T> source, int pageNumber, int pageSize)
+    public static async Task<IPaginated<T>> CreateAsync(IQueryable<T> source, int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         pageNumber = pageNumber <= 0 ? 1 : pageNumber;
         pageSize = pageSize <= 0 ? 10 : pageSize;
         var count = await source.CountAsync();
-        var items = await source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+        var items = await source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
         return new Paginated<T>(items, count, pageNumber, pageSize);
     }
 }

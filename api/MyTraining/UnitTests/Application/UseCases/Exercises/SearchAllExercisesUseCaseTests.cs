@@ -66,7 +66,7 @@ public class SearchAllExercisesUseCaseTests
         var paginatedExerciseMock = A.Fake<IPaginated<Exercise>>();
         A.CallTo(() => paginatedExerciseMock.Items).Returns(new List<Exercise>());
         A.CallTo(() =>
-                _repositoryMock.GetAllAsync(command.UserId, command.PageNumber, command.PageSize, A<CancellationToken>._))
+                _repositoryMock.GetAllAsync(command.UserId, command, command.PageNumber, command.PageSize, A<CancellationToken>._))
             .Returns(paginatedExerciseMock);
 
         //Act
@@ -91,7 +91,7 @@ public class SearchAllExercisesUseCaseTests
         var paginatedExercisesMock = A.Fake<IPaginated<Exercise>>();
         A.CallTo(() => paginatedExercisesMock.Items).Returns(listExercises);
         A.CallTo(() =>
-                _repositoryMock.GetAllAsync(command.UserId, command.PageNumber, command.PageSize, A<CancellationToken>._))
+                _repositoryMock.GetAllAsync(command.UserId, command, command.PageNumber, command.PageSize, A<CancellationToken>._))
             .Returns(paginatedExercisesMock);
         
         //Act

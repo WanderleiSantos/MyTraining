@@ -35,15 +35,15 @@ public class ChangeUserPasswordUseCase : IChangeUserPasswordUseCase
             _logger.LogInformation("{UseCase} - Search user by id: {id}",
                 nameof(ChangeUserPasswordUseCase), command.Id);
 
-            var result = await _repository.GetByIdAsync(command.Id, cancellationToken);
-            if (result == null)
+            var user = await _repository.GetByIdAsync(command.Id, cancellationToken);
+            if (user == null)
             {
                 output.AddErrorMessage("User does not exist");
                 _logger.LogWarning("User does not exist");
                 return output;
             }
             
-            if (!command.OldPassword.VerifyPassword(result.Password))
+            if (!command.OldPassword.VerifyPassword(user.Password))
             {
                 output.AddErrorMessage("Old password does not match");
                 _logger.LogWarning("{UseCase} - Old password does not match", nameof(ChangeUserPasswordUseCase));
@@ -53,7 +53,7 @@ public class ChangeUserPasswordUseCase : IChangeUserPasswordUseCase
             _logger.LogInformation("{UseCase} - Updating User password by id: {id}", nameof(ChangeUserPasswordUseCase),
                 command.Id);
 
-            result?.UpdatePassword(command.NewPassword.HashPassword());
+            user.UpdatePassword(command.NewPassword.HashPassword());
             
             await _repository.UnitOfWork.CommitAsync();
             

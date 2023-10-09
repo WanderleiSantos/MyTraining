@@ -13,7 +13,7 @@ public class User : BaseEntity
         Exercises = new List<Exercise>();
         TrainingSheets = new List<TrainingSheet>();
     }
-    
+
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
     public string Email { get; private set; }

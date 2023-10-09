@@ -1,5 +1,4 @@
 using System.Text.Json;
-using Application.Shared.Services;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
 
@@ -8,7 +7,7 @@ namespace Application.UseCases.Users.InsertUser.Services;
 public class InitialLoadService : IInitialLoadService
 {
     private const string InitialExercisesFileName = "Data/initial_exercises.json";
-    private record InitialExercise(string Name, string? Link);
+    private sealed record InitialExercise(string Name, string? Link);
 
     private readonly IExerciseRepository _repository;
     

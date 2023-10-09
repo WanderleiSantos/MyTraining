@@ -34,8 +34,8 @@ public class UpdateUserUseCase : IUpdateUserUseCase
             _logger.LogInformation("{UseCase} - Search user by id: {id}",
                 nameof(UpdateUserUseCase), command.Id);
 
-            var result = await _repository.GetByIdAsync(command.Id, cancellationToken);
-            if (result == null)
+            var user = await _repository.GetByIdAsync(command.Id, cancellationToken);
+            if (user == null)
             {
                 output.AddErrorMessage("User does not exist");
                 _logger.LogWarning("User does not exist");
@@ -45,7 +45,7 @@ public class UpdateUserUseCase : IUpdateUserUseCase
             _logger.LogInformation("{UseCase} - Updating User by id: {id}", nameof(UpdateUserCommand),
                 command.Id);
 
-            result?.Update(command.FirstName, command.LastName);
+            user.Update(command.FirstName, command.LastName);
             
             await _repository.UnitOfWork.CommitAsync();
             

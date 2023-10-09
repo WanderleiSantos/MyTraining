@@ -37,7 +37,12 @@ public class SearchAllExercisesUseCase : ISearchAllExercisesUseCase
             _logger.LogInformation("{UseCase} - Search exercise by userId: {id}", nameof(SearchAllExercisesUseCase),
                 command.UserId);
 
-            var result = await _repository.GetAllAsync(command.UserId, command.PageNumber, command.PageSize, cancellationToken);
+            var result = await _repository.GetAllAsync(
+                command.UserId,
+                command,
+                command.PageNumber, 
+                command.PageSize, 
+                cancellationToken);
 
             _logger.LogInformation("{UseCase} - Search Exercises by user finish successfully, userId: {id}",
                 nameof(SearchAllExercisesUseCase), command.UserId);

@@ -3,7 +3,6 @@ using Application.UseCases.Users.InsertUser.Commands;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Application.Shared.Extensions;
-using Application.Shared.Services;
 using Application.UseCases.Users.InsertUser.Services;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
@@ -39,7 +38,7 @@ public class InsertUserUseCase : IInsertUserUseCase
 
             if (await _repository.ExistsEmailRegisteredAsync(command.Email, cancellationToken))
             {
-                output.AddErrorMessage(new Notification("Email","E-mail already registered"));
+                output.AddErrorMessage("Email","E-mail already registered");
                 _logger.LogWarning("{UseCase} - E-mail already registered; Email {email}", 
                     nameof(InsertUserUseCase), command.Email);
                 return output;

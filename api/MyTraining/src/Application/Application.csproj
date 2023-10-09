@@ -8,6 +8,7 @@
 
 
     <ItemGroup>
+      <PackageReference Include="AspNetCore.IQueryable.Extensions" Version="6.0.2" />
       <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
       <PackageReference Include="FluentValidation" Version="11.7.1" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.22" />

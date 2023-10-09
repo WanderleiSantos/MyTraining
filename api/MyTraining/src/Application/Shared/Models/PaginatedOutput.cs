@@ -4,7 +4,7 @@ namespace Application.Shared.Models;
 
 public class PaginatedOutput<T>
 {
-    private readonly IList<T> _items = new List<T>();
+    private readonly List<T> _items = new();
 
     public PaginatedOutput(IPage paginated, IEnumerable<T> items)
     {
@@ -19,7 +19,7 @@ public class PaginatedOutput<T>
         FirstItemOnPage = paginated.FirstItemOnPage;
         LastItemOnPage = paginated.LastItemOnPage;
 
-        ((List<T>)_items).AddRange(items);
+        _items.AddRange(items);
     }
 
     public int PageCount { get; }
@@ -42,5 +42,5 @@ public class PaginatedOutput<T>
 
     public int LastItemOnPage { get; }
 
-    public IReadOnlyCollection<T> Items => _items.ToList();
+    public IReadOnlyCollection<T> Items => _items;
 }

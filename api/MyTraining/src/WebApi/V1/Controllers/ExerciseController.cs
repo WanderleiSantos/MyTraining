@@ -93,7 +93,7 @@ public class ExerciseController : MainController
     [HttpGet]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> GetAll(
-        [FromQuery] SearchAllExercisesQuery search,
+        [FromQuery] SearchAllExercises search,
         CancellationToken cancellationToken)
     {
         try

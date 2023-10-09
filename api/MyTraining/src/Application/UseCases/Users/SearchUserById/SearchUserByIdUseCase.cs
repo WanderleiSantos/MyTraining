@@ -35,9 +35,9 @@ public class SearchUserByIdUseCase : ISearchUserByIdUseCase
             _logger.LogInformation("{UseCase} - Search user by id: {id}", 
                 nameof(SearchUserByIdUseCase), command.Id);
 
-            var result = await _repository.GetByIdAsync(command.Id, cancellationToken);
+            var user = await _repository.GetByIdAsync(command.Id, cancellationToken);
 
-            if (result == null)
+            if (user == null)
             {
                 output.AddMessage("User does not exist");
                 _logger.LogWarning("User does not exist");
@@ -47,7 +47,7 @@ public class SearchUserByIdUseCase : ISearchUserByIdUseCase
             _logger.LogInformation("{UseCase} - Search user finish successfully, id: {id}",
                 nameof(SearchUserByIdUseCase), command.Id);
 
-            output.AddResult(result?.MapToResponse());
+            output.AddResult(user.MapToResponse());
         }
         catch (Exception e)
         {
