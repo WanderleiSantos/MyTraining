@@ -26,6 +26,7 @@ using Application.UseCases.Users.ChangeUserPassword.Commands;
 using Application.UseCases.Users.ChangeUserPassword.Validations;
 using Application.UseCases.Users.InsertUser;
 using Application.UseCases.Users.InsertUser.Commands;
+using Application.UseCases.Users.InsertUser.Services;
 using Application.UseCases.Users.InsertUser.Validations;
 using Application.UseCases.Users.SearchUserById;
 using Application.UseCases.Users.SearchUserById.Commands;
@@ -71,6 +72,7 @@ public static class ApplicationExtensions
         
         services.Configure<JwtConfiguration>(configuration.GetSection(JwtConfigurationSection));
         services.AddScoped<IAuthenticationService, AuthenticationService>();
+        services.AddScoped<IInitialLoadService, InitialLoadService>();
         
         return services;
     }

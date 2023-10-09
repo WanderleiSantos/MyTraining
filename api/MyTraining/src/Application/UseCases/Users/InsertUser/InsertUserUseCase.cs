@@ -3,10 +3,10 @@ using Application.UseCases.Users.InsertUser.Commands;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Application.Shared.Extensions;
-using Application.Shared.Mappers;
+using Application.Shared.Services;
+using Application.UseCases.Users.InsertUser.Services;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
-using Infrastructure.Persistence;
 
 namespace Application.UseCases.Users.InsertUser;
 
@@ -15,14 +15,16 @@ public class InsertUserUseCase : IInsertUserUseCase
     private readonly ILogger<InsertUserUseCase> _logger;
     private readonly IUserRepository _repository;
     private readonly IValidator<InsertUserCommand> _validator;
+    private readonly IInitialLoadService _initialLoadService;
 
-    public InsertUserUseCase(ILogger<InsertUserUseCase> logger, IUserRepository repository, IValidator<InsertUserCommand> validator)
+    public InsertUserUseCase(ILogger<InsertUserUseCase> logger, IUserRepository repository, IValidator<InsertUserCommand> validator, IInitialLoadService initialLoadService)
     {
         _logger = logger;
         _repository = repository;
         _validator = validator;
+        _initialLoadService = initialLoadService;
     }
-    
+
     public async Task<Output> ExecuteAsync(InsertUserCommand command, CancellationToken cancellationToken)
     {
         var output = new Output();
@@ -50,11 +52,13 @@ public class InsertUserUseCase : IInsertUserUseCase
 
             await _repository.AddAsync(result, cancellationToken);
 
+            await _initialLoadService.InsertExercises(result.Id, cancellationToken);
+            
             await _repository.UnitOfWork.CommitAsync();
 
             _logger.LogInformation("{UseCase} - Inserted user successfully; Name: {Email}",
                 nameof(InsertUserUseCase), command.Email);
-
+            
             output.AddResult(null);
         }
         catch (Exception ex)
@@ -64,6 +68,7 @@ public class InsertUserUseCase : IInsertUserUseCase
 
             output.AddErrorMessage($"An unexpected error occurred while inserting the user");
         }
+        
         return output;
     }
 }

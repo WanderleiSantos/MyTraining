@@ -25,6 +25,11 @@ public class ExerciseRepository : IExerciseRepository
         await _dbSet.AddAsync(exercise, cancellationToken);
     }
 
+    public async Task AddRangeAsync(IEnumerable<Exercise> exercises, CancellationToken cancellationToken)
+    {
+        await _dbSet.AddRangeAsync(exercises, cancellationToken);
+    }
+
     public async Task<Exercise?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _dbSet.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);

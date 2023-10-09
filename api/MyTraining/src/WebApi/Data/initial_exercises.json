@@ -1,0 +1,526 @@
+[
+  {
+    "name": "Supino reto",
+    "link": ""
+  },
+  {
+    "name": "Agachamento",
+    "link": ""
+  },
+  {
+    "name": "Levantamento terra",
+    "link": ""
+  },
+  {
+    "name": "Pull-up",
+    "link": ""
+  },
+  {
+    "name": "Barra fixa",
+    "link": ""
+  },
+  {
+    "name": "Rosca direta com barra",
+    "link": ""
+  },
+  {
+    "name": "Leg press",
+    "link": ""
+  },
+  {
+    "name": "Curl de bíceps com halteres",
+    "link": ""
+  },
+  {
+    "name": "Desenvolvimento militar",
+    "link": ""
+  },
+  {
+    "name": "Remada curvada",
+    "link": ""
+  },
+  {
+    "name": "Agachamento frontal",
+    "link": ""
+  },
+  {
+    "name": "Crucifixo com halteres",
+    "link": ""
+  },
+  {
+    "name": "Mergulho em barras paralelas",
+    "link": ""
+  },
+  {
+    "name": "Puxada alta",
+    "link": ""
+  },
+  {
+    "name": "Flexão de tríceps",
+    "link": ""
+  },
+  {
+    "name": "Prensa inclinada",
+    "link": ""
+  },
+  {
+    "name": "Rosca martelo",
+    "link": ""
+  },
+  {
+    "name": "Hiperextensão lombar",
+    "link": ""
+  },
+  {
+    "name": "Cadeira extensora",
+    "link": ""
+  },
+  {
+    "name": "Abdominal na máquina",
+    "link": ""
+  },
+  {
+    "name": "Curl de bíceps na barra EZ",
+    "link": ""
+  },
+  {
+    "name": "Elevação lateral",
+    "link": ""
+  },
+  {
+    "name": "Agachamento hack",
+    "link": ""
+  },
+  {
+    "name": "Desenvolvimento com halteres",
+    "link": ""
+  },
+  {
+    "name": "Rosca concentrada",
+    "link": ""
+  },
+  {
+    "name": "Abdominal crunch",
+    "link": ""
+  },
+  {
+    "name": "Leg curl",
+    "link": ""
+  },
+  {
+    "name": "Elevação de pernas",
+    "link": ""
+  },
+  {
+    "name": "Puxada supinada",
+    "link": ""
+  },
+  {
+    "name": "Rosca Scott",
+    "link": ""
+  },
+  {
+    "name": "Tríceps na polia alta",
+    "link": ""
+  },
+  {
+    "name": "Pressão de pernas",
+    "link": ""
+  },
+  {
+    "name": "Abdominal invertido",
+    "link": ""
+  },
+  {
+    "name": "Rosca 21",
+    "link": ""
+  },
+  {
+    "name": "Elevação frontal",
+    "link": ""
+  },
+  {
+    "name": "Pulldown",
+    "link": ""
+  },
+  {
+    "name": "Máquina de adução",
+    "link": ""
+  },
+  {
+    "name": "Máquina de abdução",
+    "link": ""
+  },
+  {
+    "name": "Rosca direta com halteres",
+    "link": ""
+  },
+  {
+    "name": "Elevação de ombros na máquina",
+    "link": ""
+  },
+  {
+    "name": "Encolhimento de ombros com barra",
+    "link": ""
+  },
+  {
+    "name": "Prensa de pernas horizontal",
+    "link": ""
+  },
+  {
+    "name": "Curl de bíceps alternado",
+    "link": ""
+  },
+  {
+    "name": "Cadeira extensora unilateral",
+    "link": ""
+  },
+  {
+    "name": "Supino inclinado",
+    "link": ""
+  },
+  {
+    "name": "Prensa de peito",
+    "link": ""
+  },
+  {
+    "name": "Tríceps testa",
+    "link": ""
+  },
+  {
+    "name": "Desenvolvimento frontal",
+    "link": ""
+  },
+  {
+    "name": "Elevação de pernas pendurado",
+    "link": ""
+  },
+  {
+    "name": "Rosca 21 inversa",
+    "link": ""
+  },
+  {
+    "name": "Máquina de flexão de pernas",
+    "link": ""
+  },
+  {
+    "name": "Elevação lateral na máquina",
+    "link": ""
+  },
+  {
+    "name": "Rosca direta na barra W",
+    "link": ""
+  },
+  {
+    "name": "Abdominal no banco declinado",
+    "link": ""
+  },
+  {
+    "name": "Puxada neutra",
+    "link": ""
+  },
+  {
+    "name": "Rosca 21 alternada",
+    "link": ""
+  },
+  {
+    "name": "Prensa de pernas inclinada",
+    "link": ""
+  },
+  {
+    "name": "Máquina de abdução unilateral",
+    "link": ""
+  },
+  {
+    "name": "Rosca direta alternada",
+    "link": ""
+  },
+  {
+    "name": "Rosca martelo alternada",
+    "link": ""
+  },
+  {
+    "name": "Elevação de pernas com carga",
+    "link": ""
+  },
+  {
+    "name": "Encolhimento de ombros com halteres",
+    "link": ""
+  },
+  {
+    "name": "Curl de bíceps 21",
+    "link": ""
+  },
+  {
+    "name": "Prensa de pernas vertical",
+    "link": ""
+  },
+  {
+    "name": "Supino declinado",
+    "link": ""
+  },
+  {
+    "name": "Rosca alternada",
+    "link": ""
+  },
+  {
+    "name": "Elevação lateral alternada",
+    "link": ""
+  },
+  {
+    "name": "Máquina de flexão de pernas unilateral",
+    "link": ""
+  },
+  {
+    "name": "Rosca direta com halteres alternada",
+    "link": ""
+  },
+  {
+    "name": "Rosca martelo na máquina",
+    "link": ""
+  },
+  {
+    "name": "Elevação de ombros na polia",
+    "link": ""
+  },
+  {
+    "name": "Curl de bíceps concentrado",
+    "link": ""
+  },
+  {
+    "name": "Prensa de pernas 45 graus",
+    "link": ""
+  },
+  {
+    "name": "Rosca direta na barra reta",
+    "link": ""
+  },
+  {
+    "name": "Desenvolvimento Arnold",
+    "link": ""
+  },
+  {
+    "name": "Tríceps testa na polia",
+    "link": ""
+  },
+  {
+    "name": "Prensa de pernas horizontal inclinada",
+    "link": ""
+  },
+  {
+    "name": "Curl de bíceps com pegador",
+    "link": ""
+  },
+  {
+    "name": "Elevação lateral com halteres",
+    "link": ""
+  },
+  {
+    "name": "Rosca inversa",
+    "link": ""
+  },
+  {
+    "name": "Prensa de pernas 90 graus",
+    "link": ""
+  },
+  {
+    "name": "Tríceps coice",
+    "link": ""
+  },
+  {
+    "name": "Curl de bíceps com barra T",
+    "link": ""
+  },
+  {
+    "name": "Elevação frontal com halteres",
+    "link": ""
+  },
+  {
+    "name": "Rosca na máquina",
+    "link": ""
+  },
+  {
+    "name": "Prensa de pernas unilateral",
+    "link": ""
+  },
+  {
+    "name": "Tríceps mergulho",
+    "link": ""
+  },
+  {
+    "name": "Curl de bíceps na barra reta",
+    "link": ""
+  },
+  {
+    "name": "Elevação de ombros com pegador",
+    "link": ""
+  },
+  {
+    "name": "Rosca 21 com barra EZ",
+    "link": ""
+  },
+  {
+    "name": "Prensa de pernas horizontal unilateral",
+    "link": ""
+  },
+  {
+    "name": "Tríceps testa com halteres",
+    "link": ""
+  },
+  {
+    "name": "Curl de bíceps inverso",
+    "link": ""
+  },
+  {
+    "name": "Elevação lateral com pegador",
+    "link": ""
+  },
+  {
+    "name": "Rosca direta com barra T",
+    "link": ""
+  },
+  {
+    "name": "Prensa de pernas vertical inclinada",
+    "link": ""
+  },
+  {
+    "name": "Tríceps testa com barra W",
+    "link": ""
+  },
+  {
+    "name": "Curl de bíceps 21 com barra reta",
+    "link": ""
+  },
+  {
+    "name": "Elevação frontal com pegador",
+    "link": ""
+  },
+  {
+    "name": "Rosca 21 com halteres",
+    "link": ""
+  },
+  {
+    "name": "Prensa de pernas 45 graus inclinada",
+    "link": ""
+  },
+  {
+    "name": "Tríceps testa com pegador",
+    "link": ""
+  },
+  {
+    "name": "Curl de bíceps 21 com barra EZ",
+    "link": ""
+  },
+  {
+    "name": "Elevação lateral 21",
+    "link": ""
+  },
+  {
+    "name": "Rosca direta 21",
+    "link": ""
+  },
+  {
+    "name": "Prensa de pernas 90 graus inclinada",
+    "link": ""
+  },
+  {
+    "name": "Tríceps testa com halteres alternado",
+    "link": ""
+  },
+  {
+    "name": "Curl de bíceps 21 com pegador",
+    "link": ""
+  },
+  {
+    "name": "Elevação frontal 21",
+    "link": ""
+  },
+  {
+    "name": "Rosca 21 com barra T",
+    "link": ""
+  },
+  {
+    "name": "Prensa de pernas horizontal inclinada unilateral",
+    "link": ""
+  },
+  {
+    "name": "Tríceps testa com pegador alternado",
+    "link": ""
+  },
+  {
+    "name": "Curl de bíceps 21 com pegador alternado",
+    "link": ""
+  },
+  {
+    "name": "Rosca 21 com pegador",
+    "link": ""
+  },
+  {
+    "name": "Prensa de pernas vertical inclinada unilateral",
+    "link": ""
+  },
+  {
+    "name": "Curl de bíceps 21 com barra T alternado",
+    "link": ""
+  },
+  {
+    "name": "Rosca 21 com pegador alternado",
+    "link": ""
+  },
+  {
+    "name": "Prensa de pernas 45 graus inclinada unilateral",
+    "link": ""
+  },
+  {
+    "name": "Curl de bíceps 21 com pegador alternado",
+    "link": ""
+  },
+  {
+    "name": "Elevação frontal 21 com barra EZ",
+    "link": ""
+  },
+  {
+    "name": "Rosca 21 com pegador alternado",
+    "link": ""
+  },
+  {
+    "name": "Prensa de pernas 90 graus inclinada unilateral",
+    "link": ""
+  },
+  {
+    "name": "Curl de bíceps 21 com pegador alternado",
+    "link": ""
+  },
+  {
+    "name": "Rosca 21 com pegador alternado",
+    "link": ""
+  },
+  {
+    "name": "Prensa de pernas vertical inclinada unilateral",
+    "link": ""
+  },
+  {
+    "name": "Curl de bíceps 21 com barra T alternado",
+    "link": ""
+  },
+  {
+    "name": "Rosca 21 com pegador alternado",
+    "link": ""
+  },
+  {
+    "name": "Prensa de pernas 45 graus inclinada unilateral",
+    "link": ""
+  },
+  {
+    "name": "Curl de bíceps 21 com pegador alternado",
+    "link": ""
+  },
+  {
+    "name": "Elevação frontal 21 com barra EZ",
+    "link": ""
+  },
+  {
+    "name": "Rosca 21 com pegador alternado",
+    "link": ""
+  }
+]

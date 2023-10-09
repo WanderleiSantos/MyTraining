@@ -1,10 +1,12 @@
 using System.Globalization;
+using Application.Shared.Services;
 using Bogus;
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Application.UseCases.Users.InsertUser;
 using Application.UseCases.Users.InsertUser.Commands;
+using Application.UseCases.Users.InsertUser.Services;
 using Application.UseCases.Users.InsertUser.Validations;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
@@ -18,6 +20,7 @@ public class InsertUserUseCaseTests
     private readonly ILogger<InsertUserUseCase> _loggerMock;
     private readonly IUserRepository _repositoryMock;
     private readonly IValidator<InsertUserCommand> _validator;
+    private readonly IInitialLoadService _initialLoadService;
     private readonly IInsertUserUseCase _useCase;
 
     private readonly Faker _faker;
@@ -29,11 +32,13 @@ public class InsertUserUseCaseTests
         _loggerMock = A.Fake<ILogger<InsertUserUseCase>>();
         _repositoryMock = A.Fake<IUserRepository>();
         _validator = new InsertUserCommandValidator();
+        _initialLoadService = A.Fake<IInitialLoadService>();
 
         _useCase = new InsertUserUseCase(
             _loggerMock,
             _repositoryMock,
-            _validator
+            _validator,
+            _initialLoadService
         );
 
         _faker = new Faker();
@@ -64,6 +69,7 @@ public class InsertUserUseCaseTests
         A.CallTo(() => _repositoryMock.ExistsEmailRegisteredAsync(command.Email, A<CancellationToken>._)).MustNotHaveHappened();
         A.CallTo(() => _repositoryMock.AddAsync(A<User>._, A<CancellationToken>._)).MustNotHaveHappened();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
+        A.CallTo(() => _initialLoadService.InsertExercises(A<Guid>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
 
     [Fact]
@@ -81,6 +87,7 @@ public class InsertUserUseCaseTests
         A.CallTo(() => _repositoryMock.ExistsEmailRegisteredAsync(command.Email, A<CancellationToken>._)).MustNotHaveHappened();
         A.CallTo(() => _repositoryMock.AddAsync(A<User>._, A<CancellationToken>._)).MustNotHaveHappened();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
+        A.CallTo(() => _initialLoadService.InsertExercises(A<Guid>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
     
     [Fact]
@@ -103,6 +110,7 @@ public class InsertUserUseCaseTests
         A.CallTo(() => _repositoryMock.ExistsEmailRegisteredAsync(command.Email, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.AddAsync(A<User>._, A<CancellationToken>._)).MustNotHaveHappened();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
+        A.CallTo(() => _initialLoadService.InsertExercises(A<Guid>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
     
     [Fact]
@@ -115,6 +123,8 @@ public class InsertUserUseCaseTests
         A.CallTo(() => _repositoryMock.ExistsEmailRegisteredAsync(command.Email, A<CancellationToken>._)).Returns(false);
         A.CallTo(() => _repositoryMock.AddAsync(A<User>._, A<CancellationToken>._)).Returns(Task.CompletedTask);
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).Returns(true);
+        A.CallTo(() => _initialLoadService.InsertExercises(A<Guid>._, A<CancellationToken>._))
+            .Returns(ValueTask.CompletedTask);
         
         // Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
@@ -125,6 +135,7 @@ public class InsertUserUseCaseTests
         A.CallTo(() => _repositoryMock.ExistsEmailRegisteredAsync(command.Email, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.AddAsync(A<User>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _initialLoadService.InsertExercises(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
     }
     
     [Fact]
@@ -146,6 +157,7 @@ public class InsertUserUseCaseTests
         A.CallTo(() => _repositoryMock.ExistsEmailRegisteredAsync(command.Email, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.AddAsync(A<User>._, A<CancellationToken>._)).MustNotHaveHappened();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
+        A.CallTo(() => _initialLoadService.InsertExercises(A<Guid>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
 
     private InsertUserCommand CreateCommand() => new InsertUserCommand
