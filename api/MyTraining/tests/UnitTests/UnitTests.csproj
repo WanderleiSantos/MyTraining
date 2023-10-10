@@ -27,12 +27,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="UnitTest1.cs" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\src\Application\Application.csproj" />
-      <ProjectReference Include="..\src\Infrastructure\Infrastructure.csproj" />
+      <ProjectReference Include="..\..\src\Application\Application.csproj" />
+      <ProjectReference Include="..\..\src\Infrastructure\Infrastructure.csproj" />
     </ItemGroup>
 
 
