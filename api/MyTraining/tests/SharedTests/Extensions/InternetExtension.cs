@@ -1,6 +1,6 @@
 using Bogus.DataSets;
 
-namespace UnitTests.Application.UseCases.Users.Shared.Extensions;
+namespace SharedTests.Extensions;
 
 public static class InternetExtension
 {

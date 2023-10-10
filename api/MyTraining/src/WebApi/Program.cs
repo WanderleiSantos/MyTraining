@@ -1,8 +1,8 @@
 using System.Globalization;
 using System.Text.Json.Serialization;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using WebApi.Configurations;
-using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,3 +46,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.Run();
+
+public partial class Program { }

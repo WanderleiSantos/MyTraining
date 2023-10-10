@@ -12,8 +12,7 @@ using FakeItEasy;
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using Moq;
-using UnitTests.Application.UseCases.Users.Shared.Extensions;
+using SharedTests.Extensions;
 
 namespace UnitTests.Application.UseCases.Auth;
 

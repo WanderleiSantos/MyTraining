@@ -1,5 +1,4 @@
 using System.Globalization;
-using Application.Shared.Services;
 using Bogus;
 using FluentAssertions;
 using FluentValidation;
@@ -11,7 +10,7 @@ using Application.UseCases.Users.InsertUser.Validations;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
 using FakeItEasy;
-using UnitTests.Application.UseCases.Users.Shared.Extensions;
+using SharedTests.Extensions;
 
 namespace UnitTests.Application.UseCases.Users;
 
