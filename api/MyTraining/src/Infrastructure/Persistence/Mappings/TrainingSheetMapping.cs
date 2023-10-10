@@ -24,11 +24,13 @@ public class TrainingSheetMapping : IEntityTypeConfiguration<TrainingSheet>
         builder
             .Property(x => x.Name)
             .HasColumnName("name")
+            .HasMaxLength(255)
             .IsRequired();
 
         builder
             .Property(x => x.TimeExchange)
-            .HasColumnName("time_exchange");
+            .HasColumnName("time_exchange")
+            .HasMaxLength(255);
         
         builder
             .Property(x => x.Active)

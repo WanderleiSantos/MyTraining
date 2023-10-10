@@ -22,11 +22,11 @@ public class UserRepository : Repository<User>, IUserRepository
 
     public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
-        return await DbSet.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower(), cancellationToken);
+        return await DbSet.FirstOrDefaultAsync(u => string.Equals(u.Email.ToLower(), email.ToLower()), cancellationToken);
     }
 
     public async Task<bool> ExistsEmailRegisteredAsync(string email, CancellationToken cancellationToken)
     {
-        return await DbSet.AnyAsync(u => u.Email.ToLower() == email.ToLower(), cancellationToken);
+        return await DbSet.AnyAsync(u => string.Equals(u.Email.ToLower(), email.ToLower()), cancellationToken);
     }
 }

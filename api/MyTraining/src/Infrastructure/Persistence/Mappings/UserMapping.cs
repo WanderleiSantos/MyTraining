@@ -19,21 +19,25 @@ public class UserMapping : IEntityTypeConfiguration<User>
         builder
             .Property(x => x.FirstName)
             .HasColumnName("firstname")
+            .HasMaxLength(255)
             .IsRequired();
         
         builder
             .Property(x => x.LastName)
             .HasColumnName("lastname")
+            .HasMaxLength(255)
             .IsRequired();
         
         builder
             .Property(x => x.Email)
             .HasColumnName("email")
+            .HasMaxLength(255)
             .IsRequired();
         
         builder
             .Property(x => x.Password)
             .HasColumnName("password")
+            .HasMaxLength(255)
             .IsRequired();
         
         builder

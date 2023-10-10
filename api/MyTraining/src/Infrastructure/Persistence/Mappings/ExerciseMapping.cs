@@ -24,11 +24,13 @@ public class ExerciseMapping : IEntityTypeConfiguration<Exercise>
         builder
             .Property(x => x.Name)
             .HasColumnName("name")
+            .HasMaxLength(255)
             .IsRequired();
 
         builder
             .Property(x => x.Link)
-            .HasColumnName("link");
+            .HasColumnName("link")
+            .HasMaxLength(255);
         
         builder
             .Property(x => x.Active)

@@ -31,6 +31,8 @@ var app = builder.Build();
 
 // Configure
 
+app.ExecuteMigrations();
+
 // app.UseHttpsRedirection();
 
 app.UseCompressionSetup();
