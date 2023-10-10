@@ -2,6 +2,7 @@ using System.Globalization;
 using Application.UseCases.TrainingSheets.InsertTrainingSheet;
 using Application.UseCases.TrainingSheets.InsertTrainingSheet.Commands;
 using Application.UseCases.TrainingSheets.InsertTrainingSheet.Validations;
+using Application.UseCases.TrainingSheets.Services;
 using Bogus;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
@@ -18,6 +19,7 @@ public class InsertTrainingSheetUseCaseTests
     private readonly ITrainingSheetRepository _repositoryMock;
     private readonly IValidator<InsertTrainingSheetCommand> _validator;
     private readonly IInsertTrainingSheetUseCase _useCase;
+    private readonly IDeactivateTrainingSheetService _deactivateTrainingSheetServiceMock;
 
     private readonly Faker _faker;
 
@@ -27,12 +29,14 @@ public class InsertTrainingSheetUseCaseTests
 
         _loggerMock = A.Fake<ILogger<InsertTrainingSheetUseCase>>();
         _repositoryMock = A.Fake<ITrainingSheetRepository>();
+        _deactivateTrainingSheetServiceMock = A.Fake<IDeactivateTrainingSheetService>();
         _validator = new InsertTrainingSheetCommandValidator();
 
         _useCase = new InsertTrainingSheetUseCase(
             _loggerMock,
             _repositoryMock,
-            _validator
+            _validator,
+            _deactivateTrainingSheetServiceMock
         );
 
         _faker = new Faker();
@@ -105,6 +109,8 @@ public class InsertTrainingSheetUseCaseTests
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
 
+        A.CallTo(() => _deactivateTrainingSheetServiceMock.Deactivate(command.UserId, A<CancellationToken>._))
+            .Returns(Task.CompletedTask);
         A.CallTo(() => _repositoryMock.AddAsync(A<TrainingSheet>._, A<CancellationToken>._))
             .Returns(Task.CompletedTask);
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).Returns(true);
@@ -116,6 +122,8 @@ public class InsertTrainingSheetUseCaseTests
         output.IsValid.Should().BeTrue();
         output.Result.Should().NotBeNull();
         A.CallTo(() => _repositoryMock.AddAsync(A<TrainingSheet>._, A<CancellationToken>._))
+            .MustHaveHappenedOnceExactly();
+        A.CallTo(() => _deactivateTrainingSheetServiceMock.Deactivate(A<Guid>._, A<CancellationToken>._))
             .MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustHaveHappenedOnceExactly();
     }
