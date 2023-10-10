@@ -6,6 +6,7 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Application.Shared.Extensions;
 using Application.Shared.Mappers;
+using Application.UseCases.TrainingSheets.Services;
 
 namespace Application.UseCases.TrainingSheets.InsertTrainingSheet;
 
@@ -14,13 +15,15 @@ public class InsertTrainingSheetUseCase: IInsertTrainingSheetUseCase
     private readonly ILogger<InsertTrainingSheetUseCase> _logger;
     private readonly ITrainingSheetRepository _repository;
     private readonly IValidator<InsertTrainingSheetCommand> _validator;
+    private readonly IDeactivateTrainingSheetService _deactivateTrainingSheetService;
 
     public InsertTrainingSheetUseCase(ILogger<InsertTrainingSheetUseCase> logger, ITrainingSheetRepository repository,
-        IValidator<InsertTrainingSheetCommand> validator)
+        IValidator<InsertTrainingSheetCommand> validator, IDeactivateTrainingSheetService deactivateTrainingSheetService)
     {
         _logger = logger;
         _repository = repository;
         _validator = validator;
+        _deactivateTrainingSheetService = deactivateTrainingSheetService;
     }
 
     public async Task<Output> ExecuteAsync(InsertTrainingSheetCommand command, CancellationToken cancellationToken)
@@ -37,6 +40,8 @@ public class InsertTrainingSheetUseCase: IInsertTrainingSheetUseCase
             _logger.LogInformation("{UseCase} - Insert TrainingSheet; Name: {Name}", nameof(InsertTrainingSheetUseCase),
                 command.Name);
 
+            await _deactivateTrainingSheetService.Deactivate(command.UserId, cancellationToken);
+            
             var trainingSheet = new TrainingSheet(command.Name, command.TimeExchange, command.UserId);
 
             await _repository.AddAsync(trainingSheet, cancellationToken);

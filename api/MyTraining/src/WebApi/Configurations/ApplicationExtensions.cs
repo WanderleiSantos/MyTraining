@@ -21,6 +21,7 @@ using Application.UseCases.Exercises.UpdateExercise.Validations;
 using Application.UseCases.TrainingSheets.InsertTrainingSheet;
 using Application.UseCases.TrainingSheets.InsertTrainingSheet.Commands;
 using Application.UseCases.TrainingSheets.InsertTrainingSheet.Validations;
+using Application.UseCases.TrainingSheets.Services;
 using Application.UseCases.Users.ChangeUserPassword;
 using Application.UseCases.Users.ChangeUserPassword.Commands;
 using Application.UseCases.Users.ChangeUserPassword.Validations;
@@ -73,6 +74,7 @@ public static class ApplicationExtensions
         services.Configure<JwtConfiguration>(configuration.GetSection(JwtConfigurationSection));
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IInitialLoadService, InitialLoadService>();
+        services.AddScoped<IDeactivateTrainingSheetService, DeactivateTrainingSheetService>();
         
         return services;
     }

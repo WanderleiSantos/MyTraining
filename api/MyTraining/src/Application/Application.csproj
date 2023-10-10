@@ -21,6 +21,15 @@
     
     <ItemGroup>
       <Compile Remove="UseCases\TrainingSheets\InsertTrainingSheet\Validations.cs" />
+      <Compile Remove="UseCases\TrainingSheets\SearchActiveTrainingSheet\**" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <EmbeddedResource Remove="UseCases\TrainingSheets\SearchActiveTrainingSheet\**" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <None Remove="UseCases\TrainingSheets\SearchActiveTrainingSheet\**" />
     </ItemGroup>
     
     
