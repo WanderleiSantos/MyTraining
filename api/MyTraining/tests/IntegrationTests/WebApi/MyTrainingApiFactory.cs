@@ -12,12 +12,12 @@ using Respawn;
 using Testcontainers.PostgreSql;
 using Xunit;
 
-namespace IntegrationTests.V1;
+namespace IntegrationTests.WebApi;
 
-public class DatabaseFixture : WebApplicationFactory<Program>, IAsyncLifetime
+public class MyTrainingApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private Respawner _respawner;
-    private DbConnection _connection;
+    private Respawner _respawner = default!;
+    private DbConnection _connection = default!;
 
     private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder()
         .WithImage("postgres:16.0")
@@ -31,10 +31,8 @@ public class DatabaseFixture : WebApplicationFactory<Program>, IAsyncLifetime
                 d => d.ServiceType ==
                      typeof(DbContextOptions<DefaultDbContext>));
 
-            if (descriptor != null)
-            {
+            if (descriptor != null) 
                 services.Remove(descriptor);
-            }
 
             services.AddDbContext<DefaultDbContext>(opts =>
                 opts.UseNpgsql(_postgres.GetConnectionString()));
@@ -50,10 +48,7 @@ public class DatabaseFixture : WebApplicationFactory<Program>, IAsyncLifetime
 
         var respawnerOptions = new RespawnerOptions
         {
-            SchemasToInclude = new[]
-            {
-                "public"
-            },
+            SchemasToInclude = new[] { "public" },
             DbAdapter = DbAdapter.Postgres
         };
 
