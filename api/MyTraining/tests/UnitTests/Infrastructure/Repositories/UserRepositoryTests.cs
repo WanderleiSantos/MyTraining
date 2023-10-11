@@ -9,8 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Moq;
-using UnitTests.Application.UseCases.Users.Shared.Extensions;
+using SharedTests.Extensions;
 
 namespace UnitTests.Infrastructure.Repositories;
 
