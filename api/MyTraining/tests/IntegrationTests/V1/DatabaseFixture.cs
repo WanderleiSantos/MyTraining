@@ -1,4 +1,5 @@
 using System.Data.Common;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Infrastructure.Persistence;
@@ -8,34 +9,46 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using Respawn;
+using Testcontainers.PostgreSql;
 using Xunit;
 
 namespace IntegrationTests.V1;
 
 public class DatabaseFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    public DefaultDbContext Context { get; private set; }
     private Respawner _respawner;
     private DbConnection _connection;
 
+    private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder()
+        .WithImage("postgres:16.0")
+        .WithPassword("masterkey")
+        .WithDatabase("mytraining_test")
+        .Build();
 
-    public DatabaseFixture()
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        var options = new DbContextOptionsBuilder<DefaultDbContext>()
-            .UseNpgsql("host=localhost;port=5433;database=mytraining_test;username=docker;password=masterkey")
-            .Options;
+        builder.ConfigureServices(services =>
+        {
+            var descriptor = services.SingleOrDefault(
+                d => d.ServiceType ==
+                     typeof(DbContextOptions<DefaultDbContext>));
 
-        Context = new DefaultDbContext(options);
+            if (descriptor != null)
+            {
+                services.Remove(descriptor);
+            }
+
+            services.AddDbContext<DefaultDbContext>(opts =>
+                opts.UseNpgsql(_postgres.GetConnectionString()));
+        });
     }
 
     public HttpClient HttpClient { get; private set; } = default!;
 
     public async Task InitializeAsync()
     {
+        await _postgres.StartAsync();
         HttpClient = CreateClient();
-
-        await Context.Database.EnsureDeletedAsync();
-        await Context.Database.MigrateAsync();
 
         var respawnerOptions = new RespawnerOptions
         {
@@ -46,7 +59,7 @@ public class DatabaseFixture : WebApplicationFactory<Program>, IAsyncLifetime
             DbAdapter = DbAdapter.Postgres
         };
 
-        _connection = Context.Database.GetDbConnection();
+        _connection = new NpgsqlConnection(_postgres.GetConnectionString());
         await _connection.OpenAsync();
 
         _respawner = await Respawner.CreateAsync(_connection, respawnerOptions);
@@ -59,8 +72,6 @@ public class DatabaseFixture : WebApplicationFactory<Program>, IAsyncLifetime
 
     public async Task DisposeAsync()
     {
-        await Context.Database.EnsureDeletedAsync();
-        await Context.DisposeAsync();
-        await _connection.CloseAsync();
+        await _postgres.StopAsync();
     }
 }
