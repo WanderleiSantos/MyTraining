@@ -19,13 +19,13 @@ public class DatabaseFixture : WebApplicationFactory<Program>, IAsyncLifetime
     public DatabaseFixture()
     {
         var options = new DbContextOptionsBuilder<DefaultDbContext>()
-            .UseNpgsql("Host=localhost;Database=mytraining;Username=docker;Password=masterkey")
+            .UseNpgsql("host=localhost;port=5433;database=mytraining_test;username=docker;password=masterkey")
             .Options;
         
         Context = new DefaultDbContext(options);
     }
 
-    public HttpClient HttpClient { get; private set; } = default;
+    public HttpClient HttpClient { get; private set; } = default!;
 
     public async Task InitializeAsync()
     {

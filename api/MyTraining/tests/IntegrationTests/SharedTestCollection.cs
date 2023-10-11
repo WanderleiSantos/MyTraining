@@ -4,7 +4,7 @@ using Xunit;
 namespace IntegrationTests;
 
 [CollectionDefinition("mytraining collection")]
-public class SharedTestColletion : ICollectionFixture<DatabaseFixture>
+public class SharedTestCollection : ICollectionFixture<DatabaseFixture>
 {
     
 }
