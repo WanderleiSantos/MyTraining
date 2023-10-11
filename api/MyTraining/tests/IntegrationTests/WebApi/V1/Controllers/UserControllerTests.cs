@@ -167,7 +167,8 @@ public class UserControllerTests : IAsyncLifetime
     public async Task ShouldReturnsUnauthorizedWhenTryingSearchUser()
     {
         // Given
-
+        _httpClient.DefaultRequestHeaders.Authorization = null;
+        
         // Act
         var response = await _httpClient.GetAsync("api/v1/user");
 
@@ -216,6 +217,8 @@ public class UserControllerTests : IAsyncLifetime
         };
 
         var data = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, "application/json");
+        
+        _httpClient.DefaultRequestHeaders.Authorization = null;
         
         // Act
         var response = await _httpClient.PutAsync("api/v1/user", data);
