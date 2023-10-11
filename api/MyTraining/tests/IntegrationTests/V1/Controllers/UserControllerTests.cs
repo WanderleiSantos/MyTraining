@@ -18,14 +18,14 @@ public class UserControllerTests : IAsyncLifetime
     private readonly HttpClient _httpClient;
     private readonly Faker _faker;
     private readonly Func<Task> _resetDataBase;
-    
+
     public UserControllerTests(DatabaseFixture fixture)
     {
         _httpClient = fixture.HttpClient;
         _resetDataBase = fixture.ResetDatabase;
         _faker = new Faker();
     }
-    
+
     [Fact]
     public async Task ShouldCreateUserSuccessfully()
     {

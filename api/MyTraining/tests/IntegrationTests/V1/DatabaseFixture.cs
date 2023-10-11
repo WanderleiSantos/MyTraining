@@ -2,8 +2,11 @@ using System.Data.Common;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Infrastructure.Persistence;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 using Respawn;
 using Xunit;
 
@@ -15,13 +18,13 @@ public class DatabaseFixture : WebApplicationFactory<Program>, IAsyncLifetime
     private Respawner _respawner;
     private DbConnection _connection;
 
-    
+
     public DatabaseFixture()
     {
         var options = new DbContextOptionsBuilder<DefaultDbContext>()
             .UseNpgsql("host=localhost;port=5433;database=mytraining_test;username=docker;password=masterkey")
             .Options;
-        
+
         Context = new DefaultDbContext(options);
     }
 
@@ -30,10 +33,13 @@ public class DatabaseFixture : WebApplicationFactory<Program>, IAsyncLifetime
     public async Task InitializeAsync()
     {
         HttpClient = CreateClient();
-        
-        var respawnerOptions =  new RespawnerOptions
+
+        await Context.Database.EnsureDeletedAsync();
+        await Context.Database.MigrateAsync();
+
+        var respawnerOptions = new RespawnerOptions
         {
-            SchemasToInclude = new []
+            SchemasToInclude = new[]
             {
                 "public"
             },
@@ -42,10 +48,10 @@ public class DatabaseFixture : WebApplicationFactory<Program>, IAsyncLifetime
 
         _connection = Context.Database.GetDbConnection();
         await _connection.OpenAsync();
-        
+
         _respawner = await Respawner.CreateAsync(_connection, respawnerOptions);
     }
-    
+
     public async Task ResetDatabase()
     {
         await _respawner.ResetAsync(_connection);
