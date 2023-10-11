@@ -1,30 +1,28 @@
+using System;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Bogus;
 using FluentAssertions;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
 using SharedTests.Extensions;
 using WebApi.V1.Models;
 using Xunit;
 
 namespace IntegrationTests.V1.Controllers;
 
-public class UserControllerTests : IClassFixture<WebApplicationFactory<Program>>
+[Collection("mytraining collection")]
+public class UserControllerTests : IAsyncLifetime
 {
     private readonly HttpClient _httpClient;
     private readonly Faker _faker;
-
-    public UserControllerTests(WebApplicationFactory<Program> factory)
+    private readonly Func<Task> _resetDataBase;
+    
+    public UserControllerTests(DatabaseFixture fixture)
     {
-        var appFactory = factory.WithWebHostBuilder(builder =>
-        {
-            builder.UseEnvironment("Test");
-        });
-
-        _httpClient = appFactory.CreateClient();
+        _httpClient = fixture.HttpClient;
+        _resetDataBase = fixture.ResetDatabase;
         _faker = new Faker();
     }
     
@@ -46,6 +44,9 @@ public class UserControllerTests : IClassFixture<WebApplicationFactory<Program>>
         var response = await _httpClient.PostAsync($"api/v1/user", data);
 
         // Assert
-        response.StatusCode.Should().Be(System.Net.HttpStatusCode.Created);
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
     }
+
+    public Task InitializeAsync() => Task.CompletedTask;
+    public Task DisposeAsync() => _resetDataBase();
 }
