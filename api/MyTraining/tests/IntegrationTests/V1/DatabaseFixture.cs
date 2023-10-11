@@ -21,8 +21,6 @@ public class DatabaseFixture : WebApplicationFactory<Program>, IAsyncLifetime
 
     private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder()
         .WithImage("postgres:16.0")
-        .WithPassword("masterkey")
-        .WithDatabase("mytraining_test")
         .Build();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
