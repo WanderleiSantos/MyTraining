@@ -1,3 +1,4 @@
+using Application.Shared.Mappers;
 using Application.Shared.Models;
 using Application.UseCases.Exercises.InsertExercise.Commands;
 using FluentValidation;
@@ -44,7 +45,7 @@ public class InsertExerciseUseCase : IInsertExerciseUseCase
             _logger.LogInformation("{UseCase} - Inserted Exercise; Name: {Name}", nameof(InsertExerciseUseCase),
                 command.Name);
 
-            output.AddResult($"Exercise inserted; Id: {exercise.Id}; Name: {exercise.Name}");
+            output.AddResult(exercise.MapToResponseInsertExercise());
         }
         catch (Exception e)
         {

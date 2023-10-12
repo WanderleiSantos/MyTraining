@@ -1,4 +1,5 @@
 using Application.UseCases.Exercises.SearchAllExercises.Responses;
+using Application.UseCases.Exercises.SearchExerciseById;
 using Application.UseCases.Exercises.SearchExerciseById.Responses;
 using Application.UseCases.TrainingSheets.InsertTrainingSheet.Responses;
 using Application.UseCases.Users.SearchUserById.Responses;
@@ -43,6 +44,13 @@ public static class OutputMappers
         Name = input.Name,
         TimeExchange = input.TimeExchange,
         Active = input.Active
+    };
+    
+    public static InsertExerciseResponse MapToResponseInsertExercise(this Exercise input) => new()
+    {
+        Id = input.Id,
+        Name = input.Name,
+        Link = input.Link
     };
 
 }

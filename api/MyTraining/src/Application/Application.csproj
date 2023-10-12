@@ -32,6 +32,10 @@
       <None Remove="UseCases\TrainingSheets\SearchActiveTrainingSheet\**" />
     </ItemGroup>
     
+    <ItemGroup>
+      <Folder Include="UseCases\Exercises\InsertExercise\Response\" />
+    </ItemGroup>
+    
     
     
 </Project>
