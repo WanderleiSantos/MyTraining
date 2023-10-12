@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Application.UseCases.Auth.SignIn.Responses;
+using Application.UseCases.Exercises.SearchAllExercises.Responses;
 using Application.UseCases.Exercises.SearchExerciseById;
 using Application.UseCases.Exercises.SearchExerciseById.Responses;
 using Bogus;
@@ -70,7 +71,7 @@ public class ExerciseControllerTests : IAsyncLifetime
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
         var exerciseInserted = await InsertExercise();
-        
+
         var inputUpdateExercise = new UpdateExerciseInput()
         {
             Name = _faker.Random.String2(15),
@@ -78,15 +79,66 @@ public class ExerciseControllerTests : IAsyncLifetime
         };
 
         var data = new StringContent(JsonSerializer.Serialize(inputUpdateExercise), Encoding.UTF8, MediaType);
-        
+
         //Act
         var response = await _httpClient.PatchAsync($"{UriRequestExercise}/{exerciseInserted?.Id}", data);
         var searchedExercise = await SearchExercise(exerciseInserted?.Id);
-        
+
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
         searchedExercise?.Name.Should().Be(inputUpdateExercise.Name);
     }
+
+    [Fact]
+    public async Task ShouldSearchExerciseByIdSuccessfully()
+    {
+        //Arrange
+        var user = await InsertUser();
+        var accessToken = await GetAccessToken(user.Email, user.Password);
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+        var exerciseInserted = await InsertExercise();
+
+        //Act
+        var response = await _httpClient.GetAsync($"{UriRequestExercise}/{exerciseInserted?.Id}");
+        var content = await response.Content.ReadAsStringAsync();
+
+        var searchedExercise = JsonSerializer.Deserialize<SearchExerciseByIdResponse>(content,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+        //Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        searchedExercise?.Id.Should().Be(exerciseInserted?.Id);
+        searchedExercise?.Name.Should().Be(exerciseInserted?.Name);
+    }
+
+    [Fact]
+    public async Task ShouldSearchAllExerciseSuccessfully()
+    {
+        //Arrange
+        var user = await InsertUser();
+
+        var accessToken = await GetAccessToken(user.Email, user.Password);
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+        await InsertExercise();
+
+        //Act
+        var response = await _httpClient.GetAsync($"{UriRequestExercise}");
+        var content = await response.Content.ReadAsStringAsync();
+
+        var paginatedResponse =
+            JsonSerializer.Deserialize<PaginatedOutputResponseExtension<SearchAllExercisesResponse>>(content,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+        //Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        paginatedResponse?.Items.Should().NotBeNull();
+        paginatedResponse?.PageSize.Should().Be(50);
+        paginatedResponse?.Items.Should().HaveCount(50);
+        paginatedResponse?.TotalItemCount.Should().Be(132);
+    }
+
 
     private async Task<string?> GetAccessToken(string email, string password)
     {
@@ -134,7 +186,7 @@ public class ExerciseControllerTests : IAsyncLifetime
     {
         var response = await _httpClient.GetAsync($"{UriRequestExercise}/{id}");
         var content = await response.Content.ReadAsStringAsync();
-        
+
         return JsonSerializer.Deserialize<SearchExerciseByIdResponse>(content,
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
     }
