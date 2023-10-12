@@ -31,7 +31,7 @@ public class MyTrainingApiFactory : WebApplicationFactory<Program>, IAsyncLifeti
                 d => d.ServiceType ==
                      typeof(DbContextOptions<DefaultDbContext>));
 
-            if (descriptor != null) 
+            if (descriptor != null)
                 services.Remove(descriptor);
 
             services.AddDbContext<DefaultDbContext>(opts =>
@@ -45,17 +45,7 @@ public class MyTrainingApiFactory : WebApplicationFactory<Program>, IAsyncLifeti
     {
         await _postgres.StartAsync();
         HttpClient = CreateClient();
-
-        var respawnerOptions = new RespawnerOptions
-        {
-            SchemasToInclude = new[] { "public" },
-            DbAdapter = DbAdapter.Postgres
-        };
-
-        _connection = new NpgsqlConnection(_postgres.GetConnectionString());
-        await _connection.OpenAsync();
-
-        _respawner = await Respawner.CreateAsync(_connection, respawnerOptions);
+        await InitializeRespawnerAsync();
     }
 
     public async Task ResetDatabase()
@@ -66,5 +56,19 @@ public class MyTrainingApiFactory : WebApplicationFactory<Program>, IAsyncLifeti
     public async Task DisposeAsync()
     {
         await _postgres.StopAsync();
+    }
+
+    private async Task InitializeRespawnerAsync()
+    {
+        var respawnerOptions = new RespawnerOptions
+        {
+            SchemasToInclude = new[] { "public" },
+            DbAdapter = DbAdapter.Postgres
+        };
+
+        _connection = new NpgsqlConnection(_postgres.GetConnectionString());
+        await _connection.OpenAsync();
+
+        _respawner = await Respawner.CreateAsync(_connection, respawnerOptions);
     }
 }
