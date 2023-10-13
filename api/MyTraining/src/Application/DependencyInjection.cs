@@ -1,3 +1,4 @@
+using System.Globalization;
 using Application.Shared.Configurations;
 using Application.Shared.Services;
 using Application.UseCases.Auth.RefreshToken;
@@ -36,16 +37,20 @@ using Application.UseCases.Users.UpdateUser;
 using Application.UseCases.Users.UpdateUser.Commands;
 using Application.UseCases.Users.UpdateUser.Validations;
 using FluentValidation;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace WebApi.Configurations;
+namespace Application;
 
-public static class ApplicationExtensions
+public static class DependencyInjection
 {
     private const string JwtConfigurationSection = "JwtConfiguration";
     
-    public static IServiceCollection AddApplicationConfiguration(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
+        
+        ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("en");
         
         services.AddScoped<IValidator<InsertUserCommand>, InsertUserCommandValidator>();
         services.AddScoped<IValidator<SearchUserByIdCommand>, SearchUserByIdCommandValidator>();

@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Application.Shared.Models;
 using Application.UseCases.Auth.SignIn.Responses;
 using Application.UseCases.Exercises.SearchAllExercises.Responses;
 using Application.UseCases.Exercises.SearchExerciseById;
@@ -128,7 +129,7 @@ public class ExerciseControllerTests : IAsyncLifetime
         var content = await response.Content.ReadAsStringAsync();
 
         var paginatedResponse =
-            JsonSerializer.Deserialize<PaginatedOutputResponseExtension<SearchAllExercisesResponse>>(content,
+            JsonSerializer.Deserialize<PaginatedOutput<SearchAllExercisesResponse>>(content,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
         //Assert

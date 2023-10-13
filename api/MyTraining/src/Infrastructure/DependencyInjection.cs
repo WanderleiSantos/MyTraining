@@ -2,14 +2,16 @@ using Core.Interfaces.Persistence.Repositories;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace WebApi.Configurations;
+namespace Infrastructure;
 
-public static class InfrastructureExtensions
+public static class DependencyInjection
 {
     private const string ConnectionStringSection = "DbContext";
     
-    public static IServiceCollection AddInfrastructureConfiguration(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
         
@@ -28,18 +30,5 @@ public static class InfrastructureExtensions
         services.AddScoped<ITrainingSheetRepository, TrainingSheetRepository>();
         
         return services;
-    }
-    
-    public static IApplicationBuilder ExecuteMigrations(this IApplicationBuilder app)
-    {
-        if (app == null) throw new ArgumentNullException(nameof(app));
-
-        using var scope = app.ApplicationServices.CreateScope();
-        var services = scope.ServiceProvider;
-
-        var context = services.GetRequiredService<DefaultDbContext>();    
-        context.Database.Migrate();
-
-        return app;
     }
 }

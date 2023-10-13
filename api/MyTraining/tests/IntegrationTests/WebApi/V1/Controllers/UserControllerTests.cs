@@ -20,6 +20,10 @@ namespace IntegrationTests.WebApi.V1.Controllers;
 [Collection("mytraining collection")]
 public class UserControllerTests : IAsyncLifetime
 {
+    private const string UriRequestUser = "api/v1/user";
+    private const string UriRequestSignIn = "api/v1/auth/sign-in";
+    private const string MediaType = "application/json";
+    
     private readonly HttpClient _httpClient;
     private readonly Faker _faker;
     private readonly Func<Task> _resetDataBase;
@@ -43,16 +47,16 @@ public class UserControllerTests : IAsyncLifetime
             Password = _faker.Internet.PasswordCustom(9, 32)
         };
 
-        var data = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, "application/json");
+        var data = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, MediaType);
 
         // Act
-        var response = await _httpClient.PostAsync("api/v1/user", data);
+        var response = await _httpClient.PostAsync(UriRequestUser, data);
         var content = await response.Content.ReadAsStringAsync();
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         content.Should().BeEmpty();
-        response.Headers.Location?.AbsolutePath.Should().Be("/api/v1/user");
+        response.Headers.Location?.AbsolutePath.Should().Be($"/{UriRequestUser}");
     }
     
     [Fact]
@@ -67,12 +71,12 @@ public class UserControllerTests : IAsyncLifetime
             Password = _faker.Internet.PasswordCustom(9, 32)
         };
 
-        var data = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, "application/json");
+        var data = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, MediaType);
 
-        await _httpClient.PostAsync("api/v1/user", data);
+        await _httpClient.PostAsync(UriRequestUser, data);
         
         // Act
-        var response = await _httpClient.PostAsync("api/v1/user", data);
+        var response = await _httpClient.PostAsync(UriRequestUser, data);
         var content = await response.Content.ReadAsStringAsync();
 
         // Assert
@@ -86,10 +90,10 @@ public class UserControllerTests : IAsyncLifetime
         // Given
         var input = new InsertUserInput();
 
-        var data = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, "application/json");
+        var data = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, MediaType);
 
         // Act
-        var response = await _httpClient.PostAsync("api/v1/user", data);
+        var response = await _httpClient.PostAsync(UriRequestUser, data);
         var errorMessages = JsonSerializer.Deserialize<List<Notification>>(
             await response.Content.ReadAsStringAsync(), 
             new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
@@ -120,12 +124,12 @@ public class UserControllerTests : IAsyncLifetime
             Password = _faker.Internet.PasswordCustom(9, 32)
         };
 
-        var data = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, "application/json");
+        var data = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, MediaType);
 
         // Act
-        await _httpClient.PostAsync("api/v1/user", data);
+        await _httpClient.PostAsync(UriRequestUser, data);
         
-        var response = await _httpClient.PostAsync("api/v1/user", data);
+        var response = await _httpClient.PostAsync(UriRequestUser, data);
         var errorMessages = JsonSerializer.Deserialize<List<Notification>>(
             await response.Content.ReadAsStringAsync(), 
             new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
@@ -148,7 +152,7 @@ public class UserControllerTests : IAsyncLifetime
             new AuthenticationHeaderValue("Bearer", accessToken);
         
         // Act
-        var response = await _httpClient.GetAsync("api/v1/user");
+        var response = await _httpClient.GetAsync(UriRequestUser);
         var content = await response.Content.ReadAsStringAsync();
         var searchUserByIdResponse = JsonSerializer.Deserialize<SearchUserByIdResponse>(content, 
             new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
@@ -170,7 +174,7 @@ public class UserControllerTests : IAsyncLifetime
         _httpClient.DefaultRequestHeaders.Authorization = null;
         
         // Act
-        var response = await _httpClient.GetAsync("api/v1/user");
+        var response = await _httpClient.GetAsync(UriRequestUser);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -189,13 +193,13 @@ public class UserControllerTests : IAsyncLifetime
             LastName = _faker.Random.String2(10),
         };
 
-        var data = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, "application/json");
+        var data = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, MediaType);
         
         _httpClient.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", accessToken);
         
         // Act
-        var response = await _httpClient.PutAsync("api/v1/user", data);
+        var response = await _httpClient.PutAsync(UriRequestUser, data);
         var content = await response.Content.ReadAsStringAsync();
         var searchUser = await SearchUser();
 
@@ -216,12 +220,12 @@ public class UserControllerTests : IAsyncLifetime
             LastName = _faker.Random.String2(10),
         };
 
-        var data = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, "application/json");
+        var data = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, MediaType);
         
         _httpClient.DefaultRequestHeaders.Authorization = null;
         
         // Act
-        var response = await _httpClient.PutAsync("api/v1/user", data);
+        var response = await _httpClient.PutAsync(UriRequestUser, data);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -235,8 +239,8 @@ public class UserControllerTests : IAsyncLifetime
             Password = password
         };
 
-        var data = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, "application/json");
-        var response = await _httpClient.PostAsync($"api/v1/auth/sign-in", data);
+        var data = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, MediaType);
+        var response = await _httpClient.PostAsync(UriRequestSignIn, data);
         var content = await response.Content.ReadAsStringAsync();
         var signInResponse = JsonSerializer.Deserialize<SignInResponse>(content, new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
 
@@ -253,15 +257,15 @@ public class UserControllerTests : IAsyncLifetime
             Password = _faker.Internet.PasswordCustom(9, 32)
         };
         
-        await _httpClient.PostAsync("api/v1/user", 
-            new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, "application/json"));
+        await _httpClient.PostAsync(UriRequestUser, 
+            new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, MediaType));
         
         return input;
     }
 
     private async Task<SearchUserByIdResponse?> SearchUser()
     {
-        var response = await _httpClient.GetAsync("api/v1/user");
+        var response = await _httpClient.GetAsync(UriRequestUser);
         var content = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<SearchUserByIdResponse>(content, 
             new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });

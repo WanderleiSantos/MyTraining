@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.ResponseCompression;
 
-namespace WebApi.Configurations;
+namespace WebApi.Extensions;
 
 public static class CompressionExtensions
 {
-    public static IServiceCollection AddCompressionConfiguration(this IServiceCollection services)
+    public static IServiceCollection AddCompression(this IServiceCollection services)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
 

@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
 
-namespace WebApi.Configurations;
+namespace WebApi.Extensions;
 
 public static class SwaggerExtensions
 {
-    public static IServiceCollection AddSwagger(this IServiceCollection services)
+    public static void AddSwagger(this IServiceCollection services)
     {
         services.AddSwaggerGen(options =>
         {
@@ -36,8 +36,6 @@ public static class SwaggerExtensions
         });
 
         services.ConfigureOptions<SwaggerConfigureOptions>();
-
-        return services;
     }
 
     public static void UseSwaggerSetup(this IApplicationBuilder app, IApiVersionDescriptionProvider provider)

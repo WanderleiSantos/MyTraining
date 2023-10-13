@@ -2,11 +2,11 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
-namespace WebApi.Configurations;
+namespace WebApi.Extensions;
 
 public static class AuthenticationExtensions
 {
-    public static IServiceCollection AddAuthenticationConfiguration(this IServiceCollection services, IConfiguration configuration)
+    public static void AddAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
         
@@ -26,8 +26,6 @@ public static class AuthenticationExtensions
                     ValidateLifetime = true,
                 };
             });
-        
-        return services;
     }
 
     public static void UseAuthenticationSetup(this IApplicationBuilder app)

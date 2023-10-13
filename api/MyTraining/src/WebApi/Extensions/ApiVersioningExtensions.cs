@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebApi.Configurations;
+namespace WebApi.Extensions;
 
 public static class ApiVersioningExtensions
 {
-    public static IServiceCollection AddApiVersioningConfiguration(this IServiceCollection services)
+    public static void AddApiVersioningConfig(this IServiceCollection services)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
         
@@ -30,7 +30,5 @@ public static class ApiVersioningExtensions
             // can also be used to control the format of the API version in route templates
             options.SubstituteApiVersionInUrl = true;
         });
-        
-        return services;
     }
 }
