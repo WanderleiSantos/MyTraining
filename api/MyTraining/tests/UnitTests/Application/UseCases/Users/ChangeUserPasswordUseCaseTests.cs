@@ -53,12 +53,12 @@ public class ChangeUserPasswordUseCaseTests
         //Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(6);
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Id' must not be empty.")).Which.Code.Should().Be("Id");
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Id' must not be equal to '00000000-0000-0000-0000-000000000000'.")).Which.Code.Should().Be("Id");
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Old Password' must not be empty.")).Which.Code.Should().Be("OldPassword");
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("The length of 'Old Password' must be at least 8 characters. You entered 0 characters.")).Which.Code.Should().Be("OldPassword");
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'New Password' must contain at least 8 characters, one number, one uppercase letter, one lowercase letter and one special character.")).Which.Code.Should().Be("NewPassword");
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'New Password' must not be empty.")).Which.Code.Should().Be("NewPassword");
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Id' must not be empty.")).Which.Code.Should().Be("Id");
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Id' must not be equal to '00000000-0000-0000-0000-000000000000'.")).Which.Code.Should().Be("Id");
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Old Password' must not be empty.")).Which.Code.Should().Be("OldPassword");
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("The length of 'Old Password' must be at least 8 characters. You entered 0 characters.")).Which.Code.Should().Be("OldPassword");
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'New Password' must contain at least 8 characters, one number, one uppercase letter, one lowercase letter and one special character.")).Which.Code.Should().Be("NewPassword");
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'New Password' must not be empty.")).Which.Code.Should().Be("NewPassword");
         
         A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustNotHaveHappened();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
@@ -79,7 +79,7 @@ public class ChangeUserPasswordUseCaseTests
         //Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(1);
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("User does not exist"));
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("User does not exist"));
         
         A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
@@ -101,7 +101,7 @@ public class ChangeUserPasswordUseCaseTests
         //Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(1);
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("Old password does not match"));
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("Old password does not match"));
         
         A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
@@ -144,7 +144,7 @@ public class ChangeUserPasswordUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("An unexpected error occurred while update the user password"));
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("An unexpected error occurred while update the user password"));
         
         A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();

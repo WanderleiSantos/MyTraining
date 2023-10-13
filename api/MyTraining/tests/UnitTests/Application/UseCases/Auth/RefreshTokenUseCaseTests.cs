@@ -58,7 +58,7 @@ public class RefreshTokenUseCaseTests
         // Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(1);
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Refresh Token' must not be empty.")).Which.Code.Should().Be("RefreshToken");
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Refresh Token' must not be empty.")).Which.Code.Should().Be("RefreshToken");
         
         A.CallTo(() => _jwtTokenGeneratorMock.ValidateRefreshToken(A<string>._)).MustNotHaveHappened();
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
@@ -81,7 +81,7 @@ public class RefreshTokenUseCaseTests
         // Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(1);
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("Token is expired or User is not valid"));
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("Token is expired or User is not valid"));
         
         A.CallTo(() => _jwtTokenGeneratorMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
@@ -104,7 +104,7 @@ public class RefreshTokenUseCaseTests
         // Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(1);
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("Token is expired or User is not valid"));
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("Token is expired or User is not valid"));
         
         A.CallTo(() => _jwtTokenGeneratorMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
@@ -129,7 +129,7 @@ public class RefreshTokenUseCaseTests
         // Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(1);
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("User does not exist or inactive"));
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("User does not exist or inactive"));
         
         A.CallTo(() => _jwtTokenGeneratorMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
@@ -155,7 +155,7 @@ public class RefreshTokenUseCaseTests
         // Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(1);
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("User does not exist or inactive"));
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("User does not exist or inactive"));
         
         A.CallTo(() => _jwtTokenGeneratorMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
@@ -207,7 +207,7 @@ public class RefreshTokenUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("An unexpected error has occurred"));
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("An unexpected error has occurred"));
         
         A.CallTo(() => _jwtTokenGeneratorMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();

@@ -55,8 +55,8 @@ public class InsertTrainingSheetUseCaseTests
         //Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(2);
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'User Id' must not be empty."));
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Name' must not be empty."));
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'User Id' must not be empty."));
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Name' must not be empty."));
 
         A.CallTo(() => _repositoryMock.AddAsync(A<TrainingSheet>._, A<CancellationToken>._)).MustNotHaveHappened();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
@@ -76,7 +76,7 @@ public class InsertTrainingSheetUseCaseTests
         //Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(1);
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'User Id' must not be empty."));
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'User Id' must not be empty."));
 
         A.CallTo(() => _repositoryMock.AddAsync(A<TrainingSheet>._, A<CancellationToken>._)).MustNotHaveHappened();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
@@ -96,7 +96,7 @@ public class InsertTrainingSheetUseCaseTests
         //Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(1);
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Name' must not be empty."));
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Name' must not be empty."));
 
         A.CallTo(() => _repositoryMock.AddAsync(A<TrainingSheet>._, A<CancellationToken>._)).MustNotHaveHappened();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();

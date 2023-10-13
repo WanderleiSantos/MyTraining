@@ -102,14 +102,14 @@ public class UserControllerTests : IAsyncLifetime
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         errorMessages.Should().NotBeNull();
         errorMessages.Should().HaveCount(8);
-        errorMessages.Should().Contain(e => e.Message.Equals("'First Name' must not be empty.")).Which.Code.Should().Be("FirstName");
-        errorMessages.Should().Contain(e => e.Message.Equals("The length of 'First Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("FirstName");
-        errorMessages.Should().Contain(e => e.Message.Equals("'Last Name' must not be empty.")).Which.Code.Should().Be("LastName");
-        errorMessages.Should().Contain(e => e.Message.Equals("The length of 'Last Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("LastName");
-        errorMessages.Should().Contain(e => e.Message.Equals("'Email' must not be empty.")).Which.Code.Should().Be("Email");
-        errorMessages.Should().Contain(e => e.Message.Equals("'Email' is not a valid email address.")).Which.Code.Should().Be("Email");
-        errorMessages.Should().Contain(e => e.Message.Equals("'Password' must contain at least 8 characters, one number, one uppercase letter, one lowercase letter and one special character.")).Which.Code.Should().Be("Password");
-        errorMessages.Should().Contain(e => e.Message.Equals("'Password' must not be empty.")).Which.Code.Should().Be("Password");
+        errorMessages.Should().Contain(e => e.Description.Equals("'First Name' must not be empty.")).Which.Code.Should().Be("FirstName");
+        errorMessages.Should().Contain(e => e.Description.Equals("The length of 'First Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("FirstName");
+        errorMessages.Should().Contain(e => e.Description.Equals("'Last Name' must not be empty.")).Which.Code.Should().Be("LastName");
+        errorMessages.Should().Contain(e => e.Description.Equals("The length of 'Last Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("LastName");
+        errorMessages.Should().Contain(e => e.Description.Equals("'Email' must not be empty.")).Which.Code.Should().Be("Email");
+        errorMessages.Should().Contain(e => e.Description.Equals("'Email' is not a valid email address.")).Which.Code.Should().Be("Email");
+        errorMessages.Should().Contain(e => e.Description.Equals("'Password' must contain at least 8 characters, one number, one uppercase letter, one lowercase letter and one special character.")).Which.Code.Should().Be("Password");
+        errorMessages.Should().Contain(e => e.Description.Equals("'Password' must not be empty.")).Which.Code.Should().Be("Password");
     }
     
     [Fact]
@@ -138,7 +138,7 @@ public class UserControllerTests : IAsyncLifetime
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         errorMessages.Should().NotBeNull();
         errorMessages.Should().HaveCount(1);
-        errorMessages.Should().Contain(e => e.Message.Equals("'Email' is not a valid email address.")).Which.Code.Should().Be("Email");
+        errorMessages.Should().Contain(e => e.Description.Equals("'Email' is not a valid email address.")).Which.Code.Should().Be("Email");
     }
     
     [Fact]

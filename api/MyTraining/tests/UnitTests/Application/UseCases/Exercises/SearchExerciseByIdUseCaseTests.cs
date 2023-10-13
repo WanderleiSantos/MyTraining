@@ -51,7 +51,7 @@ public class SearchExerciseByIdUseCaseTests
         //Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(1);
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Id' must not be empty."));
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Id' must not be empty."));
     }
 
     [Fact]
@@ -108,7 +108,7 @@ public class SearchExerciseByIdUseCaseTests
         //Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should()
-            .Contain(e => e.Message.Equals("An unexpected error occurred while searching the exercise."));
+            .Contain(e => e.Description.Equals("An unexpected error occurred while searching the exercise."));
     }
 
     private static SearchExerciseByIdCommand CreateCommand() => new SearchExerciseByIdCommand()

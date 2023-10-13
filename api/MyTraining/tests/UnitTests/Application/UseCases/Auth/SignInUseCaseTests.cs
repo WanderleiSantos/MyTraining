@@ -58,11 +58,11 @@ public class SignInUseCaseTests
         // Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().HaveCount(5);
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Email' must not be empty.")).Which.Code.Should().Be("Email");
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Email' is not a valid email address.")).Which.Code.Should().Be("Email");
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("The length of 'Email' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("Email");
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Password' must not be empty.")).Which.Code.Should().Be("Password");
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("The length of 'Password' must be at least 8 characters. You entered 0 characters.")).Which.Code.Should().Be("Password");
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Email' must not be empty.")).Which.Code.Should().Be("Email");
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Email' is not a valid email address.")).Which.Code.Should().Be("Email");
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("The length of 'Email' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("Email");
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Password' must not be empty.")).Which.Code.Should().Be("Password");
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("The length of 'Password' must be at least 8 characters. You entered 0 characters.")).Which.Code.Should().Be("Password");
         
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
         A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
@@ -83,7 +83,7 @@ public class SignInUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("User does not exist"));
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("User does not exist"));
         
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
@@ -104,7 +104,7 @@ public class SignInUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("User does not exist"));
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("User does not exist"));
         
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
@@ -127,7 +127,7 @@ public class SignInUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("Inactive user"));
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("Inactive user"));
         
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
@@ -181,7 +181,7 @@ public class SignInUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Message.Equals("An unexpected error has occurred"));
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("An unexpected error has occurred"));
         
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();

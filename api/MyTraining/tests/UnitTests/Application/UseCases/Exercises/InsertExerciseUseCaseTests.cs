@@ -41,9 +41,9 @@ public class InsertExerciseUseCaseTests
 
         //Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Code!.Contains("UserId")).Which.Message.Should()
+        output.ErrorMessages.Should().Contain(e => e.Code!.Contains("UserId")).Which.Description.Should()
             .Be("'User Id' must not be empty.");
-        output.ErrorMessages.Should().Contain(e => e.Code!.Contains("Name")).Which.Message.Should()
+        output.ErrorMessages.Should().Contain(e => e.Code!.Contains("Name")).Which.Description.Should()
             .Be("'Name' must not be empty.");
     }
 
@@ -60,7 +60,7 @@ public class InsertExerciseUseCaseTests
 
         //Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Code!.Contains("UserId")).Which.Message.Should()
+        output.ErrorMessages.Should().Contain(e => e.Code!.Contains("UserId")).Which.Description.Should()
             .Be("'User Id' must not be empty.");
     }
 
@@ -77,7 +77,7 @@ public class InsertExerciseUseCaseTests
         
         //Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Code!.Contains("Name")).Which.Message.Should()
+        output.ErrorMessages.Should().Contain(e => e.Code!.Contains("Name")).Which.Description.Should()
             .Be("'Name' must not be empty.");
     }
 
