@@ -1,6 +1,6 @@
-namespace Application.Shared.Services;
+namespace Application.Shared.Authentication;
 
-public interface IAuthenticationService
+public interface IJwtTokenGenerator
 {
     string CreateAccessToken(Guid id, string email);
     string CreateRefreshToken(Guid id, string email);

@@ -1,5 +1,5 @@
+using Application.Shared.Authentication;
 using Application.Shared.Models;
-using Application.Shared.Services;
 using Application.UseCases.Auth.SignIn.Commands;
 using Application.UseCases.Auth.SignIn.Responses;
 using FluentValidation;
@@ -14,14 +14,14 @@ public class SignInUseCase : ISignInUseCase
     private readonly ILogger<SignInUseCase> _logger;
     private readonly IUserRepository _repository;
     private readonly IValidator<SignInCommand> _validator;
-    private readonly IAuthenticationService _authenticationService;
+    private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
-    public SignInUseCase(ILogger<SignInUseCase> logger, IUserRepository repository, IValidator<SignInCommand> validator, IAuthenticationService authenticationService)
+    public SignInUseCase(ILogger<SignInUseCase> logger, IUserRepository repository, IValidator<SignInCommand> validator, IJwtTokenGenerator jwtTokenGenerator)
     {
         _logger = logger;
         _repository = repository;
         _validator = validator;
-        _authenticationService = authenticationService;
+        _jwtTokenGenerator = jwtTokenGenerator;
     }
 
     public async Task<Output> ExecuteAsync(SignInCommand command, CancellationToken cancellationToken)
@@ -60,8 +60,8 @@ public class SignInUseCase : ISignInUseCase
             _logger.LogInformation("{UseCase} - Generating authentication token; Email: {Email}",
                 nameof(SignInUseCase), command.Email);
 
-            var token = _authenticationService.CreateAccessToken(user.Id, user.Email);
-            var refreshToken = _authenticationService.CreateRefreshToken(user.Id, user.Email);
+            var token = _jwtTokenGenerator.CreateAccessToken(user.Id, user.Email);
+            var refreshToken = _jwtTokenGenerator.CreateRefreshToken(user.Id, user.Email);
             var response = new SignInResponse
             {
                 Email = user.Email,

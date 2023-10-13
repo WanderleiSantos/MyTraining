@@ -16,9 +16,12 @@ var app = builder.Build();
 
 // Configure
 app.ExecuteMigrations();
+
+app.UseCompression();
+app.UseAuthorization();
+app.UseAuthentication();
 // app.UseHttpsRedirection();
-app.UseCompressionSetup();
-app.UseAuthenticationSetup();
+
 app.MapControllers();
 if (app.Environment.IsDevelopment())
     app.UseSwaggerSetup(app.Services.GetRequiredService<IApiVersionDescriptionProvider>());

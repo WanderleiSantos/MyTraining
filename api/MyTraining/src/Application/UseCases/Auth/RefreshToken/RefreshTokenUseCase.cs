@@ -1,5 +1,5 @@
+using Application.Shared.Authentication;
 using Application.Shared.Models;
-using Application.Shared.Services;
 using Application.UseCases.Auth.RefreshToken.Commands;
 using Application.UseCases.Auth.RefreshToken.Responses;
 using Core.Interfaces.Persistence.Repositories;
@@ -13,14 +13,14 @@ public class RefreshTokenUseCase : IRefreshTokenUseCase
     private readonly ILogger<RefreshTokenUseCase> _logger;
     private readonly IUserRepository _repository;
     private readonly IValidator<RefreshTokenCommand> _validator;
-    private readonly IAuthenticationService _authenticationService;
+    private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
-    public RefreshTokenUseCase(ILogger<RefreshTokenUseCase> logger, IUserRepository repository, IValidator<RefreshTokenCommand> validator, IAuthenticationService authenticationService)
+    public RefreshTokenUseCase(ILogger<RefreshTokenUseCase> logger, IUserRepository repository, IValidator<RefreshTokenCommand> validator, IJwtTokenGenerator jwtTokenGenerator)
     {
         _logger = logger;
         _repository = repository;
         _validator = validator;
-        _authenticationService = authenticationService;
+        _jwtTokenGenerator = jwtTokenGenerator;
     }
 
     public async Task<Output> ExecuteAsync(RefreshTokenCommand command, CancellationToken cancellationToken)
@@ -38,7 +38,7 @@ public class RefreshTokenUseCase : IRefreshTokenUseCase
 
             _logger.LogInformation("{UseCase} - Validating token", nameof(RefreshTokenUseCase));
 
-            var (validToken, email) = _authenticationService.ValidateRefreshToken(command.RefreshToken);
+            var (validToken, email) = _jwtTokenGenerator.ValidateRefreshToken(command.RefreshToken);
 
             if (!validToken || email == null)
             {
@@ -60,8 +60,8 @@ public class RefreshTokenUseCase : IRefreshTokenUseCase
             _logger.LogInformation("{UseCase} - Generating authentication token; Email: {Email}",
                 nameof(RefreshTokenUseCase), email);
 
-            var token = _authenticationService.CreateAccessToken(user.Id, user.Email);
-            var refreshToken = _authenticationService.CreateRefreshToken(user.Id, user.Email);
+            var token = _jwtTokenGenerator.CreateAccessToken(user.Id, user.Email);
+            var refreshToken = _jwtTokenGenerator.CreateRefreshToken(user.Id, user.Email);
             var response = new RefreshTokenResponse()
             {
                 Token = token,

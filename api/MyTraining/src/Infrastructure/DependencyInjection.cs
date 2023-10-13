@@ -14,17 +14,31 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
-        
-        var connectionString = configuration.GetConnectionString(ConnectionStringSection);
 
-        services.AddDbContext<DefaultDbContext>(options => options.UseNpgsql(connectionString));
+        services
+            .AddContexts(configuration)
+            .AddPersistence();
+
+        return services;
+    }
+
+    private static IServiceCollection AddContexts(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddDbContext<DefaultDbContext>(options => 
+            options.UseNpgsql(configuration.GetConnectionString(ConnectionStringSection)));
+        
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
-        
+
         // services.AddDbContext<DefaultDbContext>(options => options.UseInMemoryDatabase("Default"));
         
         services.AddScoped<DefaultDbContext>();
+        
+        return services;
+    }
 
+    private static IServiceCollection AddPersistence(this IServiceCollection services)
+    {
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IExerciseRepository, ExerciseRepository>();
         services.AddScoped<ITrainingSheetRepository, TrainingSheetRepository>();

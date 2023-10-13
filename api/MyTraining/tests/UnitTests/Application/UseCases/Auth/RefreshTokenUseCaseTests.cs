@@ -1,6 +1,6 @@
 using System.Globalization;
+using Application.Shared.Authentication;
 using Application.Shared.Extensions;
-using Application.Shared.Services;
 using Application.UseCases.Auth.RefreshToken;
 using Application.UseCases.Auth.RefreshToken.Commands;
 using Application.UseCases.Auth.RefreshToken.Responses;
@@ -20,7 +20,7 @@ public class RefreshTokenUseCaseTests
 {
     private readonly ILogger<RefreshTokenUseCase> _loggerMock;
     private readonly IUserRepository _repositoryMock;
-    private readonly IAuthenticationService _authenticationServiceMock;
+    private readonly IJwtTokenGenerator _jwtTokenGeneratorMock;
     private readonly IValidator<RefreshTokenCommand> _validator;
     private readonly IRefreshTokenUseCase _useCase;
 
@@ -32,14 +32,14 @@ public class RefreshTokenUseCaseTests
         
         _loggerMock = A.Fake<ILogger<RefreshTokenUseCase>>();
         _repositoryMock = A.Fake<IUserRepository>();
-        _authenticationServiceMock = A.Fake<IAuthenticationService>();
+        _jwtTokenGeneratorMock = A.Fake<IJwtTokenGenerator>();
         _validator = new RefreshTokenCommandValidator();
         
         _useCase = new RefreshTokenUseCase(
             _loggerMock,
             _repositoryMock,
             _validator,
-            _authenticationServiceMock
+            _jwtTokenGeneratorMock
         );
 
         _faker = new Faker();
@@ -60,10 +60,10 @@ public class RefreshTokenUseCaseTests
         output.ErrorMessages.Should().HaveCount(1);
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Refresh Token' must not be empty.")).Which.Code.Should().Be("RefreshToken");
         
-        A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.ValidateRefreshToken(A<string>._)).MustNotHaveHappened();
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
-        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
-        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     [Fact]
@@ -73,7 +73,7 @@ public class RefreshTokenUseCaseTests
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
 
-        A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(command.RefreshToken)).Returns((false, null));
+        A.CallTo(() => _jwtTokenGeneratorMock.ValidateRefreshToken(command.RefreshToken)).Returns((false, null));
 
         // Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
@@ -83,10 +83,10 @@ public class RefreshTokenUseCaseTests
         output.ErrorMessages.Should().HaveCount(1);
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("Token is expired or User is not valid"));
         
-        A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _jwtTokenGeneratorMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
-        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
-        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     [Fact]
@@ -96,7 +96,7 @@ public class RefreshTokenUseCaseTests
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
 
-        A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(command.RefreshToken)).Returns((true, null));
+        A.CallTo(() => _jwtTokenGeneratorMock.ValidateRefreshToken(command.RefreshToken)).Returns((true, null));
 
         // Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
@@ -106,10 +106,10 @@ public class RefreshTokenUseCaseTests
         output.ErrorMessages.Should().HaveCount(1);
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("Token is expired or User is not valid"));
         
-        A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _jwtTokenGeneratorMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
-        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
-        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     [Fact]
@@ -120,7 +120,7 @@ public class RefreshTokenUseCaseTests
         var cancellationToken = CancellationToken.None;
         var email = _faker.Internet.Email();
 
-        A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(command.RefreshToken)).Returns((true, email));
+        A.CallTo(() => _jwtTokenGeneratorMock.ValidateRefreshToken(command.RefreshToken)).Returns((true, email));
         A.CallTo(() => _repositoryMock.GetByEmailAsync(email, A<CancellationToken>._)).Returns((User?)null);
 
         // Act
@@ -131,10 +131,10 @@ public class RefreshTokenUseCaseTests
         output.ErrorMessages.Should().HaveCount(1);
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("User does not exist or inactive"));
         
-        A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _jwtTokenGeneratorMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
-        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
-        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     [Fact]
@@ -146,7 +146,7 @@ public class RefreshTokenUseCaseTests
         var user = CreateFakeUser();
         user.Deactivate();
 
-        A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(command.RefreshToken)).Returns((true, user.Email));
+        A.CallTo(() => _jwtTokenGeneratorMock.ValidateRefreshToken(command.RefreshToken)).Returns((true, user.Email));
         A.CallTo(() => _repositoryMock.GetByEmailAsync(user.Email, A<CancellationToken>._)).Returns(user);
 
         // Act
@@ -157,10 +157,10 @@ public class RefreshTokenUseCaseTests
         output.ErrorMessages.Should().HaveCount(1);
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("User does not exist or inactive"));
         
-        A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _jwtTokenGeneratorMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
-        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
-        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     [Fact]
@@ -173,10 +173,10 @@ public class RefreshTokenUseCaseTests
         var expectedToken = _faker.Random.String2(50);
         var expectedRefreshToken = _faker.Random.String2(50);
 
-        A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(command.RefreshToken)).Returns((true, user.Email));
+        A.CallTo(() => _jwtTokenGeneratorMock.ValidateRefreshToken(command.RefreshToken)).Returns((true, user.Email));
         A.CallTo(() => _repositoryMock.GetByEmailAsync(user.Email, A<CancellationToken>._)).Returns(user);
-        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(user.Id, user.Email)).Returns(expectedToken);
-        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(user.Id, user.Email)).Returns(expectedRefreshToken);
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(user.Id, user.Email)).Returns(expectedToken);
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateRefreshToken(user.Id, user.Email)).Returns(expectedRefreshToken);
 
         // Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
@@ -187,10 +187,10 @@ public class RefreshTokenUseCaseTests
         ((RefreshTokenResponse)output.Result!).Token.Should().Be(expectedToken);
         ((RefreshTokenResponse)output.Result!).RefreshToken.Should().Be(expectedRefreshToken);
         
-        A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _jwtTokenGeneratorMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
-        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustHaveHappenedOnceExactly();
-        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustHaveHappenedOnceExactly();
     }
     
     [Fact]
@@ -200,7 +200,7 @@ public class RefreshTokenUseCaseTests
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
 
-        A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(A<string>._)).Throws(new Exception("ex"));
+        A.CallTo(() => _jwtTokenGeneratorMock.ValidateRefreshToken(A<string>._)).Throws(new Exception("ex"));
         
         // Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
@@ -209,10 +209,10 @@ public class RefreshTokenUseCaseTests
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("An unexpected error has occurred"));
         
-        A.CallTo(() => _authenticationServiceMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _jwtTokenGeneratorMock.ValidateRefreshToken(A<string>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
-        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
-        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     private RefreshTokenCommand CreateCommand() => new RefreshTokenCommand

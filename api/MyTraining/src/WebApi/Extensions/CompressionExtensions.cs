@@ -17,7 +17,7 @@ public static class CompressionExtensions
         return services;
     }
 
-    public static void UseCompressionSetup(this IApplicationBuilder app)
+    public static void UseCompression(this IApplicationBuilder app)
     {
         if (app == null) throw new ArgumentNullException(nameof(app));
 

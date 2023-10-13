@@ -1,6 +1,6 @@
 using System.Globalization;
-using Application.Shared.Configurations;
-using Application.Shared.Services;
+using System.Text;
+using Application.Shared.Authentication;
 using Application.UseCases.Auth.RefreshToken;
 using Application.UseCases.Auth.RefreshToken.Commands;
 using Application.UseCases.Auth.RefreshToken.Validations;
@@ -37,19 +37,49 @@ using Application.UseCases.Users.UpdateUser;
 using Application.UseCases.Users.UpdateUser.Commands;
 using Application.UseCases.Users.UpdateUser.Validations;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Application;
 
 public static class DependencyInjection
 {
-    private const string JwtConfigurationSection = "JwtConfiguration";
-    
     public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
+
+        services
+            .AddAuth(configuration)
+            .AddValidators()
+            .AddUseCases()
+            .AddScoped<IInitialLoadService, InitialLoadService>()
+            .AddScoped<IDeactivateTrainingSheetService, DeactivateTrainingSheetService>();
         
+        return services;
+    }
+
+    private static IServiceCollection AddUseCases(this IServiceCollection services)
+    {
+        services.AddScoped<IInsertUserUseCase, InsertUserUseCase>();
+        services.AddScoped<ISearchUserByIdUseCase, SearchUserByIdUseCase>();
+        services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
+        services.AddScoped<IChangeUserPasswordUseCase, ChangeUserPasswordUseCase>();
+        services.AddScoped<ISignInUseCase, SignInUseCase>();
+        services.AddScoped<IRefreshTokenUseCase, RefreshTokenUseCase>();
+        services.AddScoped<IInsertExerciseUseCase, InsertExerciseUseCase>();
+        services.AddScoped<ISearchExerciseByIdUseCase, SearchExerciseByIdUseCase>();
+        services.AddScoped<ISearchAllExercisesUseCase, SearchAllExercisesUseCase>();
+        services.AddScoped<IUpdateExerciseUseCase, UpdateExerciseUseCase>();
+        services.AddScoped<IInsertTrainingSheetUseCase, InsertTrainingSheetUseCase>();
+        
+        return services;
+    }
+
+    private static IServiceCollection AddValidators(this IServiceCollection services)
+    {
         ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("en");
         
         services.AddScoped<IValidator<InsertUserCommand>, InsertUserCommandValidator>();
@@ -64,22 +94,33 @@ public static class DependencyInjection
         services.AddScoped<IValidator<UpdateExerciseCommand>, UpdateExerciseValidator>();
         services.AddScoped<IValidator<InsertTrainingSheetCommand>, InsertTrainingSheetCommandValidator>();
         
-        services.AddScoped<IInsertUserUseCase, InsertUserUseCase>();
-        services.AddScoped<ISearchUserByIdUseCase, SearchUserByIdUseCase>();
-        services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
-        services.AddScoped<IChangeUserPasswordUseCase, ChangeUserPasswordUseCase>();
-        services.AddScoped<ISignInUseCase, SignInUseCase>();
-        services.AddScoped<IRefreshTokenUseCase, RefreshTokenUseCase>();
-        services.AddScoped<IInsertExerciseUseCase, InsertExerciseUseCase>();
-        services.AddScoped<ISearchExerciseByIdUseCase, SearchExerciseByIdUseCase>();
-        services.AddScoped<ISearchAllExercisesUseCase, SearchAllExercisesUseCase>();
-        services.AddScoped<IUpdateExerciseUseCase, UpdateExerciseUseCase>();
-        services.AddScoped<IInsertTrainingSheetUseCase, InsertTrainingSheetUseCase>();
+        return services;
+    }
+    
+    private static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
+    {
+        var jwtSettings = new JwtSettings();
+        configuration.Bind(JwtSettings.SectionName, jwtSettings);
+        services.AddSingleton(Options.Create(jwtSettings));
         
-        services.Configure<JwtConfiguration>(configuration.GetSection(JwtConfigurationSection));
-        services.AddScoped<IAuthenticationService, AuthenticationService>();
-        services.AddScoped<IInitialLoadService, InitialLoadService>();
-        services.AddScoped<IDeactivateTrainingSheetService, DeactivateTrainingSheetService>();
+        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        
+        services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    
+                    ValidIssuer = jwtSettings.Issuer,
+                    ValidAudience = jwtSettings.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),
+                };
+            });
         
         return services;
     }

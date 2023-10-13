@@ -3,9 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebApi.Extensions;
 
-public static class InfrastructureExtensions
+public static class MigrationExtensions
 {
-    
     public static IApplicationBuilder ExecuteMigrations(this IApplicationBuilder app)
     {
         if (app == null) throw new ArgumentNullException(nameof(app));

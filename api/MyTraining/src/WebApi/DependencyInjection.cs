@@ -11,7 +11,6 @@ public static class DependencyInjection
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
         
-        services.AddAuthentication(configuration);
         services.AddAuthorization();
         services.AddRouting(options => options.LowercaseUrls = true);
         services.AddControllers().AddJsonOptions(options =>

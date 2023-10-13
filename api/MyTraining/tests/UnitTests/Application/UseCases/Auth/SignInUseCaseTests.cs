@@ -1,6 +1,6 @@
 using System.Globalization;
+using Application.Shared.Authentication;
 using Application.Shared.Extensions;
-using Application.Shared.Services;
 using Application.UseCases.Auth.SignIn;
 using Application.UseCases.Auth.SignIn.Commands;
 using Application.UseCases.Auth.SignIn.Responses;
@@ -20,7 +20,7 @@ public class SignInUseCaseTests
 {
     private readonly ILogger<SignInUseCase> _loggerMock;
     private readonly IUserRepository _repositoryMock;
-    private readonly IAuthenticationService _authenticationServiceMock;
+    private readonly IJwtTokenGenerator _jwtTokenGeneratorMock;
     private readonly IValidator<SignInCommand> _validator;
     private readonly ISignInUseCase _useCase;
 
@@ -32,14 +32,14 @@ public class SignInUseCaseTests
         
         _loggerMock = A.Fake<ILogger<SignInUseCase>>();
         _repositoryMock = A.Fake<IUserRepository>();
-        _authenticationServiceMock = A.Fake<IAuthenticationService>();
+        _jwtTokenGeneratorMock = A.Fake<IJwtTokenGenerator>();
         _validator = new SignInCommandValidator();
 
         _useCase = new SignInUseCase(
             _loggerMock,
             _repositoryMock,
             _validator,
-            _authenticationServiceMock
+            _jwtTokenGeneratorMock
         );
 
         _faker = new Faker();
@@ -65,8 +65,8 @@ public class SignInUseCaseTests
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("The length of 'Password' must be at least 8 characters. You entered 0 characters.")).Which.Code.Should().Be("Password");
         
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
-        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
-        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     [Fact]
@@ -86,8 +86,8 @@ public class SignInUseCaseTests
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("User does not exist"));
         
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
-        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
-        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     [Fact]
@@ -107,8 +107,8 @@ public class SignInUseCaseTests
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("User does not exist"));
         
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
-        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
-        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     [Fact]
@@ -130,8 +130,8 @@ public class SignInUseCaseTests
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("Inactive user"));
         
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
-        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
-        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     [Fact]
@@ -146,9 +146,9 @@ public class SignInUseCaseTests
 
         A.CallTo(() => _repositoryMock.GetByEmailAsync(command.Email, A<CancellationToken>._))
             .Returns(user);
-        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(user.Id, user.Email))
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(user.Id, user.Email))
             .Returns(expectedToken);
-        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(user.Id, user.Email))
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateRefreshToken(user.Id, user.Email))
             .Returns(expectedRefreshToken);
 
         // Act
@@ -162,8 +162,8 @@ public class SignInUseCaseTests
         ((SignInResponse)output.Result!).RefreshToken.Should().Be(expectedRefreshToken);
         
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
-        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustHaveHappenedOnceExactly();
-        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustHaveHappenedOnceExactly();
     }
     
     [Fact]
@@ -184,8 +184,8 @@ public class SignInUseCaseTests
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("An unexpected error has occurred"));
         
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
-        A.CallTo(() => _authenticationServiceMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
-        A.CallTo(() => _authenticationServiceMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _jwtTokenGeneratorMock.CreateRefreshToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
     }
     
     private SignInCommand CreateCommand() => new SignInCommand
