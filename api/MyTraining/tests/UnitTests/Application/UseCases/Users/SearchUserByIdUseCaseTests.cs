@@ -6,18 +6,18 @@ using Application.UseCases.Users.SearchUserById.Validations;
 using Bogus;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
+using FakeItEasy;
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using Moq;
 using SharedTests.Extensions;
 
 namespace UnitTests.Application.UseCases.Users;
 
 public class SearchUserByIdUseCaseTests
 {
-    private readonly Mock<ILogger<SearchUserByIdUseCase>> _loggerMock;
-    private readonly Mock<IUserRepository> _repositoryMock;
+    private readonly ILogger<SearchUserByIdUseCase> _loggerMock;
+    private readonly IUserRepository _repositoryMock;
     private readonly IValidator<SearchUserByIdCommand> _validator;
     private readonly ISearchUserByIdUseCase _useCase;
 
@@ -27,13 +27,13 @@ public class SearchUserByIdUseCaseTests
     {
         ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("en");
         
-        _loggerMock = new Mock<ILogger<SearchUserByIdUseCase>>();
-        _repositoryMock = new Mock<IUserRepository>();
+        _loggerMock = A.Fake<ILogger<SearchUserByIdUseCase>>();
+        _repositoryMock = A.Fake<IUserRepository>();
         _validator = new SearchUserByIdCommandValidator();
 
         _useCase = new SearchUserByIdUseCase(
-            _loggerMock.Object,
-            _repositoryMock.Object,
+            _loggerMock,
+            _repositoryMock,
             _validator
         );
 
@@ -55,6 +55,8 @@ public class SearchUserByIdUseCaseTests
         output.ErrorMessages.Should().HaveCount(2);
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Id' must not be empty.")).Which.Code.Should().Be("Id");
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Id' must not be equal to '00000000-0000-0000-0000-000000000000'.")).Which.Code.Should().Be("Id");
+        
+        A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
     
     [Fact]
@@ -63,9 +65,7 @@ public class SearchUserByIdUseCaseTests
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
 
-        _repositoryMock
-            .Setup(x => x.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((User?)null);
+        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, A<CancellationToken>._)).Returns((User?)null);
 
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
 
@@ -73,6 +73,8 @@ public class SearchUserByIdUseCaseTests
         output.Result.Should().BeNull();
         output.HasMessages.Should().BeTrue();
         output.Messages.Should().Contain(e => e.Message.Equals("User does not exist"));
+        
+        A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
     }
     
     [Fact]
@@ -83,9 +85,7 @@ public class SearchUserByIdUseCaseTests
         var command = CreateCommand(user.Id);
         var cancellationToken = CancellationToken.None;
 
-        _repositoryMock
-            .Setup(x => x.GetByIdAsync(command.Id, cancellationToken))
-            .ReturnsAsync(user);
+        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, A<CancellationToken>._)).Returns(user);
 
         // Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
@@ -98,6 +98,8 @@ public class SearchUserByIdUseCaseTests
         ((SearchUserByIdResponse)output.Result!).LastName.Should().Be(user.LastName);
         ((SearchUserByIdResponse)output.Result!).Email.Should().Be(user.Email);
         ((SearchUserByIdResponse)output.Result!).Active.Should().Be(user.Active);
+        
+        A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
     }
     
     [Fact]
@@ -107,9 +109,7 @@ public class SearchUserByIdUseCaseTests
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
 
-        _repositoryMock
-            .Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .Throws(new Exception("ex"));
+        A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).Throws(new Exception("ex"));
 
         // Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
@@ -117,6 +117,8 @@ public class SearchUserByIdUseCaseTests
         // Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("An unexpected error occurred while searching the user."));
+        
+        A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
     }
     
     private static SearchUserByIdCommand CreateCommand() => new SearchUserByIdCommand

@@ -5,18 +5,18 @@ using Application.UseCases.Users.UpdateUser.Validations;
 using Bogus;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
+using FakeItEasy;
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using Moq;
 using SharedTests.Extensions;
 
 namespace UnitTests.Application.UseCases.Users;
 
 public class UpdateUserUseCaseTests
 {
-    private readonly Mock<ILogger<UpdateUserUseCase>> _loggerMock;
-    private readonly Mock<IUserRepository> _repositoryMock;
+    private readonly ILogger<UpdateUserUseCase> _loggerMock;
+    private readonly IUserRepository _repositoryMock;
     private readonly IValidator<UpdateUserCommand> _validator;
     private readonly IUpdateUserUseCase _useCase;
 
@@ -26,13 +26,13 @@ public class UpdateUserUseCaseTests
     {
         ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("en");
         
-        _loggerMock = new Mock<ILogger<UpdateUserUseCase>>();
-        _repositoryMock = new Mock<IUserRepository>();
+        _loggerMock = A.Fake<ILogger<UpdateUserUseCase>>();
+        _repositoryMock = A.Fake<IUserRepository>();
         _validator = new UpdateUserCommandValidator();
 
         _useCase = new UpdateUserUseCase(
-            _loggerMock.Object,
-            _repositoryMock.Object,
+            _loggerMock,
+            _repositoryMock,
             _validator
         );
 
@@ -58,6 +58,9 @@ public class UpdateUserUseCaseTests
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("The length of 'First Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("FirstName");
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("'Last Name' must not be empty.")).Which.Code.Should().Be("LastName");
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("The length of 'Last Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("LastName");
+        
+        A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustNotHaveHappened();
+        A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
     }
 
     [Fact]
@@ -67,9 +70,7 @@ public class UpdateUserUseCaseTests
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
 
-        _repositoryMock
-            .Setup(x => x.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((User?)null);
+        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, A<CancellationToken>._)).Returns((User?)null);
 
         //Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
@@ -77,6 +78,9 @@ public class UpdateUserUseCaseTests
         //Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("User does not exist"));
+        
+        A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
     }
     
     [Fact]
@@ -88,11 +92,8 @@ public class UpdateUserUseCaseTests
         var command = CreateCommand(user.Id);
         var cancellationToken = CancellationToken.None;
         
-        _repositoryMock
-            .Setup(x => x.UnitOfWork.CommitAsync().Result).Returns(true);
-        _repositoryMock
-            .Setup(x => x.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(user);
+        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, A<CancellationToken>._)).Returns(user);
+        A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).Returns(true);
 
         // Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
@@ -105,6 +106,9 @@ public class UpdateUserUseCaseTests
         user.Id.Should().Be(command.Id);
         user.UpdatedAt.Should().NotBe(updatedAt);
         user.UpdatedAt.Should().BeAfter(updatedAt);
+        
+        A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustHaveHappenedOnceExactly();
     }
     
     [Fact]
@@ -114,9 +118,7 @@ public class UpdateUserUseCaseTests
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
 
-        _repositoryMock
-            .Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .Throws(new Exception("ex"));
+        A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).Throws(new Exception("ex"));
 
         // Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
@@ -124,6 +126,9 @@ public class UpdateUserUseCaseTests
         // Assert
         output.IsValid.Should().BeFalse();
         output.ErrorMessages.Should().Contain(e => e.Message.Equals("An unexpected error occurred while update the user"));
+        
+        A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
     }
     
     private UpdateUserCommand CreateCommand() => new UpdateUserCommand
