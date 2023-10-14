@@ -14,4 +14,6 @@ public class PlanningExercises : BaseEntity
 
     public Guid ExerciseId { get; private set; }
     public Guid SeriesPlaningId { get; private set; }
+    public Exercise Exercise { get; private set; }
+    
 }

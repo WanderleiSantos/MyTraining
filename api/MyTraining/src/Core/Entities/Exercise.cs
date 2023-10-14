@@ -17,6 +17,8 @@ public class Exercise : BaseEntity
     public Guid IdUser { get; private set; }
     public User? User { get; private set; }    
     
+    public List<PlanningExercises> PlanningExercises { get; set; }
+    
     public void Update(string name, string? link) 
     {
         base.Update();

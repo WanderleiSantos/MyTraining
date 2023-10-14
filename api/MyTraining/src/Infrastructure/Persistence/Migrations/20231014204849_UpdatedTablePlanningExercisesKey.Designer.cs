@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231014204849_UpdatedTablePlanningExercisesKey")]
+    partial class UpdatedTablePlanningExercisesKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,6 +83,9 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<Guid>("SeriesPlaningId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("SeriesPlanningId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
 
@@ -89,6 +94,8 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasIndex("ExerciseId");
 
                     b.HasIndex("SeriesPlaningId");
+
+                    b.HasIndex("SeriesPlanningId");
 
                     b.ToTable("planning_exercises", (string)null);
                 });
@@ -312,7 +319,15 @@ namespace Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Core.Entities.SeriesPlanning", "SeriesPlanning")
+                        .WithMany()
+                        .HasForeignKey("SeriesPlanningId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Exercise");
+
+                    b.Navigation("SeriesPlanning");
                 });
 
             modelBuilder.Entity("Core.Entities.SeriesPlanning", b =>

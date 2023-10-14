@@ -15,5 +15,11 @@ public class PlanningExercisesMapping : IEntityTypeConfiguration<PlanningExercis
         builder
             .Property(x => x.Id)
             .HasColumnName("id");
+        
+        builder
+            .HasOne(x => x.Exercise)
+            .WithMany(x => x.PlanningExercises)
+            .HasForeignKey(x => x.ExerciseId);
+        
     }
 }
