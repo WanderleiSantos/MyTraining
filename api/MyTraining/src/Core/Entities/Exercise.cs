@@ -13,11 +13,9 @@ public class Exercise : BaseEntity
     public string Name { get; private set; }
     public string? Link { get; private set; }
     public bool Active { get; private set; }
-    
     public Guid IdUser { get; private set; }
     public User? User { get; private set; }    
-    
-    public List<PlanningExercises> PlanningExercises { get; set; }
+    public List<SeriesPlanning> SeriesPlannings { get; } = new();
     
     public void Update(string name, string? link) 
     {

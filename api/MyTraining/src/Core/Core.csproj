@@ -11,4 +11,8 @@
       <PackageReference Include="AspNetCore.IQueryable.Extensions" Version="6.0.2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Entities\PlanningExercises.cs" />
+    </ItemGroup>
+
 </Project>

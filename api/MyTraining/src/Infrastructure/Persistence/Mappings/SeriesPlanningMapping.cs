@@ -68,10 +68,9 @@ public class SeriesPlanningMapping : IEntityTypeConfiguration<SeriesPlanning>
             .OnDelete(DeleteBehavior.Restrict);
         
         builder
-            .HasMany(u => u.PlanningExercises)
-            .WithOne()
-            .HasForeignKey(u => u.SeriesPlaningId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasMany(e => e.Exercises)
+            .WithMany(e => e.SeriesPlannings)
+            .UsingEntity("planning_exercises");
         
     }
 }
