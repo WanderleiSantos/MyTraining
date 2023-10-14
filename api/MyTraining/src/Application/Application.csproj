@@ -6,34 +6,16 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-
     <ItemGroup>
       <PackageReference Include="AspNetCore.IQueryable.Extensions" Version="6.0.2" />
       <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
       <PackageReference Include="FluentValidation" Version="11.7.1" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.23" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.22" />
     </ItemGroup>
     
     <ItemGroup>
       <ProjectReference Include="..\Core\Core.csproj" />
       <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
-    </ItemGroup>
-    
-    <ItemGroup>
-      <Compile Remove="UseCases\TrainingSheets\InsertTrainingSheet\Validations.cs" />
-      <Compile Remove="UseCases\TrainingSheets\SearchActiveTrainingSheet\**" />
-    </ItemGroup>
-    
-    <ItemGroup>
-      <EmbeddedResource Remove="UseCases\TrainingSheets\SearchActiveTrainingSheet\**" />
-    </ItemGroup>
-    
-    <ItemGroup>
-      <None Remove="UseCases\TrainingSheets\SearchActiveTrainingSheet\**" />
-    </ItemGroup>
-    
-    <ItemGroup>
-      <Folder Include="UseCases\Exercises\InsertExercise\Response\" />
     </ItemGroup>
     
     
