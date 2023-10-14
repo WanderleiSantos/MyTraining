@@ -8,6 +8,7 @@ public class TrainingSheet : BaseEntity
         TimeExchange = timeExchange;
         UserId = userId;
         Active = true;
+        TrainingSheetSeries = new List<TrainingSheetSeries>();
     }
 
     public string Name { get; private set; }
@@ -15,6 +16,8 @@ public class TrainingSheet : BaseEntity
     public bool Active { get; private set; }
     public Guid UserId { get; private set; }
     public User? User { get; private set; }
+    
+    public IEnumerable<TrainingSheetSeries> TrainingSheetSeries { get; private set; }
 
     public void Update(string name, string timeExchange)
     {
