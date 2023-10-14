@@ -67,5 +67,11 @@ public class SeriesPlanningMapping : IEntityTypeConfiguration<SeriesPlanning>
             .HasForeignKey(x => x.TrainingSheetSeriesId)
             .OnDelete(DeleteBehavior.Restrict);
         
+        builder
+            .HasMany(u => u.PlanningExercises)
+            .WithOne()
+            .HasForeignKey(u => u.SeriesPlaningId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
     }
 }

@@ -12,6 +12,7 @@ public class SeriesPlanning : BaseEntity
         Interval = interval;
         Active = true;
         TrainingSheetSeriesId = trainingSheetSeriesId;
+        PlanningExercises = new List<PlanningExercises>();
     }
 
     public string Machine { get; private set; }
@@ -22,6 +23,7 @@ public class SeriesPlanning : BaseEntity
     public bool Active { get; private set; }
     public Guid TrainingSheetSeriesId { get; private set; }
     public TrainingSheetSeries TrainingSheetSeries { get; private set; }
+    public List<PlanningExercises> PlanningExercises { get; private set; }
 
     public void Update(string machine, int seriesNumber, string repetitions, string charge, string interval)
     {
