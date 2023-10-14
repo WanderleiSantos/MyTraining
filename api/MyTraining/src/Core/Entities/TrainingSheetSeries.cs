@@ -2,10 +2,11 @@ namespace Core.Entities;
 
 public class TrainingSheetSeries : BaseEntity
 {
-    public TrainingSheetSeries(string name)
+    public TrainingSheetSeries(string name, Guid trainingSheetId)
     {
         Name = name;
         Active = true;
+        TrainingSheetId = trainingSheetId;
     }
 
     public string Name { get; private set; }
