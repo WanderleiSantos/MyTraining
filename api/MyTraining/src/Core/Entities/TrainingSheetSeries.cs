@@ -7,12 +7,15 @@ public class TrainingSheetSeries : BaseEntity
         Name = name;
         Active = true;
         TrainingSheetId = trainingSheetId;
+        SeriesPlannings = new List<SeriesPlanning>();
     }
 
     public string Name { get; private set; }
     public bool Active { get; private set; }
     public Guid TrainingSheetId { get; private set; }
     public TrainingSheet TrainingSheet { get; private set; }
+    
+    public IEnumerable<SeriesPlanning> SeriesPlannings { get; private set; }
 
     public void Update(string name)
     {
