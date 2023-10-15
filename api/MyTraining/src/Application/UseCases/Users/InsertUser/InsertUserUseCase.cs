@@ -42,7 +42,7 @@ public class InsertUserUseCase : IInsertUserUseCase
                 
                 output
                     .AddError("Email","E-mail already registered")
-                    .SetErrorType(ErrorType.Conflict);
+                    .SetErrorType(EErrorType.Conflict);
                 return output;
             }
 
@@ -66,7 +66,7 @@ public class InsertUserUseCase : IInsertUserUseCase
 
             output
                 .AddError($"An unexpected error occurred while inserting the user")
-                .SetErrorType(ErrorType.Unexpected);
+                .SetErrorType(EErrorType.Unexpected);
         }
         
         return output;

@@ -47,7 +47,7 @@ public class RefreshTokenUseCase : IRefreshTokenUseCase
                 
                 output
                     .AddError("Token is expired or User is not valid")
-                    .SetErrorType(ErrorType.Unauthorized);
+                    .SetErrorType(EErrorType.Unauthorized);
                 return output;
             }
             
@@ -59,7 +59,7 @@ public class RefreshTokenUseCase : IRefreshTokenUseCase
                 
                 output
                     .AddError("User does not exist or inactive")
-                    .SetErrorType(ErrorType.Unauthorized);
+                    .SetErrorType(EErrorType.Unauthorized);
                 return output;
             }
 
@@ -84,7 +84,7 @@ public class RefreshTokenUseCase : IRefreshTokenUseCase
 
             output
                 .AddError("An unexpected error has occurred")
-                .SetErrorType(ErrorType.Unexpected);
+                .SetErrorType(EErrorType.Unexpected);
         }
 
         return output;

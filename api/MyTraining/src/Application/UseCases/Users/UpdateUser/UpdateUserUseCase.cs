@@ -1,4 +1,3 @@
-using Application.Shared.Extensions;
 using Application.Shared.Models;
 using Application.UseCases.Users.UpdateUser.Commands;
 using FluentValidation;
@@ -41,7 +40,7 @@ public class UpdateUserUseCase : IUpdateUserUseCase
                 
                 output
                     .AddError("User does not exist")
-                    .SetErrorType(ErrorType.NotFound);
+                    .SetErrorType(EErrorType.NotFound);
                 return output;
             }
             
@@ -61,7 +60,7 @@ public class UpdateUserUseCase : IUpdateUserUseCase
 
             output
                 .AddError($"An unexpected error occurred while update the user")
-                .SetErrorType(ErrorType.Unexpected);
+                .SetErrorType(EErrorType.Unexpected);
         }
 
         return output;

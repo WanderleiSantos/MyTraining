@@ -47,7 +47,7 @@ public class SignInUseCase : ISignInUseCase
                 
                 output
                     .AddError("User does not exist")
-                    .SetErrorType(ErrorType.Unauthorized);
+                    .SetErrorType(EErrorType.Unauthorized);
                 return output;
             }
             
@@ -57,7 +57,7 @@ public class SignInUseCase : ISignInUseCase
                 
                 output
                     .AddError("Inactive user")
-                    .SetErrorType(ErrorType.Unauthorized);
+                    .SetErrorType(EErrorType.Unauthorized);
                 return output;
             }
 
@@ -82,7 +82,7 @@ public class SignInUseCase : ISignInUseCase
 
             output
                 .AddError("An unexpected error has occurred")
-                .SetErrorType(ErrorType.Unexpected);
+                .SetErrorType(EErrorType.Unexpected);
         }
 
         return output;

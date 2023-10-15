@@ -40,7 +40,7 @@ public class ChangeUserPasswordUseCase : IChangeUserPasswordUseCase
                 _logger.LogWarning("User does not exist");
                 
                 output.AddError("User does not exist")
-                    .SetErrorType(ErrorType.NotFound);
+                    .SetErrorType(EErrorType.NotFound);
                 return output;
             }
             
@@ -50,7 +50,7 @@ public class ChangeUserPasswordUseCase : IChangeUserPasswordUseCase
                 
                 output
                     .AddError("Old password does not match")
-                    .SetErrorType(ErrorType.Validation);
+                    .SetErrorType(EErrorType.Validation);
                 return output;
             }
             
@@ -70,7 +70,7 @@ public class ChangeUserPasswordUseCase : IChangeUserPasswordUseCase
 
             output
                 .AddError($"An unexpected error occurred while update the user password")
-                .SetErrorType(ErrorType.Unexpected);
+                .SetErrorType(EErrorType.Unexpected);
         }
 
         return output;

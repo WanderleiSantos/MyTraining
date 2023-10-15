@@ -43,7 +43,7 @@ public class SearchUserByIdUseCase : ISearchUserByIdUseCase
                 
                 output
                     .AddError("User does not exist")
-                    .SetErrorType(ErrorType.NotFound);
+                    .SetErrorType(EErrorType.NotFound);
                 return output;
             }
 
@@ -57,7 +57,7 @@ public class SearchUserByIdUseCase : ISearchUserByIdUseCase
             
             output
                 .AddError("An unexpected error occurred while searching the user.")
-                .SetErrorType(ErrorType.Unexpected);
+                .SetErrorType(EErrorType.Unexpected);
         }
 
         return output;

@@ -1,6 +1,6 @@
 namespace Application.Shared.Models;
 
-public enum ErrorType
+public enum EErrorType
 {
     Failure,
     Unexpected,

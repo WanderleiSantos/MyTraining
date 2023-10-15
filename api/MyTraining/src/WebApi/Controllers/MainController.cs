@@ -22,10 +22,10 @@ public abstract class MainController : ControllerBase
         return output.ErrorType switch
         {
             null => BadRequest(output.ErrorMessages),
-            ErrorType.Validation => BadRequest(output.ErrorMessages),
-            ErrorType.Conflict => Conflict(output.ErrorMessages),
-            ErrorType.NotFound => NotFound(output.ErrorMessages),
-            ErrorType.Unauthorized => Unauthorized(output.ErrorMessages),
+            EErrorType.Validation => BadRequest(output.ErrorMessages),
+            EErrorType.Conflict => Conflict(output.ErrorMessages),
+            EErrorType.NotFound => NotFound(output.ErrorMessages),
+            EErrorType.Unauthorized => Unauthorized(output.ErrorMessages),
             _ => InternalServerError(output.ErrorMessages)
         };
     }
