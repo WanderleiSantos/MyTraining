@@ -66,11 +66,14 @@ public class SeriesPlanningMapping : IEntityTypeConfiguration<SeriesPlanning>
             .WithMany(x => x.SeriesPlannings)
             .HasForeignKey(x => x.TrainingSheetSeriesId)
             .OnDelete(DeleteBehavior.Restrict);
-        
+
         builder
             .HasMany(e => e.Exercises)
             .WithMany(e => e.SeriesPlannings)
-            .UsingEntity("planning_exercises");
-        
+            .UsingEntity(
+                "planning_exercises",
+                l => l.HasOne(typeof(Exercise)).WithMany().HasForeignKey("exercise_id"),
+                r => r.HasOne(typeof(SeriesPlanning)).WithMany().HasForeignKey("series_planning_id"));
+
     }
 }

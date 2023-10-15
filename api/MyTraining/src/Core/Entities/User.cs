@@ -20,8 +20,8 @@ public class User : BaseEntity
     public string Password { get; private set; }
     public bool Active { get; private set; }
     public string FullName => $"{FirstName} {LastName}";
-    public IEnumerable<Exercise> Exercises { get; private set; }
-    public IEnumerable<TrainingSheet> TrainingSheets { get; private set; }
+    public ICollection<Exercise> Exercises { get; private set; }
+    public ICollection<TrainingSheet> TrainingSheets { get; private set; }
 
     public void Update(string firstName, string lastName) 
     {

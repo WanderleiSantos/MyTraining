@@ -8,14 +8,15 @@ public class Exercise : BaseEntity
         Link = link;
         IdUser = idUser;
         Active = true;
+        SeriesPlannings = new List<SeriesPlanning>();
     }
 
     public string Name { get; private set; }
     public string? Link { get; private set; }
     public bool Active { get; private set; }
     public Guid IdUser { get; private set; }
-    public User? User { get; private set; }    
-    public List<SeriesPlanning> SeriesPlannings { get; } = new();
+    public User? User { get; private set; }
+    public ICollection<SeriesPlanning> SeriesPlannings { get; private set; }
     
     public void Update(string name, string? link) 
     {

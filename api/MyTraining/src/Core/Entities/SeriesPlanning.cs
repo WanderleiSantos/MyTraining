@@ -2,7 +2,7 @@ namespace Core.Entities;
 
 public class SeriesPlanning : BaseEntity
 {
-    public SeriesPlanning(string machine, int seriesNumber, string repetitions, string charge, string interval,
+    public SeriesPlanning(string machine, int seriesNumber, string repetitions, string charge, string interval, 
         Guid trainingSheetSeriesId)
     {
         Machine = machine;
@@ -10,8 +10,9 @@ public class SeriesPlanning : BaseEntity
         Repetitions = repetitions;
         Charge = charge;
         Interval = interval;
-        Active = true;
         TrainingSheetSeriesId = trainingSheetSeriesId;
+        Active = true;
+        Exercises = new List<Exercise>();
     }
 
     public string Machine { get; private set; }
@@ -21,8 +22,8 @@ public class SeriesPlanning : BaseEntity
     public string Interval { get; private set; }
     public bool Active { get; private set; }
     public Guid TrainingSheetSeriesId { get; private set; }
-    public TrainingSheetSeries TrainingSheetSeries { get; private set; }
-    public List<Exercise> Exercises { get; } = new();
+    public TrainingSheetSeries? TrainingSheetSeries { get; private set; }
+    public ICollection<Exercise> Exercises { get; private set; }
 
     public void Update(string machine, int seriesNumber, string repetitions, string charge, string interval)
     {

@@ -22,8 +22,4 @@
       <Folder Include="Persistence\Migrations\" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Compile Remove="Persistence\Mappings\PlanningExercisesMapping.cs" />
-    </ItemGroup>
-
 </Project>

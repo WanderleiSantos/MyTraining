@@ -17,7 +17,7 @@ public class TrainingSheet : BaseEntity
     public Guid UserId { get; private set; }
     public User? User { get; private set; }
     
-    public IEnumerable<TrainingSheetSeries> TrainingSheetSeries { get; private set; }
+    public ICollection<TrainingSheetSeries> TrainingSheetSeries { get; private set; }
 
     public void Update(string name, string timeExchange)
     {
