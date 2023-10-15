@@ -32,42 +32,45 @@ public class ChangeUserPasswordUseCase : IChangeUserPasswordUseCase
             if (!output.IsValid)
                 return output;
             
-            _logger.LogInformation("{UseCase} - Search user by id: {id}",
-                nameof(ChangeUserPasswordUseCase), command.Id);
+            _logger.LogInformation("{UseCase} - Search user by id: {id}", nameof(ChangeUserPasswordUseCase), command.Id);
 
             var user = await _repository.GetByIdAsync(command.Id, cancellationToken);
             if (user == null)
             {
-                output.AddErrorMessage("User does not exist");
                 _logger.LogWarning("User does not exist");
+                
+                output.AddError("User does not exist")
+                    .SetErrorType(ErrorType.NotFound);
                 return output;
             }
             
             if (!command.OldPassword.VerifyPassword(user.Password))
             {
-                output.AddErrorMessage("Old password does not match");
                 _logger.LogWarning("{UseCase} - Old password does not match", nameof(ChangeUserPasswordUseCase));
+                
+                output
+                    .AddError("Old password does not match")
+                    .SetErrorType(ErrorType.Validation);
                 return output;
             }
             
-            _logger.LogInformation("{UseCase} - Updating User password by id: {id}", nameof(ChangeUserPasswordUseCase),
-                command.Id);
+            _logger.LogInformation("{UseCase} - Updating User password by id: {id}", nameof(ChangeUserPasswordUseCase), command.Id);
 
             user.UpdatePassword(command.NewPassword.HashPassword());
             
             await _repository.UnitOfWork.CommitAsync();
             
-            _logger.LogInformation("{UseCase} - User password updated successfully; Id: {id}", nameof(ChangeUserPasswordUseCase),
-                command.Id);
+            _logger.LogInformation("{UseCase} - User password updated successfully; Id: {id}", nameof(ChangeUserPasswordUseCase), command.Id);
 
             output.AddResult(null);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "{UseCase} - An unexpected error has occurred;",
-                nameof(ChangeUserPasswordUseCase));
+            _logger.LogError(e, "{UseCase} - An unexpected error has occurred;", nameof(ChangeUserPasswordUseCase));
 
-            output.AddErrorMessage($"An unexpected error occurred while update the user password");
+            output
+                .AddError($"An unexpected error occurred while update the user password")
+                .SetErrorType(ErrorType.Unexpected);
         }
 
         return output;

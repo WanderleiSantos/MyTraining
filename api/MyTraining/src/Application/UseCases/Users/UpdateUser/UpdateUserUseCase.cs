@@ -1,3 +1,4 @@
+using Application.Shared.Extensions;
 using Application.Shared.Models;
 using Application.UseCases.Users.UpdateUser.Commands;
 using FluentValidation;
@@ -31,35 +32,36 @@ public class UpdateUserUseCase : IUpdateUserUseCase
             if (!output.IsValid)
                 return output;
             
-            _logger.LogInformation("{UseCase} - Search user by id: {id}",
-                nameof(UpdateUserUseCase), command.Id);
+            _logger.LogInformation("{UseCase} - Search user by id: {id}", nameof(UpdateUserUseCase), command.Id);
 
             var user = await _repository.GetByIdAsync(command.Id, cancellationToken);
             if (user == null)
             {
-                output.AddErrorMessage("User does not exist");
                 _logger.LogWarning("User does not exist");
+                
+                output
+                    .AddError("User does not exist")
+                    .SetErrorType(ErrorType.NotFound);
                 return output;
             }
             
-            _logger.LogInformation("{UseCase} - Updating User by id: {id}", nameof(UpdateUserCommand),
-                command.Id);
+            _logger.LogInformation("{UseCase} - Updating User by id: {id}", nameof(UpdateUserCommand), command.Id);
 
             user.Update(command.FirstName, command.LastName);
             
             await _repository.UnitOfWork.CommitAsync();
             
-            _logger.LogInformation("{UseCase} - User updated successfully; Id: {id}", nameof(UpdateUserCommand),
-                command.Id);
+            _logger.LogInformation("{UseCase} - User updated successfully; Id: {id}", nameof(UpdateUserCommand), command.Id);
 
             output.AddResult(null);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "{UseCase} - An unexpected error has occurred;",
-                nameof(UpdateUserCommand));
+            _logger.LogError(e, "{UseCase} - An unexpected error has occurred;", nameof(UpdateUserCommand));
 
-            output.AddErrorMessage($"An unexpected error occurred while update the user");
+            output
+                .AddError($"An unexpected error occurred while update the user")
+                .SetErrorType(ErrorType.Unexpected);
         }
 
         return output;

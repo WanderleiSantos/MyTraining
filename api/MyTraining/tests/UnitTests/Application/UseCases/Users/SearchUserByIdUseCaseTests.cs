@@ -1,4 +1,5 @@
 using System.Globalization;
+using Application.Shared.Models;
 using Application.UseCases.Users.SearchUserById;
 using Application.UseCases.Users.SearchUserById.Commands;
 using Application.UseCases.Users.SearchUserById.Responses;
@@ -69,10 +70,10 @@ public class SearchUserByIdUseCaseTests
 
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
 
-        output.IsValid.Should().BeTrue();
+        output.IsValid.Should().BeFalse();
         output.Result.Should().BeNull();
-        output.HasMessages.Should().BeTrue();
-        output.Messages.Should().Contain(e => e.Description.Equals("User does not exist"));
+        output.ErrorType.Should().Be(ErrorType.NotFound);
+        output.ErrorMessages.Should().Contain(e => e.Description.Equals("User does not exist"));
         
         A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
     }

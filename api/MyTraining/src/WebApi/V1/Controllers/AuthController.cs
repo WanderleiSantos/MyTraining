@@ -40,7 +40,7 @@ public class AuthController : MainController
         catch (Exception ex)
         {
             _logger.LogError(ex, "An unexpected error occurred.");
-            return BadRequest();
+            return InternalServerError("An unexpected error occurred.");
         }
     }
     
@@ -59,7 +59,7 @@ public class AuthController : MainController
         catch (Exception ex)
         {
             _logger.LogError(ex, "An unexpected error occurred.");
-            return BadRequest();
+            return InternalServerError("An unexpected error occurred.");
         }
     }
 }

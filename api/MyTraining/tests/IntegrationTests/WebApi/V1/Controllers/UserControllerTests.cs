@@ -80,7 +80,7 @@ public class UserControllerTests : IAsyncLifetime
         var content = await response.Content.ReadAsStringAsync();
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        response.StatusCode.Should().Be(HttpStatusCode.Conflict);
         content.Should().Contain("E-mail already registered");
     }
     

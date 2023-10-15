@@ -50,7 +50,7 @@ public class UserController : MainController
         catch (Exception ex)
         {
             _logger.LogError(ex, "An unexpected error occurred.");
-            return BadRequest();
+            return InternalServerError("An unexpected error occurred.");
         }
     }
     
@@ -63,12 +63,12 @@ public class UserController : MainController
             var command = new SearchUserByIdCommand() { Id = CurrentUserService.UserId };
             var output = await _searchUserByIdUseCase.ExecuteAsync(command, cancellationToken);
 
-            return output is { IsValid: true, Result: null } ? NotFound(output.Messages) : CustomResponse(output);
+            return CustomResponse(output);
         }
         catch (Exception e)
         { 
             _logger.LogError(e, "An unexpected error occurred");
-            return BadRequest();
+            return InternalServerError("An unexpected error occurred.");
         }
     }
     
@@ -87,7 +87,7 @@ public class UserController : MainController
         catch (Exception e)
         { 
             _logger.LogError(e, "An unexpected error occurred");
-            return BadRequest();
+            return InternalServerError("An unexpected error occurred.");
         }
     }
     
@@ -106,7 +106,7 @@ public class UserController : MainController
         catch (Exception e)
         { 
             _logger.LogError(e, "An unexpected error occurred");
-            return BadRequest();
+            return InternalServerError("An unexpected error occurred.");
         }
     }
 }

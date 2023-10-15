@@ -19,6 +19,19 @@ public abstract class MainController : ControllerBase
         if (output.IsValid)
             return Ok(output.Result);
 
-        return BadRequest(output.ErrorMessages);
+        return output.ErrorType switch
+        {
+            null => BadRequest(output.ErrorMessages),
+            ErrorType.Validation => BadRequest(output.ErrorMessages),
+            ErrorType.Conflict => Conflict(output.ErrorMessages),
+            ErrorType.NotFound => NotFound(output.ErrorMessages),
+            ErrorType.Unauthorized => Unauthorized(output.ErrorMessages),
+            _ => InternalServerError(output.ErrorMessages)
+        };
+    }
+
+    protected ActionResult InternalServerError(object? error)
+    {
+        return StatusCode(StatusCodes.Status500InternalServerError, error);
     }
 }

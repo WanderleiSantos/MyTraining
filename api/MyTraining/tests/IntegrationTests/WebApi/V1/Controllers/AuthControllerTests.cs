@@ -85,7 +85,7 @@ public class AuthControllerTests : IAsyncLifetime
 
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         errorMessages.Should().NotBeNull();
         errorMessages.Should().HaveCount(1);
         errorMessages.Should().Contain(e => e.Description.Equals("User does not exist"));
@@ -112,7 +112,7 @@ public class AuthControllerTests : IAsyncLifetime
 
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         errorMessages.Should().NotBeNull();
         errorMessages.Should().HaveCount(1);
         errorMessages.Should().Contain(e => e.Description.Equals("User does not exist"));
@@ -214,7 +214,7 @@ public class AuthControllerTests : IAsyncLifetime
             new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         errorMessages.Should().NotBeNull();
         errorMessages.Should().HaveCount(1);
         errorMessages.Should().Contain(e => e.Description.Equals("Token is expired or User is not valid"));

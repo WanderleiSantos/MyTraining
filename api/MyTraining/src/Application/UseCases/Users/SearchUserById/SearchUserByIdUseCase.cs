@@ -1,3 +1,4 @@
+using Application.Shared.Extensions;
 using Application.Shared.Models;
 using Application.UseCases.Users.SearchUserById.Commands;
 using FluentValidation;
@@ -32,27 +33,31 @@ public class SearchUserByIdUseCase : ISearchUserByIdUseCase
             if (!output.IsValid)
                 return output;
 
-            _logger.LogInformation("{UseCase} - Search user by id: {id}", 
-                nameof(SearchUserByIdUseCase), command.Id);
+            _logger.LogInformation("{UseCase} - Search user by id: {id}", nameof(SearchUserByIdUseCase), command.Id);
 
             var user = await _repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (user == null)
             {
-                output.AddMessage("User does not exist");
                 _logger.LogWarning("User does not exist");
+                
+                output
+                    .AddError("User does not exist")
+                    .SetErrorType(ErrorType.NotFound);
                 return output;
             }
 
-            _logger.LogInformation("{UseCase} - Search user finish successfully, id: {id}",
-                nameof(SearchUserByIdUseCase), command.Id);
+            _logger.LogInformation("{UseCase} - Search user finish successfully, id: {id}", nameof(SearchUserByIdUseCase), command.Id);
 
             output.AddResult(user.MapToResponse());
         }
         catch (Exception e)
         {
             _logger.LogError(e,"{UseCase} -  An unexpected error has occurred;", nameof(SearchUserByIdUseCase));
-            output.AddErrorMessage("An unexpected error occurred while searching the user.");
+            
+            output
+                .AddError("An unexpected error occurred while searching the user.")
+                .SetErrorType(ErrorType.Unexpected);
         }
 
         return output;

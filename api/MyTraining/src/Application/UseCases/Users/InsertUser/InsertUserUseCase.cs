@@ -38,14 +38,15 @@ public class InsertUserUseCase : IInsertUserUseCase
 
             if (await _repository.ExistsEmailRegisteredAsync(command.Email, cancellationToken))
             {
-                output.AddErrorMessage("Email","E-mail already registered");
-                _logger.LogWarning("{UseCase} - E-mail already registered; Email {email}", 
-                    nameof(InsertUserUseCase), command.Email);
+                _logger.LogWarning("{UseCase} - E-mail already registered; Email {email}", nameof(InsertUserUseCase), command.Email);
+                
+                output
+                    .AddError("Email","E-mail already registered")
+                    .SetErrorType(ErrorType.Conflict);
                 return output;
             }
 
-            _logger.LogInformation("{UseCase} - Inserting user; Email: {Email}",
-                nameof(InsertUserUseCase), command.Email);
+            _logger.LogInformation("{UseCase} - Inserting user; Email: {Email}", nameof(InsertUserUseCase), command.Email);
 
             var result = new User(command.FirstName, command.LastName, command.Email, command.Password.HashPassword());
 
@@ -55,17 +56,17 @@ public class InsertUserUseCase : IInsertUserUseCase
             
             await _repository.UnitOfWork.CommitAsync();
 
-            _logger.LogInformation("{UseCase} - Inserted user successfully; Name: {Email}",
-                nameof(InsertUserUseCase), command.Email);
+            _logger.LogInformation("{UseCase} - Inserted user successfully; Name: {Email}", nameof(InsertUserUseCase), command.Email);
             
             output.AddResult(null);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "{UseCase} - An unexpected error has occurred;",
-                nameof(InsertUserUseCase));
+            _logger.LogError(ex, "{UseCase} - An unexpected error has occurred;", nameof(InsertUserUseCase));
 
-            output.AddErrorMessage($"An unexpected error occurred while inserting the user");
+            output
+                .AddError($"An unexpected error occurred while inserting the user")
+                .SetErrorType(ErrorType.Unexpected);
         }
         
         return output;
