@@ -1,4 +1,5 @@
 using Application.Shared.Models;
+using Core.Common.Errors;
 using Core.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,14 +20,14 @@ public abstract class MainController : ControllerBase
         if (output.IsValid)
             return Ok(output.Result);
 
-        return output.ErrorType switch
+        return output.FirstError switch
         {
-            null => BadRequest(output.ErrorMessages),
-            EErrorType.Validation => BadRequest(output.ErrorMessages),
-            EErrorType.Conflict => Conflict(output.ErrorMessages),
-            EErrorType.NotFound => NotFound(output.ErrorMessages),
-            EErrorType.Unauthorized => Unauthorized(output.ErrorMessages),
-            _ => InternalServerError(output.ErrorMessages)
+            null => BadRequest(output.Errors),
+            ErrorType.Validation => BadRequest(output.Errors),
+            ErrorType.Conflict => Conflict(output.Errors),
+            ErrorType.NotFound => NotFound(output.Errors),
+            ErrorType.Unauthorized => Unauthorized(output.Errors),
+            _ => InternalServerError(output.Errors)
         };
     }
 

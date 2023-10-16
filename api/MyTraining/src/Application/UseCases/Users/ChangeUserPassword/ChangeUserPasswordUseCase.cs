@@ -1,6 +1,7 @@
 using Application.Shared.Extensions;
 using Application.Shared.Models;
 using Application.UseCases.Users.ChangeUserPassword.Commands;
+using Core.Common.Errors;
 using Core.Interfaces.Persistence.Repositories;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
@@ -38,9 +39,8 @@ public class ChangeUserPasswordUseCase : IChangeUserPasswordUseCase
             if (user == null)
             {
                 _logger.LogWarning("User does not exist");
-                
-                output.AddError("User does not exist")
-                    .SetErrorType(EErrorType.NotFound);
+
+                output.AddError(Errors.User.DoesNotExist);
                 return output;
             }
             
@@ -48,9 +48,7 @@ public class ChangeUserPasswordUseCase : IChangeUserPasswordUseCase
             {
                 _logger.LogWarning("{UseCase} - Old password does not match", nameof(ChangeUserPasswordUseCase));
                 
-                output
-                    .AddError("Old password does not match")
-                    .SetErrorType(EErrorType.Validation);
+                output.AddError(Errors.Authentication.InvalidPassword);
                 return output;
             }
             
@@ -68,9 +66,7 @@ public class ChangeUserPasswordUseCase : IChangeUserPasswordUseCase
         {
             _logger.LogError(e, "{UseCase} - An unexpected error has occurred;", nameof(ChangeUserPasswordUseCase));
 
-            output
-                .AddError($"An unexpected error occurred while update the user password")
-                .SetErrorType(EErrorType.Unexpected);
+            output.AddError(Error.Unexpected());
         }
 
         return output;

@@ -1,5 +1,6 @@
 using Application.Shared.Models;
 using Application.UseCases.Users.UpdateUser.Commands;
+using Core.Common.Errors;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Core.Interfaces.Persistence.Repositories;
@@ -38,9 +39,7 @@ public class UpdateUserUseCase : IUpdateUserUseCase
             {
                 _logger.LogWarning("User does not exist");
                 
-                output
-                    .AddError("User does not exist")
-                    .SetErrorType(EErrorType.NotFound);
+                output.AddError(Errors.User.DoesNotExist);
                 return output;
             }
             
@@ -58,9 +57,7 @@ public class UpdateUserUseCase : IUpdateUserUseCase
         {
             _logger.LogError(e, "{UseCase} - An unexpected error has occurred;", nameof(UpdateUserCommand));
 
-            output
-                .AddError($"An unexpected error occurred while update the user")
-                .SetErrorType(EErrorType.Unexpected);
+            output.AddError(Error.Unexpected());
         }
 
         return output;

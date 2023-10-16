@@ -9,6 +9,7 @@ using Application.Shared.Models;
 using Application.UseCases.Auth.RefreshToken.Responses;
 using Application.UseCases.Auth.SignIn.Responses;
 using Bogus;
+using Core.Common.Errors;
 using FluentAssertions;
 using SharedTests.Extensions;
 using WebApi.V1.Models;

@@ -1,6 +1,7 @@
 using Application.Shared.Mappers;
 using Application.Shared.Models;
 using Application.UseCases.Exercises.InsertExercise.Commands;
+using Core.Common.Errors;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Core.Entities;
@@ -49,10 +50,9 @@ public class InsertExerciseUseCase : IInsertExerciseUseCase
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "{UseCase} - An unexpected error has occurred;",
-                nameof(InsertExerciseUseCase));
+            _logger.LogError(e, "{UseCase} - An unexpected error has occurred.", nameof(InsertExerciseUseCase));
 
-            output.AddErrorMessage($"An unexpected error occurred while inserting the exercise");
+            output.AddError(Error.Unexpected());
         }
 
         return output;

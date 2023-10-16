@@ -4,6 +4,7 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Application.Shared.Extensions;
 using Application.UseCases.Users.InsertUser.Services;
+using Core.Common.Errors;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
 
@@ -40,9 +41,7 @@ public class InsertUserUseCase : IInsertUserUseCase
             {
                 _logger.LogWarning("{UseCase} - E-mail already registered; Email {email}", nameof(InsertUserUseCase), command.Email);
                 
-                output
-                    .AddError("Email","E-mail already registered")
-                    .SetErrorType(EErrorType.Conflict);
+                output.AddError(Errors.User.DuplicateEmail);
                 return output;
             }
 
@@ -64,9 +63,7 @@ public class InsertUserUseCase : IInsertUserUseCase
         {
             _logger.LogError(ex, "{UseCase} - An unexpected error has occurred;", nameof(InsertUserUseCase));
 
-            output
-                .AddError($"An unexpected error occurred while inserting the user")
-                .SetErrorType(EErrorType.Unexpected);
+            output.AddError(Error.Unexpected());
         }
         
         return output;

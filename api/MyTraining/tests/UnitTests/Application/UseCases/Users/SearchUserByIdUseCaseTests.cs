@@ -5,6 +5,7 @@ using Application.UseCases.Users.SearchUserById.Commands;
 using Application.UseCases.Users.SearchUserById.Responses;
 using Application.UseCases.Users.SearchUserById.Validations;
 using Bogus;
+using Core.Common.Errors;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
 using FakeItEasy;
@@ -72,7 +73,7 @@ public class SearchUserByIdUseCaseTests
 
         output.IsValid.Should().BeFalse();
         output.Result.Should().BeNull();
-        output.ErrorType.Should().Be(EErrorType.NotFound);
+        output.ErrorType.Should().Be(ErrorType.NotFound);
         output.ErrorMessages.Should().Contain(e => e.Description.Equals("User does not exist"));
         
         A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();

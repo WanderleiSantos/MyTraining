@@ -1,5 +1,6 @@
 using Application.Shared.Models;
 using Application.UseCases.Exercises.UpdateExercise.Commands;
+using Core.Common.Errors;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Core.Interfaces.Persistence.Repositories;
@@ -38,7 +39,7 @@ public class UpdateExerciseUseCase : IUpdateExerciseUseCase
             
             if (exercise == null)
             {
-                output.AddErrorMessage("Exercise does not exist.");
+                output.AddError(Errors.Exercise.DoesNotExist);
                 _logger.LogWarning("Exercise does not exist.");
                 return output;
             }
@@ -57,7 +58,7 @@ public class UpdateExerciseUseCase : IUpdateExerciseUseCase
             _logger.LogError(e, "{UseCase} - An unexpected error has occurred;",
                 nameof(UpdateExerciseUseCase));
 
-            output.AddErrorMessage($"An unexpected error occurred while update the exercise");
+            output.AddError(Error.Unexpected());
         }
 
         return output;

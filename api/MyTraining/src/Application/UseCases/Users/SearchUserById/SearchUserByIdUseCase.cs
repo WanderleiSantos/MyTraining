@@ -4,6 +4,7 @@ using Application.UseCases.Users.SearchUserById.Commands;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Application.Shared.Mappers;
+using Core.Common.Errors;
 using Core.Interfaces.Persistence.Repositories;
 
 namespace Application.UseCases.Users.SearchUserById;
@@ -41,9 +42,7 @@ public class SearchUserByIdUseCase : ISearchUserByIdUseCase
             {
                 _logger.LogWarning("User does not exist");
                 
-                output
-                    .AddError("User does not exist")
-                    .SetErrorType(EErrorType.NotFound);
+                output.AddError(Errors.User.DoesNotExist);
                 return output;
             }
 
@@ -55,9 +54,7 @@ public class SearchUserByIdUseCase : ISearchUserByIdUseCase
         {
             _logger.LogError(e,"{UseCase} -  An unexpected error has occurred;", nameof(SearchUserByIdUseCase));
             
-            output
-                .AddError("An unexpected error occurred while searching the user.")
-                .SetErrorType(EErrorType.Unexpected);
+            output.AddError(Error.Unexpected());
         }
 
         return output;

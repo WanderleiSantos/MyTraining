@@ -3,6 +3,7 @@ using Application.UseCases.Exercises.SearchExerciseById.Commands;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Application.Shared.Mappers;
+using Core.Common.Errors;
 using Core.Interfaces.Persistence.Repositories;
 
 namespace Application.UseCases.Exercises.SearchExerciseById;
@@ -45,7 +46,7 @@ public class SearchExerciseByIdUseCase : ISearchExerciseByIdUseCase
         catch (Exception e)
         {
             _logger.LogError("{UseCase} -  An unexpected error has occurred;", nameof(SearchExerciseByIdUseCase));
-            output.AddErrorMessage("An unexpected error occurred while searching the exercise.");
+            output.AddError(Error.Unexpected());
         }
 
         return output;

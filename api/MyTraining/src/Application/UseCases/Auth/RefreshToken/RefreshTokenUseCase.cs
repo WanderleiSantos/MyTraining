@@ -1,8 +1,8 @@
 using Application.Shared.Authentication;
-using Application.Shared.Extensions;
 using Application.Shared.Models;
 using Application.UseCases.Auth.RefreshToken.Commands;
 using Application.UseCases.Auth.RefreshToken.Responses;
+using Core.Common.Errors;
 using Core.Interfaces.Persistence.Repositories;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
@@ -37,17 +37,15 @@ public class RefreshTokenUseCase : IRefreshTokenUseCase
             if (!output.IsValid)
                 return output;
 
-            _logger.LogInformation("{UseCase} - Validating token", nameof(RefreshTokenUseCase));
+            _logger.LogInformation("{UseCase} - Validating token.", nameof(RefreshTokenUseCase));
 
             var (validToken, email) = _jwtTokenGenerator.ValidateRefreshToken(command.RefreshToken);
 
             if (!validToken || email == null)
             {
-                _logger.LogWarning("{UseCase} - Token is expired or User is not valid", nameof(RefreshTokenUseCase));
-                
-                output
-                    .AddError("Token is expired or User is not valid")
-                    .SetErrorType(EErrorType.Unauthorized);
+                _logger.LogWarning("{UseCase} - Token is expired or User is not valid.", nameof(RefreshTokenUseCase));
+
+                output.AddError(Errors.Authentication.InvalidToken);
                 return output;
             }
             
@@ -55,36 +53,27 @@ public class RefreshTokenUseCase : IRefreshTokenUseCase
 
             if (user is not { Active: true })
             {
-                _logger.LogWarning("{UseCase} - User does not exist or inactive; Email {Email}", nameof(RefreshTokenUseCase), email);
-                
-                output
-                    .AddError("User does not exist or inactive")
-                    .SetErrorType(EErrorType.Unauthorized);
+                _logger.LogWarning("{UseCase} - User does not exist or inactive; Email {Email}.", nameof(RefreshTokenUseCase), email);
+
+                output.AddError(Errors.User.DoesNotExistOrInactive);
                 return output;
             }
 
-            _logger.LogInformation("{UseCase} - Generating authentication token; Email: {Email}", nameof(RefreshTokenUseCase), email);
-
-            var token = _jwtTokenGenerator.CreateAccessToken(user.Id, user.Email);
-            var refreshToken = _jwtTokenGenerator.CreateRefreshToken(user.Id, user.Email);
-            var response = new RefreshTokenResponse()
-            {
-                Token = token,
-                RefreshToken = refreshToken
-            };
+            _logger.LogInformation("{UseCase} - Generating authentication token; Email: {Email}.", nameof(RefreshTokenUseCase), email);
             
-            output.AddResult(response);
+            output.AddResult(new RefreshTokenResponse()
+            {
+                Token = _jwtTokenGenerator.CreateAccessToken(user.Id, user.Email),
+                RefreshToken = _jwtTokenGenerator.CreateRefreshToken(user.Id, user.Email)
+            });
 
-            _logger.LogInformation("{UseCase} - Token generated successfully; Email: {Email}", nameof(RefreshTokenUseCase), email);
+            _logger.LogInformation("{UseCase} - Token generated successfully; Email: {Email}.", nameof(RefreshTokenUseCase), email);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "{UseCase} - An unexpected error has occurred;",
-                nameof(RefreshTokenUseCase));
+            _logger.LogError(ex, "{UseCase} - An unexpected error has occurred.", nameof(RefreshTokenUseCase));
 
-            output
-                .AddError("An unexpected error has occurred")
-                .SetErrorType(EErrorType.Unexpected);
+            output.AddError(Error.Unexpected());
         }
 
         return output;
