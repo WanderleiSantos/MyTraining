@@ -1,9 +1,10 @@
 using Application.Shared.Models;
 using Application.UseCases.Users.UpdateUser.Commands;
-using Core.Common.Errors;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Core.Interfaces.Persistence.Repositories;
+using Core.Shared.Errors;
+using Errors = Core.Shared.Errors.Errors;
 
 namespace Application.UseCases.Users.UpdateUser;
 

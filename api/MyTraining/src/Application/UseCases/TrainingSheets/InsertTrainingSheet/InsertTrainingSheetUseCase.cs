@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Application.Shared.Extensions;
 using Application.Shared.Mappers;
 using Application.UseCases.TrainingSheets.Services;
-using Core.Common.Errors;
+using Core.Shared.Errors;
 
 namespace Application.UseCases.TrainingSheets.InsertTrainingSheet;
 

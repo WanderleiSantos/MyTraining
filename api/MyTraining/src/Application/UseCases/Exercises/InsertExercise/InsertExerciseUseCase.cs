@@ -1,12 +1,11 @@
 using Application.Shared.Mappers;
 using Application.Shared.Models;
 using Application.UseCases.Exercises.InsertExercise.Commands;
-using Core.Common.Errors;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
-using Infrastructure.Persistence;
+using Core.Shared.Errors;
 
 namespace Application.UseCases.Exercises.InsertExercise;
 

@@ -1,3 +1,4 @@
+using Application.UseCases.Exercises.InsertExercise.Responses;
 using Application.UseCases.Exercises.SearchAllExercises.Responses;
 using Application.UseCases.Exercises.SearchExerciseById;
 using Application.UseCases.Exercises.SearchExerciseById.Responses;

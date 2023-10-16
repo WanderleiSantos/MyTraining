@@ -2,10 +2,11 @@ using Application.Shared.Authentication;
 using Application.Shared.Models;
 using Application.UseCases.Auth.RefreshToken.Commands;
 using Application.UseCases.Auth.RefreshToken.Responses;
-using Core.Common.Errors;
 using Core.Interfaces.Persistence.Repositories;
+using Core.Shared.Errors;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using Errors = Core.Shared.Errors.Errors;
 
 namespace Application.UseCases.Auth.RefreshToken;
 

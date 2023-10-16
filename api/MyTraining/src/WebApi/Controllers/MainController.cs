@@ -1,19 +1,19 @@
+using Application.Shared.Authentication;
 using Application.Shared.Models;
-using Core.Common.Errors;
-using Core.Interfaces.Services;
+using Core.Shared.Errors;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Common.Error;
+using WebApi.Shared.Error;
 
 namespace WebApi.Controllers;
 
 [ApiController]
 public abstract class MainController : ControllerBase
 {
-    protected readonly ICurrentUserService CurrentUserService;
+    protected readonly ICurrentUserService CurrentUser;
 
-    protected MainController(ICurrentUserService currentUserService)
+    protected MainController(ICurrentUserService currentUser)
     {
-        CurrentUserService = currentUserService;
+        CurrentUser = currentUser;
     }
     
     protected ActionResult CustomResponse(Output output)

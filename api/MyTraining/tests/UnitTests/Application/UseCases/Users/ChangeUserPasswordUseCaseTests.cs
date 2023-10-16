@@ -6,11 +6,13 @@ using Application.UseCases.Users.ChangeUserPassword.Validations;
 using Bogus;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
+using Core.Shared.Errors;
 using FakeItEasy;
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using SharedTests.Extensions;
+using Errors = Core.Shared.Errors.Errors;
 
 namespace UnitTests.Application.UseCases.Users;
 
@@ -79,7 +81,7 @@ public class ChangeUserPasswordUseCaseTests
         //Assert
         output.IsValid.Should().BeFalse();
         output.Errors.Should().HaveCount(1);
-        output.Errors.Should().Contain(e => e.Description.Equals("User does not exist"));
+        output.Errors.Should().Contain(Errors.User.DoesNotExist);
         
         A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
@@ -101,7 +103,7 @@ public class ChangeUserPasswordUseCaseTests
         //Assert
         output.IsValid.Should().BeFalse();
         output.Errors.Should().HaveCount(1);
-        output.Errors.Should().Contain(e => e.Description.Equals("Old password does not match"));
+        output.Errors.Should().Contain(Errors.User.InvalidPassword);
         
         A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
@@ -144,7 +146,7 @@ public class ChangeUserPasswordUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.Errors.Should().Contain(e => e.Description.Equals("An unexpected error occurred while update the user password"));
+        output.Errors.Should().Contain(Error.Unexpected());
         
         A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();

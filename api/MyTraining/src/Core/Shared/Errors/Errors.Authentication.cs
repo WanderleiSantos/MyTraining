@@ -1,4 +1,4 @@
-namespace Core.Common.Errors;
+namespace Core.Shared.Errors;
 
 public static partial class Errors
 {

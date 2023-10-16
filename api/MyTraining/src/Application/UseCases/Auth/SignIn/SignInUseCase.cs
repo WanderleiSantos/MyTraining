@@ -5,8 +5,9 @@ using Application.UseCases.Auth.SignIn.Responses;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Application.Shared.Extensions;
-using Core.Common.Errors;
 using Core.Interfaces.Persistence.Repositories;
+using Core.Shared.Errors;
+using Errors = Core.Shared.Errors.Errors;
 
 namespace Application.UseCases.Auth.SignIn;
 

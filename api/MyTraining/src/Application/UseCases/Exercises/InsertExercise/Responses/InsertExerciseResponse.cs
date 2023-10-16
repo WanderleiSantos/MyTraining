@@ -1,4 +1,4 @@
-namespace Application.UseCases.Exercises.SearchExerciseById;
+namespace Application.UseCases.Exercises.InsertExercise.Responses;
 
 public class InsertExerciseResponse
 {

@@ -4,9 +4,10 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Application.Shared.Extensions;
 using Application.UseCases.Users.InsertUser.Services;
-using Core.Common.Errors;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
+using Core.Shared.Errors;
+using Errors = Core.Shared.Errors.Errors;
 
 namespace Application.UseCases.Users.InsertUser;
 

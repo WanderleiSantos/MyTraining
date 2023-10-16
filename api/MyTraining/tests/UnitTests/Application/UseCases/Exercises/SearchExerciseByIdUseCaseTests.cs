@@ -6,6 +6,7 @@ using Application.UseCases.Exercises.SearchExerciseById.Validations;
 using Bogus;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
+using Core.Shared.Errors;
 using FakeItEasy;
 using FluentAssertions;
 using FluentValidation;
@@ -108,7 +109,7 @@ public class SearchExerciseByIdUseCaseTests
         //Assert
         output.IsValid.Should().BeFalse();
         output.Errors.Should()
-            .Contain(e => e.Description.Equals("An unexpected error occurred while searching the exercise."));
+            .Contain(Error.Unexpected());
     }
 
     private static SearchExerciseByIdCommand CreateCommand() => new SearchExerciseByIdCommand()

@@ -1,5 +1,5 @@
+using Application.Shared.Authentication;
 using Application.UseCases.TrainingSheets.InsertTrainingSheet;
-using Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +32,7 @@ public class TrainingSheetController : MainController
         try
         {
             var output =
-                await _insertTrainingSheetUseCase.ExecuteAsync(input.MapToApplication(this.CurrentUserService.UserId),
+                await _insertTrainingSheetUseCase.ExecuteAsync(input.MapToApplication(this.CurrentUser.UserId),
                     cancellationToken);
 
             return CustomResponse(output);

@@ -10,12 +10,12 @@ using Application.Shared.Models;
 using Application.UseCases.Auth.SignIn.Responses;
 using Application.UseCases.Users.SearchUserById.Responses;
 using Bogus;
-using Core.Common.Errors;
 using FluentAssertions;
 using SharedTests.Extensions;
-using WebApi.Common.Error;
+using WebApi.Shared.Error;
 using WebApi.V1.Models;
 using Xunit;
+using Errors = Core.Shared.Errors.Errors;
 
 namespace IntegrationTests.WebApi.V1.Controllers;
 
@@ -83,7 +83,7 @@ public class UserControllerTests : IAsyncLifetime
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Conflict);
-        content.Should().Contain("mail is already taken.");
+        content.Should().Contain(Errors.User.DuplicateEmail.Description);
     }
     
     [Fact]

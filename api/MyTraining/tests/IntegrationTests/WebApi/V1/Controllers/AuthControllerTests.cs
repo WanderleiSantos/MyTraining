@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 using Application.UseCases.Auth.RefreshToken.Responses;
 using Application.UseCases.Auth.SignIn.Responses;
 using Bogus;
-using Core.Common.Errors;
 using FluentAssertions;
 using SharedTests.Extensions;
-using WebApi.Common.Error;
+using WebApi.Shared.Error;
 using WebApi.V1.Models;
 using Xunit;
+using Errors = Core.Shared.Errors.Errors;
 
 namespace IntegrationTests.WebApi.V1.Controllers;
 

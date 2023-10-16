@@ -4,8 +4,9 @@ using Application.UseCases.Users.SearchUserById.Commands;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Application.Shared.Mappers;
-using Core.Common.Errors;
 using Core.Interfaces.Persistence.Repositories;
+using Core.Shared.Errors;
+using Errors = Core.Shared.Errors.Errors;
 
 namespace Application.UseCases.Users.SearchUserById;
 

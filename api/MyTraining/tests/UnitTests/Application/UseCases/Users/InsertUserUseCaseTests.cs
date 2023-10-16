@@ -9,8 +9,10 @@ using Application.UseCases.Users.InsertUser.Services;
 using Application.UseCases.Users.InsertUser.Validations;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
+using Core.Shared.Errors;
 using FakeItEasy;
 using SharedTests.Extensions;
+using Errors = Core.Shared.Errors.Errors;
 
 namespace UnitTests.Application.UseCases.Users;
 
@@ -104,7 +106,7 @@ public class InsertUserUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.Errors.Should().Contain(e => e.Description.Contains("E-mail already registered")).Which.Code.Should().Be("Email");
+        output.Errors.Should().Contain(Errors.User.DuplicateEmail);
         
         A.CallTo(() => _repositoryMock.ExistsEmailRegisteredAsync(command.Email, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.AddAsync(A<User>._, A<CancellationToken>._)).MustNotHaveHappened();
@@ -151,7 +153,7 @@ public class InsertUserUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.Errors.Should().Contain(e => e.Description.Equals("An unexpected error occurred while inserting the user"));
+        output.Errors.Should().Contain(Error.Unexpected());
         
         A.CallTo(() => _repositoryMock.ExistsEmailRegisteredAsync(command.Email, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.AddAsync(A<User>._, A<CancellationToken>._)).MustNotHaveHappened();

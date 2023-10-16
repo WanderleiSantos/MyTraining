@@ -3,8 +3,8 @@ using Application.UseCases.Exercises.SearchExerciseById.Commands;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Application.Shared.Mappers;
-using Core.Common.Errors;
 using Core.Interfaces.Persistence.Repositories;
+using Core.Shared.Errors;
 
 namespace Application.UseCases.Exercises.SearchExerciseById;
 

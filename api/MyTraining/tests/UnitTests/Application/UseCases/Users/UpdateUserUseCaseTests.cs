@@ -5,11 +5,13 @@ using Application.UseCases.Users.UpdateUser.Validations;
 using Bogus;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
+using Core.Shared.Errors;
 using FakeItEasy;
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using SharedTests.Extensions;
+using Errors = Core.Shared.Errors.Errors;
 
 namespace UnitTests.Application.UseCases.Users;
 
@@ -77,7 +79,7 @@ public class UpdateUserUseCaseTests
 
         //Assert
         output.IsValid.Should().BeFalse();
-        output.Errors.Should().Contain(e => e.Description.Equals("User does not exist"));
+        output.Errors.Should().Contain(Errors.User.DoesNotExist);
         
         A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
@@ -125,7 +127,7 @@ public class UpdateUserUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.Errors.Should().Contain(e => e.Description.Equals("An unexpected error occurred while update the user"));
+        output.Errors.Should().Contain(Error.Unexpected());
         
         A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();

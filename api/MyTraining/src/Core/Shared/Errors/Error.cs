@@ -1,4 +1,4 @@
-namespace Core.Common.Errors;
+namespace Core.Shared.Errors;
 
 public readonly record struct Error(string Code, string Description, ErrorType Type)
 {
