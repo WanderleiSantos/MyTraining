@@ -9,8 +9,7 @@ public class Output
     
     public object? Result { get; private set; }
     public bool IsValid => !_errors.Any();
-    public IReadOnlyCollection<ErrorOutput> Errors => _errors.Select(e => new ErrorOutput(e.Code, e.Description)).ToList(); 
-
+    public IReadOnlyCollection<Error> Errors => _errors;
     public ErrorType? FirstError => _errors.FirstOrDefault().Type;
 
     public void AddError(string code, string description, ErrorType type) => _errors.Add(Error.Custom(type, code, description));

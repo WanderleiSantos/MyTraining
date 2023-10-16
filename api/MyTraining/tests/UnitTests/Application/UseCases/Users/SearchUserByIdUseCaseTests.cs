@@ -54,9 +54,9 @@ public class SearchUserByIdUseCaseTests
 
         //Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().HaveCount(2);
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Id' must not be empty.")).Which.Code.Should().Be("Id");
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Id' must not be equal to '00000000-0000-0000-0000-000000000000'.")).Which.Code.Should().Be("Id");
+        output.Errors.Should().HaveCount(2);
+        output.Errors.Should().Contain(e => e.Description.Equals("'Id' must not be empty.")).Which.Code.Should().Be("Id");
+        output.Errors.Should().Contain(e => e.Description.Equals("'Id' must not be equal to '00000000-0000-0000-0000-000000000000'.")).Which.Code.Should().Be("Id");
         
         A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
@@ -73,8 +73,8 @@ public class SearchUserByIdUseCaseTests
 
         output.IsValid.Should().BeFalse();
         output.Result.Should().BeNull();
-        output.ErrorType.Should().Be(ErrorType.NotFound);
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("User does not exist"));
+        output.FirstError.Should().Be(ErrorType.NotFound);
+        output.Errors.Should().Contain(e => e.Description.Equals("User does not exist"));
         
         A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
     }
@@ -118,7 +118,7 @@ public class SearchUserByIdUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("An unexpected error occurred while searching the user."));
+        output.Errors.Should().Contain(e => e.Description.Equals("An unexpected error occurred while searching the user."));
         
         A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
     }

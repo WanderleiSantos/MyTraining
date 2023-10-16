@@ -2,6 +2,7 @@ using Application.Shared.Models;
 using Core.Common.Errors;
 using Core.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Common.Error;
 
 namespace WebApi.Controllers;
 
@@ -23,16 +24,21 @@ public abstract class MainController : ControllerBase
         return output.FirstError switch
         {
             null => BadRequest(output.Errors),
-            ErrorType.Validation => BadRequest(output.Errors),
-            ErrorType.Conflict => Conflict(output.Errors),
-            ErrorType.NotFound => NotFound(output.Errors),
-            ErrorType.Unauthorized => Unauthorized(output.Errors),
-            _ => InternalServerError(output.Errors)
+            ErrorType.Validation => BadRequest(ErrorMapping(output.Errors)),
+            ErrorType.Conflict => Conflict(ErrorMapping(output.Errors)),
+            ErrorType.NotFound => NotFound(ErrorMapping(output.Errors)),
+            ErrorType.Unauthorized => Unauthorized(ErrorMapping(output.Errors)),
+            _ => InternalServerError(ErrorMapping(output.Errors))
         };
     }
 
     protected ActionResult InternalServerError(object? error)
     {
         return StatusCode(StatusCodes.Status500InternalServerError, error);
+    }
+
+    private static List<ErrorOutput> ErrorMapping(IEnumerable<Error> errors)
+    {
+        return errors.Select(e => new ErrorOutput(e.Code, e.Description)).ToList();
     }
 }

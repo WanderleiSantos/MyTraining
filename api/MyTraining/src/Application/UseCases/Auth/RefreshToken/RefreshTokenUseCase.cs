@@ -37,13 +37,13 @@ public class RefreshTokenUseCase : IRefreshTokenUseCase
             if (!output.IsValid)
                 return output;
 
-            _logger.LogInformation("{UseCase} - Validating token.", nameof(RefreshTokenUseCase));
+            _logger.LogInformation("{UseCase} - Validating token;", nameof(RefreshTokenUseCase));
 
             var (validToken, email) = _jwtTokenGenerator.ValidateRefreshToken(command.RefreshToken);
 
             if (!validToken || email == null)
             {
-                _logger.LogWarning("{UseCase} - Token is expired or User is not valid.", nameof(RefreshTokenUseCase));
+                _logger.LogWarning("{UseCase} - Token is expired or User is not valid;", nameof(RefreshTokenUseCase));
 
                 output.AddError(Errors.Authentication.InvalidToken);
                 return output;
@@ -53,13 +53,13 @@ public class RefreshTokenUseCase : IRefreshTokenUseCase
 
             if (user is not { Active: true })
             {
-                _logger.LogWarning("{UseCase} - User does not exist or inactive; Email {Email}.", nameof(RefreshTokenUseCase), email);
+                _logger.LogWarning("{UseCase} - User does not exist or inactive; Email {Email};", nameof(RefreshTokenUseCase), email);
 
-                output.AddError(Errors.User.DoesNotExistOrInactive);
+                output.AddError(Errors.Authentication.UserInactive);
                 return output;
             }
 
-            _logger.LogInformation("{UseCase} - Generating authentication token; Email: {Email}.", nameof(RefreshTokenUseCase), email);
+            _logger.LogInformation("{UseCase} - Generating authentication token; Email: {Email};", nameof(RefreshTokenUseCase), email);
             
             output.AddResult(new RefreshTokenResponse()
             {
@@ -67,11 +67,11 @@ public class RefreshTokenUseCase : IRefreshTokenUseCase
                 RefreshToken = _jwtTokenGenerator.CreateRefreshToken(user.Id, user.Email)
             });
 
-            _logger.LogInformation("{UseCase} - Token generated successfully; Email: {Email}.", nameof(RefreshTokenUseCase), email);
+            _logger.LogInformation("{UseCase} - Token generated successfully; Email: {Email};", nameof(RefreshTokenUseCase), email);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "{UseCase} - An unexpected error has occurred.", nameof(RefreshTokenUseCase));
+            _logger.LogError(ex, "{UseCase} - An unexpected error has occurred;", nameof(RefreshTokenUseCase));
 
             output.AddError(Error.Unexpected());
         }

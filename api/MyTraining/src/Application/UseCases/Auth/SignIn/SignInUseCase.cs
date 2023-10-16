@@ -38,13 +38,13 @@ public class SignInUseCase : ISignInUseCase
             if (!output.IsValid)
                 return output;
 
-            _logger.LogInformation("{UseCase} - Getting user; Email: {Email}.", nameof(SignInUseCase), command.Email);
+            _logger.LogInformation("{UseCase} - Getting user; Email: {Email};", nameof(SignInUseCase), command.Email);
 
             var user = await _repository.GetByEmailAsync(command.Email, cancellationToken);
 
             if (user == null || !command.Password.VerifyPassword(user.Password))
             {
-                _logger.LogWarning("{UseCase} - Invalid credentials.", nameof(SignInUseCase));
+                _logger.LogWarning("{UseCase} - Invalid credentials;", nameof(SignInUseCase));
                 
                 output.AddError(Errors.Authentication.InvalidCredentials);
                 return output;
@@ -52,13 +52,13 @@ public class SignInUseCase : ISignInUseCase
             
             if (!user.Active)
             {
-                _logger.LogWarning("{UseCase} - Inactive user; Email: {Email}.", nameof(SignInUseCase), command.Email);
+                _logger.LogWarning("{UseCase} - Inactive user; Email: {Email};", nameof(SignInUseCase), command.Email);
                 
-                output.AddError(Errors.User.Inactive);
+                output.AddError(Errors.Authentication.UserInactive);
                 return output;
             }
 
-            _logger.LogInformation("{UseCase} - Generating authentication token; Email: {Email}.", nameof(SignInUseCase), command.Email);
+            _logger.LogInformation("{UseCase} - Generating authentication token; Email: {Email};", nameof(SignInUseCase), command.Email);
 
             output.AddResult(new SignInResponse
             {
@@ -67,11 +67,11 @@ public class SignInUseCase : ISignInUseCase
                 RefreshToken = _jwtTokenGenerator.CreateRefreshToken(user.Id, user.Email)
             });
 
-            _logger.LogInformation("{UseCase} - Token generated successfully; Email: {Email}.", nameof(SignInUseCase), command.Email);
+            _logger.LogInformation("{UseCase} - Token generated successfully; Email: {Email};", nameof(SignInUseCase), command.Email);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "{UseCase} - An unexpected error has occurred.", nameof(SignInUseCase));
+            _logger.LogError(ex, "{UseCase} - An unexpected error has occurred;", nameof(SignInUseCase));
 
             output.AddError(Error.Unexpected());
         }

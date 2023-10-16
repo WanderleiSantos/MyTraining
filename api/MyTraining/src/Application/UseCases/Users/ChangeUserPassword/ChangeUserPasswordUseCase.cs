@@ -33,12 +33,12 @@ public class ChangeUserPasswordUseCase : IChangeUserPasswordUseCase
             if (!output.IsValid)
                 return output;
             
-            _logger.LogInformation("{UseCase} - Search user by id: {id}", nameof(ChangeUserPasswordUseCase), command.Id);
+            _logger.LogInformation("{UseCase} - Search user by id: {id};", nameof(ChangeUserPasswordUseCase), command.Id);
 
             var user = await _repository.GetByIdAsync(command.Id, cancellationToken);
             if (user == null)
             {
-                _logger.LogWarning("User does not exist");
+                _logger.LogWarning("{UseCase} - User does not exist; Id: {id};", nameof(ChangeUserPasswordUseCase), command.Id);
 
                 output.AddError(Errors.User.DoesNotExist);
                 return output;
@@ -46,19 +46,19 @@ public class ChangeUserPasswordUseCase : IChangeUserPasswordUseCase
             
             if (!command.OldPassword.VerifyPassword(user.Password))
             {
-                _logger.LogWarning("{UseCase} - Old password does not match", nameof(ChangeUserPasswordUseCase));
+                _logger.LogWarning("{UseCase} - Old password does not match; Id: {id};", nameof(ChangeUserPasswordUseCase), command.Id);
                 
-                output.AddError(Errors.Authentication.InvalidPassword);
+                output.AddError(Errors.User.InvalidPassword);
                 return output;
             }
             
-            _logger.LogInformation("{UseCase} - Updating User password by id: {id}", nameof(ChangeUserPasswordUseCase), command.Id);
+            _logger.LogInformation("{UseCase} - Updating User password by id: {id};", nameof(ChangeUserPasswordUseCase), command.Id);
 
             user.UpdatePassword(command.NewPassword.HashPassword());
             
             await _repository.UnitOfWork.CommitAsync();
             
-            _logger.LogInformation("{UseCase} - User password updated successfully; Id: {id}", nameof(ChangeUserPasswordUseCase), command.Id);
+            _logger.LogInformation("{UseCase} - User password updated successfully; Id: {id};", nameof(ChangeUserPasswordUseCase), command.Id);
 
             output.AddResult(null);
         }

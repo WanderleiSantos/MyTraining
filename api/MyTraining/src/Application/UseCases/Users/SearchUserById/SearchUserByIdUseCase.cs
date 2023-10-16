@@ -40,13 +40,13 @@ public class SearchUserByIdUseCase : ISearchUserByIdUseCase
 
             if (user == null)
             {
-                _logger.LogWarning("User does not exist");
+                _logger.LogWarning("{UseCase} - User does not exist; Id: {id}", nameof(SearchUserByIdUseCase), command.Id);
                 
                 output.AddError(Errors.User.DoesNotExist);
                 return output;
             }
 
-            _logger.LogInformation("{UseCase} - Search user finish successfully, id: {id}", nameof(SearchUserByIdUseCase), command.Id);
+            _logger.LogInformation("{UseCase} - Search user finish successfully; Id: {id}", nameof(SearchUserByIdUseCase), command.Id);
 
             output.AddResult(user.MapToResponse());
         }

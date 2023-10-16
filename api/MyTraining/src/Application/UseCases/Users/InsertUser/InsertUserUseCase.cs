@@ -39,13 +39,13 @@ public class InsertUserUseCase : IInsertUserUseCase
 
             if (await _repository.ExistsEmailRegisteredAsync(command.Email, cancellationToken))
             {
-                _logger.LogWarning("{UseCase} - E-mail already registered; Email {email}", nameof(InsertUserUseCase), command.Email);
+                _logger.LogWarning("{UseCase} - E-mail already registered; Email {email};", nameof(InsertUserUseCase), command.Email);
                 
                 output.AddError(Errors.User.DuplicateEmail);
                 return output;
             }
 
-            _logger.LogInformation("{UseCase} - Inserting user; Email: {Email}", nameof(InsertUserUseCase), command.Email);
+            _logger.LogInformation("{UseCase} - Inserting user; Email: {Email};", nameof(InsertUserUseCase), command.Email);
 
             var result = new User(command.FirstName, command.LastName, command.Email, command.Password.HashPassword());
 
@@ -55,7 +55,7 @@ public class InsertUserUseCase : IInsertUserUseCase
             
             await _repository.UnitOfWork.CommitAsync();
 
-            _logger.LogInformation("{UseCase} - Inserted user successfully; Name: {Email}", nameof(InsertUserUseCase), command.Email);
+            _logger.LogInformation("{UseCase} - Inserted user successfully; Name: {Email};", nameof(InsertUserUseCase), command.Email);
             
             output.AddResult(null);
         }

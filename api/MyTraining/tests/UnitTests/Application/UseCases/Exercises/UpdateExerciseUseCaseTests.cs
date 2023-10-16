@@ -46,9 +46,9 @@ public class UpdateExerciseUseCaseTests
 
         //Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().HaveCount(2);
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Id' must not be empty."));
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Name' must not be empty."));
+        output.Errors.Should().HaveCount(2);
+        output.Errors.Should().Contain(e => e.Description.Equals("'Id' must not be empty."));
+        output.Errors.Should().Contain(e => e.Description.Equals("'Name' must not be empty."));
     }
 
     [Fact]
@@ -65,7 +65,7 @@ public class UpdateExerciseUseCaseTests
 
         //Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("Exercise does not exist."));
+        output.Errors.Should().Contain(e => e.Description.Equals("Exercise does not exist."));
     }
 
     [Fact]
@@ -82,7 +82,7 @@ public class UpdateExerciseUseCaseTests
 
         //Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should()
+        output.Errors.Should()
             .Contain(e => e.Description.Equals("An unexpected error occurred while update the exercise"));
     }
 

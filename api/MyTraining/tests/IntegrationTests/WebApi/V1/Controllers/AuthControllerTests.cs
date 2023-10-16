@@ -5,13 +5,13 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Application.Shared.Models;
 using Application.UseCases.Auth.RefreshToken.Responses;
 using Application.UseCases.Auth.SignIn.Responses;
 using Bogus;
 using Core.Common.Errors;
 using FluentAssertions;
 using SharedTests.Extensions;
+using WebApi.Common.Error;
 using WebApi.V1.Models;
 using Xunit;
 
@@ -80,7 +80,7 @@ public class AuthControllerTests : IAsyncLifetime
 
         // Act
         var response = await _httpClient.PostAsync(UriRequestSignIn, data);
-        var errorMessages = JsonSerializer.Deserialize<List<Notification>>(
+        var errorMessages = JsonSerializer.Deserialize<List<ErrorOutput>>(
             await response.Content.ReadAsStringAsync(), 
             new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
 
@@ -89,7 +89,7 @@ public class AuthControllerTests : IAsyncLifetime
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         errorMessages.Should().NotBeNull();
         errorMessages.Should().HaveCount(1);
-        errorMessages.Should().Contain(e => e.Description.Equals("User does not exist"));
+        errorMessages.Should().Contain(e => e.Description.Equals(Errors.Authentication.InvalidCredentials.Description));
     }
     
     [Fact]
@@ -107,7 +107,7 @@ public class AuthControllerTests : IAsyncLifetime
 
         // Act
         var response = await _httpClient.PostAsync(UriRequestSignIn, data);
-        var errorMessages = JsonSerializer.Deserialize<List<Notification>>(
+        var errorMessages = JsonSerializer.Deserialize<List<ErrorOutput>>(
             await response.Content.ReadAsStringAsync(), 
             new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
 
@@ -116,7 +116,7 @@ public class AuthControllerTests : IAsyncLifetime
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         errorMessages.Should().NotBeNull();
         errorMessages.Should().HaveCount(1);
-        errorMessages.Should().Contain(e => e.Description.Equals("User does not exist"));
+        errorMessages.Should().Contain(e => e.Description.Equals(Errors.Authentication.InvalidCredentials.Description));
     }
     
     [Fact]
@@ -129,7 +129,7 @@ public class AuthControllerTests : IAsyncLifetime
 
         // Act
         var response = await _httpClient.PostAsync(UriRequestSignIn, data);
-        var errorMessages = JsonSerializer.Deserialize<List<Notification>>(
+        var errorMessages = JsonSerializer.Deserialize<List<ErrorOutput>>(
             await response.Content.ReadAsStringAsync(), 
             new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
 
@@ -158,7 +158,7 @@ public class AuthControllerTests : IAsyncLifetime
 
         // Act
         var response = await _httpClient.PostAsync(UriRequestSignIn, data);
-        var errorMessages = JsonSerializer.Deserialize<List<Notification>>(
+        var errorMessages = JsonSerializer.Deserialize<List<ErrorOutput>>(
             await response.Content.ReadAsStringAsync(), 
             new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
 
@@ -210,7 +210,7 @@ public class AuthControllerTests : IAsyncLifetime
 
         // Act
         var response = await _httpClient.PostAsync(UriRequestRefreshToken, data);
-        var errorMessages = JsonSerializer.Deserialize<List<Notification>>(
+        var errorMessages = JsonSerializer.Deserialize<List<ErrorOutput>>(
             await response.Content.ReadAsStringAsync(), 
             new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
 
@@ -218,7 +218,7 @@ public class AuthControllerTests : IAsyncLifetime
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         errorMessages.Should().NotBeNull();
         errorMessages.Should().HaveCount(1);
-        errorMessages.Should().Contain(e => e.Description.Equals("Token is expired or User is not valid"));
+        errorMessages.Should().Contain(e => e.Description.Equals(Errors.Authentication.InvalidToken.Description));
     }
     
     [Fact]
@@ -231,7 +231,7 @@ public class AuthControllerTests : IAsyncLifetime
 
         // Act
         var response = await _httpClient.PostAsync(UriRequestRefreshToken, data);
-        var errorMessages = JsonSerializer.Deserialize<List<Notification>>(
+        var errorMessages = JsonSerializer.Deserialize<List<ErrorOutput>>(
             await response.Content.ReadAsStringAsync(), 
             new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
 

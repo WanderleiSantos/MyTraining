@@ -13,6 +13,7 @@ using Bogus;
 using Core.Common.Errors;
 using FluentAssertions;
 using SharedTests.Extensions;
+using WebApi.Common.Error;
 using WebApi.V1.Models;
 using Xunit;
 
@@ -82,7 +83,7 @@ public class UserControllerTests : IAsyncLifetime
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Conflict);
-        content.Should().Contain("E-mail already registered");
+        content.Should().Contain("mail is already taken.");
     }
     
     [Fact]
@@ -95,7 +96,7 @@ public class UserControllerTests : IAsyncLifetime
 
         // Act
         var response = await _httpClient.PostAsync(UriRequestUser, data);
-        var errorMessages = JsonSerializer.Deserialize<List<Notification>>(
+        var errorMessages = JsonSerializer.Deserialize<List<ErrorOutput>>(
             await response.Content.ReadAsStringAsync(), 
             new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
 
@@ -131,7 +132,7 @@ public class UserControllerTests : IAsyncLifetime
         await _httpClient.PostAsync(UriRequestUser, data);
         
         var response = await _httpClient.PostAsync(UriRequestUser, data);
-        var errorMessages = JsonSerializer.Deserialize<List<Notification>>(
+        var errorMessages = JsonSerializer.Deserialize<List<ErrorOutput>>(
             await response.Content.ReadAsStringAsync(), 
             new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
 
