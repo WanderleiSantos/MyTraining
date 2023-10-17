@@ -1,9 +1,9 @@
+using Application.Shared.Authentication;
 using Application.UseCases.Users.ChangeUserPassword;
 using Application.UseCases.Users.InsertUser;
 using Application.UseCases.Users.SearchUserById;
 using Application.UseCases.Users.SearchUserById.Commands;
 using Application.UseCases.Users.UpdateUser;
-using Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -60,7 +60,7 @@ public class UserController : MainController
     {
         try
         {
-            var command = new SearchUserByIdCommand() { Id = CurrentUserService.UserId };
+            var command = new SearchUserByIdCommand() { Id = CurrentUser.UserId };
             var output = await _searchUserByIdUseCase.ExecuteAsync(command, cancellationToken);
 
             return CustomResponse(output);
@@ -80,7 +80,7 @@ public class UserController : MainController
     {
         try
         {
-            var output = await _updateUserUseCase.ExecuteAsync(input.MapToApplication(CurrentUserService.UserId), cancellationToken);
+            var output = await _updateUserUseCase.ExecuteAsync(input.MapToApplication(CurrentUser.UserId), cancellationToken);
 
             return output.IsValid ? NoContent() : CustomResponse(output);
         }
@@ -99,7 +99,7 @@ public class UserController : MainController
     {
         try
         {
-            var output = await _changeUserPasswordUseCase.ExecuteAsync(input.MapToApplication(CurrentUserService.UserId), cancellationToken);
+            var output = await _changeUserPasswordUseCase.ExecuteAsync(input.MapToApplication(CurrentUser.UserId), cancellationToken);
 
             return output.IsValid ? NoContent() : CustomResponse(output);
         }

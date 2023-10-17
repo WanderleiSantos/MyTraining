@@ -52,8 +52,8 @@ public class SearchAllExercisesUseCaseTests
 
         //Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().HaveCount(1);
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'User Id' must not be empty."));
+        output.Errors.Should().HaveCount(1);
+        output.Errors.Should().Contain(e => e.Description.Equals("'User Id' must not be empty."));
     }
 
     [Fact]

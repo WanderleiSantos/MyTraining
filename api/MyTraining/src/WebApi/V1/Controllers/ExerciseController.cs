@@ -1,9 +1,9 @@
+using Application.Shared.Authentication;
 using Application.UseCases.Exercises.InsertExercise;
 using Application.UseCases.Exercises.SearchAllExercises;
 using Application.UseCases.Exercises.SearchExerciseById;
 using Application.UseCases.Exercises.SearchExerciseById.Commands;
 using Application.UseCases.Exercises.UpdateExercise;
-using Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -44,7 +44,7 @@ public class ExerciseController : MainController
     {
         try
         {
-            var output = await _insertExerciseUseCase.ExecuteAsync(input.MapToApplication(this.CurrentUserService.UserId),
+            var output = await _insertExerciseUseCase.ExecuteAsync(input.MapToApplication(this.CurrentUser.UserId),
                 cancellationToken);
 
             return CustomResponse(output);
@@ -98,7 +98,7 @@ public class ExerciseController : MainController
     {
         try
         {
-            var output = await _searchAllExercisesUseCase.ExecuteAsync(search.MapToApplication(CurrentUserService.UserId), cancellationToken);
+            var output = await _searchAllExercisesUseCase.ExecuteAsync(search.MapToApplication(CurrentUser.UserId), cancellationToken);
             return CustomResponse(output);
         }
         catch (Exception e)

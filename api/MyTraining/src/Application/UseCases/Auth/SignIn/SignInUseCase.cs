@@ -6,6 +6,8 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Application.Shared.Extensions;
 using Core.Interfaces.Persistence.Repositories;
+using Core.Shared.Errors;
+using Errors = Core.Shared.Errors.Errors;
 
 namespace Application.UseCases.Auth.SignIn;
 
@@ -37,52 +39,42 @@ public class SignInUseCase : ISignInUseCase
             if (!output.IsValid)
                 return output;
 
-            _logger.LogInformation("{UseCase} - Getting user; Email: {Email}", nameof(SignInUseCase), command.Email);
+            _logger.LogInformation("{UseCase} - Getting user; Email: {Email};", nameof(SignInUseCase), command.Email);
 
             var user = await _repository.GetByEmailAsync(command.Email, cancellationToken);
 
             if (user == null || !command.Password.VerifyPassword(user.Password))
             {
-                _logger.LogWarning("{UseCase} - User does not exist", nameof(SignInUseCase));
+                _logger.LogWarning("{UseCase} - Invalid credentials;", nameof(SignInUseCase));
                 
-                output
-                    .AddError("User does not exist")
-                    .SetErrorType(EErrorType.Unauthorized);
+                output.AddError(Errors.Authentication.InvalidCredentials);
                 return output;
             }
             
             if (!user.Active)
             {
-                _logger.LogWarning("{UseCase} - Inactive user; Email: {Email}", nameof(SignInUseCase), command.Email);
+                _logger.LogWarning("{UseCase} - Inactive user; Email: {Email};", nameof(SignInUseCase), command.Email);
                 
-                output
-                    .AddError("Inactive user")
-                    .SetErrorType(EErrorType.Unauthorized);
+                output.AddError(Errors.Authentication.UserInactive);
                 return output;
             }
 
-            _logger.LogInformation("{UseCase} - Generating authentication token; Email: {Email}", nameof(SignInUseCase), command.Email);
+            _logger.LogInformation("{UseCase} - Generating authentication token; Email: {Email};", nameof(SignInUseCase), command.Email);
 
-            var token = _jwtTokenGenerator.CreateAccessToken(user.Id, user.Email);
-            var refreshToken = _jwtTokenGenerator.CreateRefreshToken(user.Id, user.Email);
-            var response = new SignInResponse
+            output.AddResult(new SignInResponse
             {
                 Email = user.Email,
-                Token = token,
-                RefreshToken = refreshToken
-            };
-            
-            output.AddResult(response);
+                Token = _jwtTokenGenerator.CreateAccessToken(user.Id, user.Email),
+                RefreshToken = _jwtTokenGenerator.CreateRefreshToken(user.Id, user.Email)
+            });
 
-            _logger.LogInformation("{UseCase} - Token generated successfully; Email: {Email}", nameof(SignInUseCase), command.Email);
+            _logger.LogInformation("{UseCase} - Token generated successfully; Email: {Email};", nameof(SignInUseCase), command.Email);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "{UseCase} - An unexpected error has occurred;", nameof(SignInUseCase));
 
-            output
-                .AddError("An unexpected error has occurred")
-                .SetErrorType(EErrorType.Unexpected);
+            output.AddError(Error.Unexpected());
         }
 
         return output;

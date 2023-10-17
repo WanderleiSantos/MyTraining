@@ -1,45 +1,23 @@
+using Core.Shared.Errors;
 using FluentValidation.Results;
 
 namespace Application.Shared.Models;
 
 public class Output
 {
-    private readonly List<Notification> _errorMessages = new();
-
-    public EErrorType? ErrorType { get; set; }
+    private readonly List<Error> _errors = new();
+    
     public object? Result { get; private set; }
-    public bool IsValid => !_errorMessages.Any();
-    public IReadOnlyCollection<Notification> ErrorMessages => _errorMessages;
+    public bool IsValid => !_errors.Any();
+    public IReadOnlyCollection<Error> Errors => _errors;
+    public ErrorType? FirstError => _errors.Any() ? _errors[0].Type : null;
 
-    public void AddErrorMessage(string code, string description) => _errorMessages.Add(new Notification(code, description));
-    public void AddErrorMessage(string description) => _errorMessages.Add(new Notification(null, description));
+    public void AddError(string code, string description, ErrorType type) => _errors.Add(Error.Custom(type, code, description));
+    public void AddError(Error error) => _errors.Add(error);
     public void AddValidationResult(ValidationResult validationResult)
     {
-        _errorMessages.AddRange(validationResult.Errors.Select(e => new Notification(e.PropertyName, e.ErrorMessage))
-            .ToList());
-        ErrorType = _errorMessages.Any() ? Models.EErrorType.Validation : null;
+        _errors.AddRange(validationResult.Errors.Select(e => Error.Validation(e.PropertyName, e.ErrorMessage)).ToList());
     }
     
     public void AddResult(object? result) => Result = result;
-}
-
-public static class OutputExtension
-{
-    public static Output AddError(this Output output, string code, string description)
-    {
-        output.AddErrorMessage(code, description);
-        return output;
-    }
-    
-    public static Output AddError(this Output output, string description)
-    {
-        output.AddErrorMessage(description);
-        return output;
-    }
-    
-    public static Output SetErrorType(this Output output, EErrorType? errorType)
-    {
-        output.ErrorType = errorType;
-        return output;
-    }
 }

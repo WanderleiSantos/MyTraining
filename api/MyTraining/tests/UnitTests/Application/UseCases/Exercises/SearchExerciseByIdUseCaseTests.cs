@@ -6,6 +6,7 @@ using Application.UseCases.Exercises.SearchExerciseById.Validations;
 using Bogus;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
+using Core.Shared.Errors;
 using FakeItEasy;
 using FluentAssertions;
 using FluentValidation;
@@ -50,8 +51,8 @@ public class SearchExerciseByIdUseCaseTests
 
         //Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().HaveCount(1);
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Id' must not be empty."));
+        output.Errors.Should().HaveCount(1);
+        output.Errors.Should().Contain(e => e.Description.Equals("'Id' must not be empty."));
     }
 
     [Fact]
@@ -107,8 +108,8 @@ public class SearchExerciseByIdUseCaseTests
 
         //Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should()
-            .Contain(e => e.Description.Equals("An unexpected error occurred while searching the exercise."));
+        output.Errors.Should()
+            .Contain(Error.Unexpected());
     }
 
     private static SearchExerciseByIdCommand CreateCommand() => new SearchExerciseByIdCommand()

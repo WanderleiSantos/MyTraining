@@ -3,6 +3,8 @@ using Application.UseCases.Users.UpdateUser.Commands;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Core.Interfaces.Persistence.Repositories;
+using Core.Shared.Errors;
+using Errors = Core.Shared.Errors.Errors;
 
 namespace Application.UseCases.Users.UpdateUser;
 
@@ -31,26 +33,24 @@ public class UpdateUserUseCase : IUpdateUserUseCase
             if (!output.IsValid)
                 return output;
             
-            _logger.LogInformation("{UseCase} - Search user by id: {id}", nameof(UpdateUserUseCase), command.Id);
+            _logger.LogInformation("{UseCase} - Search user by id: {id};", nameof(UpdateUserUseCase), command.Id);
 
             var user = await _repository.GetByIdAsync(command.Id, cancellationToken);
             if (user == null)
             {
-                _logger.LogWarning("User does not exist");
+                _logger.LogWarning("{UseCase} - User does not exist; Id: {id};", nameof(UpdateUserCommand), command.Id);
                 
-                output
-                    .AddError("User does not exist")
-                    .SetErrorType(EErrorType.NotFound);
+                output.AddError(Errors.User.DoesNotExist);
                 return output;
             }
             
-            _logger.LogInformation("{UseCase} - Updating User by id: {id}", nameof(UpdateUserCommand), command.Id);
+            _logger.LogInformation("{UseCase} - Updating User by id: {id};", nameof(UpdateUserCommand), command.Id);
 
             user.Update(command.FirstName, command.LastName);
             
             await _repository.UnitOfWork.CommitAsync();
             
-            _logger.LogInformation("{UseCase} - User updated successfully; Id: {id}", nameof(UpdateUserCommand), command.Id);
+            _logger.LogInformation("{UseCase} - User updated successfully; Id: {id};", nameof(UpdateUserCommand), command.Id);
 
             output.AddResult(null);
         }
@@ -58,9 +58,7 @@ public class UpdateUserUseCase : IUpdateUserUseCase
         {
             _logger.LogError(e, "{UseCase} - An unexpected error has occurred;", nameof(UpdateUserCommand));
 
-            output
-                .AddError($"An unexpected error occurred while update the user")
-                .SetErrorType(EErrorType.Unexpected);
+            output.AddError(Error.Unexpected());
         }
 
         return output;

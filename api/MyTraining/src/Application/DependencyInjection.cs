@@ -1,6 +1,4 @@
 using System.Globalization;
-using System.Text;
-using Application.Shared.Authentication;
 using Application.UseCases.Auth.RefreshToken;
 using Application.UseCases.Auth.RefreshToken.Commands;
 using Application.UseCases.Auth.RefreshToken.Validations;
@@ -37,22 +35,17 @@ using Application.UseCases.Users.UpdateUser;
 using Application.UseCases.Users.UpdateUser.Commands;
 using Application.UseCases.Users.UpdateUser.Validations;
 using FluentValidation;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
 
         services
-            .AddAuth(configuration)
             .AddValidators()
             .AddUseCases()
             .AddScoped<IInitialLoadService, InitialLoadService>()
@@ -93,34 +86,6 @@ public static class DependencyInjection
         services.AddScoped<IValidator<SearchAllExercisesCommand>, SearchAllExercisesValidator>();
         services.AddScoped<IValidator<UpdateExerciseCommand>, UpdateExerciseValidator>();
         services.AddScoped<IValidator<InsertTrainingSheetCommand>, InsertTrainingSheetCommandValidator>();
-        
-        return services;
-    }
-    
-    private static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
-    {
-        var jwtSettings = new JwtSettings();
-        configuration.Bind(JwtSettings.SectionName, jwtSettings);
-        services.AddSingleton(Options.Create(jwtSettings));
-        
-        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-        
-        services
-            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    
-                    ValidIssuer = jwtSettings.Issuer,
-                    ValidAudience = jwtSettings.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),
-                };
-            });
         
         return services;
     }
