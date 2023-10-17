@@ -51,7 +51,7 @@ public class ExerciseController : MainController
                 cancellationToken);
 
             return output.IsValid ? 
-                CreatedAtAction(nameof(GetById), new {id = ((InsertExerciseResponse) output.Result!).Id}, output.Result) : 
+                CreatedAtAction(nameof(GetById), new { id = output.CreatedId}, output.Result) : 
                 CustomResponse(output);
         }
         catch (Exception e)

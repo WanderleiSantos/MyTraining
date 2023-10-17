@@ -11,6 +11,7 @@ public class Output
     public bool IsValid => !_errors.Any();
     public IReadOnlyCollection<Error> Errors => _errors;
     public ErrorType? FirstError => _errors.Any() ? _errors[0].Type : null;
+    public string? CreatedId { get; private set; }
 
     public void AddError(string code, string description, ErrorType type) => _errors.Add(Error.Custom(type, code, description));
     public void AddError(Error error) => _errors.Add(error);
@@ -20,4 +21,9 @@ public class Output
     }
     
     public void AddResult(object? result) => Result = result;
+    public void AddResult(object? result, string createdId)
+    {
+        Result = result;
+        CreatedId = createdId;
+    }
 }

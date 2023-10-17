@@ -45,7 +45,7 @@ public class InsertExerciseUseCase : IInsertExerciseUseCase
             _logger.LogInformation("{UseCase} - Inserted Exercise; Name: {Name}", nameof(InsertExerciseUseCase),
                 command.Name);
 
-            output.AddResult(exercise.MapToResponseInsertExercise());
+            output.AddResult(exercise.MapToResponseInsertExercise(), exercise.Id.ToString());
         }
         catch (Exception e)
         {
