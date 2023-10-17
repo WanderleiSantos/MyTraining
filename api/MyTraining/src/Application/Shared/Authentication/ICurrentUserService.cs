@@ -1,8 +1,8 @@
-namespace Core.Interfaces.Services;
+namespace Application.Shared.Authentication;
 
 public interface ICurrentUserService
 {
-    string? UserName { get; }
+    string? UserEmail { get; }
     Guid UserId { get; }
     bool IsAuthenticated();
     bool IsInRole(string role);

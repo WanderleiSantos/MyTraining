@@ -7,11 +7,13 @@ using Application.UseCases.Users.SearchUserById.Validations;
 using Bogus;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
+using Core.Shared.Errors;
 using FakeItEasy;
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using SharedTests.Extensions;
+using Errors = Core.Shared.Errors.Errors;
 
 namespace UnitTests.Application.UseCases.Users;
 
@@ -53,9 +55,9 @@ public class SearchUserByIdUseCaseTests
 
         //Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().HaveCount(2);
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Id' must not be empty.")).Which.Code.Should().Be("Id");
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Id' must not be equal to '00000000-0000-0000-0000-000000000000'.")).Which.Code.Should().Be("Id");
+        output.Errors.Should().HaveCount(2);
+        output.Errors.Should().Contain(e => e.Description.Equals("'Id' must not be empty.")).Which.Code.Should().Be("Id");
+        output.Errors.Should().Contain(e => e.Description.Equals("'Id' must not be equal to '00000000-0000-0000-0000-000000000000'.")).Which.Code.Should().Be("Id");
         
         A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
@@ -72,8 +74,8 @@ public class SearchUserByIdUseCaseTests
 
         output.IsValid.Should().BeFalse();
         output.Result.Should().BeNull();
-        output.ErrorType.Should().Be(EErrorType.NotFound);
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("User does not exist"));
+        output.FirstError.Should().Be(ErrorType.NotFound);
+        output.Errors.Should().Contain(Errors.User.DoesNotExist);
         
         A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
     }
@@ -117,7 +119,7 @@ public class SearchUserByIdUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("An unexpected error occurred while searching the user."));
+        output.Errors.Should().Contain(Error.Unexpected());
         
         A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
     }

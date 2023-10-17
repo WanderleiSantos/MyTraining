@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Application.Shared.Extensions;
 using Application.Shared.Mappers;
 using Application.UseCases.TrainingSheets.Services;
+using Core.Shared.Errors;
 
 namespace Application.UseCases.TrainingSheets.InsertTrainingSheet;
 
@@ -56,7 +57,7 @@ public class InsertTrainingSheetUseCase: IInsertTrainingSheetUseCase
         {
             _logger.LogError(e, "{UseCase} - An unexpected error has occurred", nameof(InsertTrainingSheetUseCase));
 
-            output.AddErrorMessage("An unexpected error occurred while inserting the training sheet");
+            output.AddError(Error.Unexpected());
         }
 
         return output;

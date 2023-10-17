@@ -8,11 +8,13 @@ using Application.UseCases.Auth.SignIn.Validations;
 using Bogus;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
+using Core.Shared.Errors;
 using FakeItEasy;
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using SharedTests.Extensions;
+using Errors = Core.Shared.Errors.Errors;
 
 namespace UnitTests.Application.UseCases.Auth;
 
@@ -57,12 +59,12 @@ public class SignInUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().HaveCount(5);
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Email' must not be empty.")).Which.Code.Should().Be("Email");
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Email' is not a valid email address.")).Which.Code.Should().Be("Email");
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("The length of 'Email' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("Email");
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Password' must not be empty.")).Which.Code.Should().Be("Password");
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("The length of 'Password' must be at least 8 characters. You entered 0 characters.")).Which.Code.Should().Be("Password");
+        output.Errors.Should().HaveCount(5);
+        output.Errors.Should().Contain(e => e.Description.Equals("'Email' must not be empty.")).Which.Code.Should().Be("Email");
+        output.Errors.Should().Contain(e => e.Description.Equals("'Email' is not a valid email address.")).Which.Code.Should().Be("Email");
+        output.Errors.Should().Contain(e => e.Description.Equals("The length of 'Email' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("Email");
+        output.Errors.Should().Contain(e => e.Description.Equals("'Password' must not be empty.")).Which.Code.Should().Be("Password");
+        output.Errors.Should().Contain(e => e.Description.Equals("The length of 'Password' must be at least 8 characters. You entered 0 characters.")).Which.Code.Should().Be("Password");
         
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
         A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
@@ -83,7 +85,7 @@ public class SignInUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("User does not exist"));
+        output.Errors.Should().Contain(Errors.Authentication.InvalidCredentials);
         
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
@@ -104,7 +106,7 @@ public class SignInUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("User does not exist"));
+        output.Errors.Should().Contain(Errors.Authentication.InvalidCredentials);
         
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
@@ -127,7 +129,7 @@ public class SignInUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("Inactive user"));
+        output.Errors.Should().Contain(Errors.Authentication.UserInactive);
         
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();
@@ -181,7 +183,7 @@ public class SignInUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("An unexpected error has occurred"));
+        output.Errors.Should().Contain(Error.Unexpected());
         
         A.CallTo(() => _repositoryMock.GetByEmailAsync(A<string>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _jwtTokenGeneratorMock.CreateAccessToken(A<Guid>._, A<string>._)).MustNotHaveHappened();

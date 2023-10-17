@@ -5,11 +5,13 @@ using Application.UseCases.Users.UpdateUser.Validations;
 using Bogus;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
+using Core.Shared.Errors;
 using FakeItEasy;
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using SharedTests.Extensions;
+using Errors = Core.Shared.Errors.Errors;
 
 namespace UnitTests.Application.UseCases.Users;
 
@@ -51,13 +53,13 @@ public class UpdateUserUseCaseTests
 
         //Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().HaveCount(6);
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Id' must not be empty.")).Which.Code.Should().Be("Id");
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Id' must not be equal to '00000000-0000-0000-0000-000000000000'.")).Which.Code.Should().Be("Id");
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'First Name' must not be empty.")).Which.Code.Should().Be("FirstName");
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("The length of 'First Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("FirstName");
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Last Name' must not be empty.")).Which.Code.Should().Be("LastName");
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("The length of 'Last Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("LastName");
+        output.Errors.Should().HaveCount(6);
+        output.Errors.Should().Contain(e => e.Description.Equals("'Id' must not be empty.")).Which.Code.Should().Be("Id");
+        output.Errors.Should().Contain(e => e.Description.Equals("'Id' must not be equal to '00000000-0000-0000-0000-000000000000'.")).Which.Code.Should().Be("Id");
+        output.Errors.Should().Contain(e => e.Description.Equals("'First Name' must not be empty.")).Which.Code.Should().Be("FirstName");
+        output.Errors.Should().Contain(e => e.Description.Equals("The length of 'First Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("FirstName");
+        output.Errors.Should().Contain(e => e.Description.Equals("'Last Name' must not be empty.")).Which.Code.Should().Be("LastName");
+        output.Errors.Should().Contain(e => e.Description.Equals("The length of 'Last Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("LastName");
         
         A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustNotHaveHappened();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
@@ -77,7 +79,7 @@ public class UpdateUserUseCaseTests
 
         //Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("User does not exist"));
+        output.Errors.Should().Contain(Errors.User.DoesNotExist);
         
         A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();
@@ -125,7 +127,7 @@ public class UpdateUserUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("An unexpected error occurred while update the user"));
+        output.Errors.Should().Contain(Error.Unexpected());
         
         A.CallTo(() => _repositoryMock.GetByIdAsync(A<Guid>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).MustNotHaveHappened();

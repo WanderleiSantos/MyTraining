@@ -9,8 +9,10 @@ using Application.UseCases.Users.InsertUser.Services;
 using Application.UseCases.Users.InsertUser.Validations;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
+using Core.Shared.Errors;
 using FakeItEasy;
 using SharedTests.Extensions;
+using Errors = Core.Shared.Errors.Errors;
 
 namespace UnitTests.Application.UseCases.Users;
 
@@ -55,15 +57,15 @@ public class InsertUserUseCaseTests
 
         //Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().HaveCount(8);
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'First Name' must not be empty.")).Which.Code.Should().Be("FirstName");
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("The length of 'First Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("FirstName");
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Last Name' must not be empty.")).Which.Code.Should().Be("LastName");
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("The length of 'Last Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("LastName");
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Email' must not be empty.")).Which.Code.Should().Be("Email");
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Email' is not a valid email address.")).Which.Code.Should().Be("Email");
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Password' must contain at least 8 characters, one number, one uppercase letter, one lowercase letter and one special character.")).Which.Code.Should().Be("Password");
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Password' must not be empty.")).Which.Code.Should().Be("Password");
+        output.Errors.Should().HaveCount(8);
+        output.Errors.Should().Contain(e => e.Description.Equals("'First Name' must not be empty.")).Which.Code.Should().Be("FirstName");
+        output.Errors.Should().Contain(e => e.Description.Equals("The length of 'First Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("FirstName");
+        output.Errors.Should().Contain(e => e.Description.Equals("'Last Name' must not be empty.")).Which.Code.Should().Be("LastName");
+        output.Errors.Should().Contain(e => e.Description.Equals("The length of 'Last Name' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("LastName");
+        output.Errors.Should().Contain(e => e.Description.Equals("'Email' must not be empty.")).Which.Code.Should().Be("Email");
+        output.Errors.Should().Contain(e => e.Description.Equals("'Email' is not a valid email address.")).Which.Code.Should().Be("Email");
+        output.Errors.Should().Contain(e => e.Description.Equals("'Password' must contain at least 8 characters, one number, one uppercase letter, one lowercase letter and one special character.")).Which.Code.Should().Be("Password");
+        output.Errors.Should().Contain(e => e.Description.Equals("'Password' must not be empty.")).Which.Code.Should().Be("Password");
         
         A.CallTo(() => _repositoryMock.ExistsEmailRegisteredAsync(command.Email, A<CancellationToken>._)).MustNotHaveHappened();
         A.CallTo(() => _repositoryMock.AddAsync(A<User>._, A<CancellationToken>._)).MustNotHaveHappened();
@@ -81,7 +83,7 @@ public class InsertUserUseCaseTests
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
 
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Email' is not a valid email address.")).Which.Code.Should().Be("Email");
+        output.Errors.Should().Contain(e => e.Description.Equals("'Email' is not a valid email address.")).Which.Code.Should().Be("Email");
         
         A.CallTo(() => _repositoryMock.ExistsEmailRegisteredAsync(command.Email, A<CancellationToken>._)).MustNotHaveHappened();
         A.CallTo(() => _repositoryMock.AddAsync(A<User>._, A<CancellationToken>._)).MustNotHaveHappened();
@@ -104,7 +106,7 @@ public class InsertUserUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Description.Contains("E-mail already registered")).Which.Code.Should().Be("Email");
+        output.Errors.Should().Contain(Errors.User.DuplicateEmail);
         
         A.CallTo(() => _repositoryMock.ExistsEmailRegisteredAsync(command.Email, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.AddAsync(A<User>._, A<CancellationToken>._)).MustNotHaveHappened();
@@ -151,7 +153,7 @@ public class InsertUserUseCaseTests
 
         // Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("An unexpected error occurred while inserting the user"));
+        output.Errors.Should().Contain(Error.Unexpected());
         
         A.CallTo(() => _repositoryMock.ExistsEmailRegisteredAsync(command.Email, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _repositoryMock.AddAsync(A<User>._, A<CancellationToken>._)).MustNotHaveHappened();

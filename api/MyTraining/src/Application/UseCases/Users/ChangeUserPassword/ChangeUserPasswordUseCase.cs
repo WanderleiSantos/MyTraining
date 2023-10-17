@@ -2,8 +2,10 @@ using Application.Shared.Extensions;
 using Application.Shared.Models;
 using Application.UseCases.Users.ChangeUserPassword.Commands;
 using Core.Interfaces.Persistence.Repositories;
+using Core.Shared.Errors;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using Errors = Core.Shared.Errors.Errors;
 
 namespace Application.UseCases.Users.ChangeUserPassword;
 
@@ -32,35 +34,32 @@ public class ChangeUserPasswordUseCase : IChangeUserPasswordUseCase
             if (!output.IsValid)
                 return output;
             
-            _logger.LogInformation("{UseCase} - Search user by id: {id}", nameof(ChangeUserPasswordUseCase), command.Id);
+            _logger.LogInformation("{UseCase} - Search user by id: {id};", nameof(ChangeUserPasswordUseCase), command.Id);
 
             var user = await _repository.GetByIdAsync(command.Id, cancellationToken);
             if (user == null)
             {
-                _logger.LogWarning("User does not exist");
-                
-                output.AddError("User does not exist")
-                    .SetErrorType(EErrorType.NotFound);
+                _logger.LogWarning("{UseCase} - User does not exist; Id: {id};", nameof(ChangeUserPasswordUseCase), command.Id);
+
+                output.AddError(Errors.User.DoesNotExist);
                 return output;
             }
             
             if (!command.OldPassword.VerifyPassword(user.Password))
             {
-                _logger.LogWarning("{UseCase} - Old password does not match", nameof(ChangeUserPasswordUseCase));
+                _logger.LogWarning("{UseCase} - Old password does not match; Id: {id};", nameof(ChangeUserPasswordUseCase), command.Id);
                 
-                output
-                    .AddError("Old password does not match")
-                    .SetErrorType(EErrorType.Validation);
+                output.AddError(Errors.User.InvalidPassword);
                 return output;
             }
             
-            _logger.LogInformation("{UseCase} - Updating User password by id: {id}", nameof(ChangeUserPasswordUseCase), command.Id);
+            _logger.LogInformation("{UseCase} - Updating User password by id: {id};", nameof(ChangeUserPasswordUseCase), command.Id);
 
             user.UpdatePassword(command.NewPassword.HashPassword());
             
             await _repository.UnitOfWork.CommitAsync();
             
-            _logger.LogInformation("{UseCase} - User password updated successfully; Id: {id}", nameof(ChangeUserPasswordUseCase), command.Id);
+            _logger.LogInformation("{UseCase} - User password updated successfully; Id: {id};", nameof(ChangeUserPasswordUseCase), command.Id);
 
             output.AddResult(null);
         }
@@ -68,9 +67,7 @@ public class ChangeUserPasswordUseCase : IChangeUserPasswordUseCase
         {
             _logger.LogError(e, "{UseCase} - An unexpected error has occurred;", nameof(ChangeUserPasswordUseCase));
 
-            output
-                .AddError($"An unexpected error occurred while update the user password")
-                .SetErrorType(EErrorType.Unexpected);
+            output.AddError(Error.Unexpected());
         }
 
         return output;

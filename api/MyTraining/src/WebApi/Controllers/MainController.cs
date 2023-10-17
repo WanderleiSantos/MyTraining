@@ -1,17 +1,19 @@
+using Application.Shared.Authentication;
 using Application.Shared.Models;
-using Core.Interfaces.Services;
+using Core.Shared.Errors;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Shared.Error;
 
 namespace WebApi.Controllers;
 
 [ApiController]
 public abstract class MainController : ControllerBase
 {
-    protected readonly ICurrentUserService CurrentUserService;
+    protected readonly ICurrentUserService CurrentUser;
 
-    protected MainController(ICurrentUserService currentUserService)
+    protected MainController(ICurrentUserService currentUser)
     {
-        CurrentUserService = currentUserService;
+        CurrentUser = currentUser;
     }
     
     protected ActionResult CustomResponse(Output output)
@@ -19,19 +21,24 @@ public abstract class MainController : ControllerBase
         if (output.IsValid)
             return Ok(output.Result);
 
-        return output.ErrorType switch
+        return output.FirstError switch
         {
-            null => BadRequest(output.ErrorMessages),
-            EErrorType.Validation => BadRequest(output.ErrorMessages),
-            EErrorType.Conflict => Conflict(output.ErrorMessages),
-            EErrorType.NotFound => NotFound(output.ErrorMessages),
-            EErrorType.Unauthorized => Unauthorized(output.ErrorMessages),
-            _ => InternalServerError(output.ErrorMessages)
+            null => BadRequest(output.Errors),
+            ErrorType.Validation => BadRequest(ErrorMapping(output.Errors)),
+            ErrorType.Conflict => Conflict(ErrorMapping(output.Errors)),
+            ErrorType.NotFound => NotFound(ErrorMapping(output.Errors)),
+            ErrorType.Unauthorized => Unauthorized(ErrorMapping(output.Errors)),
+            _ => InternalServerError(ErrorMapping(output.Errors))
         };
     }
 
     protected ActionResult InternalServerError(object? error)
     {
         return StatusCode(StatusCodes.Status500InternalServerError, error);
+    }
+
+    private static List<ErrorOutput> ErrorMapping(IEnumerable<Error> errors)
+    {
+        return errors.Select(e => new ErrorOutput(e.Code, e.Description)).ToList();
     }
 }

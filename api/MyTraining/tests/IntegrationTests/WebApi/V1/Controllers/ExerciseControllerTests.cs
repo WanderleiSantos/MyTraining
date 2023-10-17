@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Application.Shared.Models;
 using Application.UseCases.Auth.SignIn.Responses;
+using Application.UseCases.Exercises.InsertExercise.Responses;
 using Application.UseCases.Exercises.SearchAllExercises.Responses;
 using Application.UseCases.Exercises.SearchExerciseById;
 using Application.UseCases.Exercises.SearchExerciseById.Responses;

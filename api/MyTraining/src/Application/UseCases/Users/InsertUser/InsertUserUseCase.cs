@@ -6,6 +6,8 @@ using Application.Shared.Extensions;
 using Application.UseCases.Users.InsertUser.Services;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
+using Core.Shared.Errors;
+using Errors = Core.Shared.Errors.Errors;
 
 namespace Application.UseCases.Users.InsertUser;
 
@@ -38,15 +40,13 @@ public class InsertUserUseCase : IInsertUserUseCase
 
             if (await _repository.ExistsEmailRegisteredAsync(command.Email, cancellationToken))
             {
-                _logger.LogWarning("{UseCase} - E-mail already registered; Email {email}", nameof(InsertUserUseCase), command.Email);
+                _logger.LogWarning("{UseCase} - E-mail already registered; Email {email};", nameof(InsertUserUseCase), command.Email);
                 
-                output
-                    .AddError("Email","E-mail already registered")
-                    .SetErrorType(EErrorType.Conflict);
+                output.AddError(Errors.User.DuplicateEmail);
                 return output;
             }
 
-            _logger.LogInformation("{UseCase} - Inserting user; Email: {Email}", nameof(InsertUserUseCase), command.Email);
+            _logger.LogInformation("{UseCase} - Inserting user; Email: {Email};", nameof(InsertUserUseCase), command.Email);
 
             var result = new User(command.FirstName, command.LastName, command.Email, command.Password.HashPassword());
 
@@ -56,7 +56,7 @@ public class InsertUserUseCase : IInsertUserUseCase
             
             await _repository.UnitOfWork.CommitAsync();
 
-            _logger.LogInformation("{UseCase} - Inserted user successfully; Name: {Email}", nameof(InsertUserUseCase), command.Email);
+            _logger.LogInformation("{UseCase} - Inserted user successfully; Name: {Email};", nameof(InsertUserUseCase), command.Email);
             
             output.AddResult(null);
         }
@@ -64,9 +64,7 @@ public class InsertUserUseCase : IInsertUserUseCase
         {
             _logger.LogError(ex, "{UseCase} - An unexpected error has occurred;", nameof(InsertUserUseCase));
 
-            output
-                .AddError($"An unexpected error occurred while inserting the user")
-                .SetErrorType(EErrorType.Unexpected);
+            output.AddError(Error.Unexpected());
         }
         
         return output;

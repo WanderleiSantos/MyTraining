@@ -5,10 +5,12 @@ using Application.UseCases.Exercises.UpdateExercise.Validations;
 using Bogus;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
+using Core.Shared.Errors;
 using FakeItEasy;
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using Errors = Core.Shared.Errors.Errors;
 
 namespace UnitTests.Application.UseCases.Exercises;
 
@@ -46,9 +48,9 @@ public class UpdateExerciseUseCaseTests
 
         //Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().HaveCount(2);
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Id' must not be empty."));
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("'Name' must not be empty."));
+        output.Errors.Should().HaveCount(2);
+        output.Errors.Should().Contain(e => e.Description.Equals("'Id' must not be empty."));
+        output.Errors.Should().Contain(e => e.Description.Equals("'Name' must not be empty."));
     }
 
     [Fact]
@@ -65,7 +67,7 @@ public class UpdateExerciseUseCaseTests
 
         //Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().Contain(e => e.Description.Equals("Exercise does not exist."));
+        output.Errors.Should().Contain(Errors.Exercise.DoesNotExist);
     }
 
     [Fact]
@@ -82,8 +84,8 @@ public class UpdateExerciseUseCaseTests
 
         //Assert
         output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should()
-            .Contain(e => e.Description.Equals("An unexpected error occurred while update the exercise"));
+        output.Errors.Should()
+            .Contain(Error.Unexpected());
     }
 
     [Fact]

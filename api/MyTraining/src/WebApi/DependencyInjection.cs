@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Core.Interfaces.Services;
+using Application.Shared.Authentication;
 using WebApi.Extensions;
 using WebApi.Services;
 

@@ -5,7 +5,7 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Core.Entities;
 using Core.Interfaces.Persistence.Repositories;
-using Infrastructure.Persistence;
+using Core.Shared.Errors;
 
 namespace Application.UseCases.Exercises.InsertExercise;
 
@@ -49,12 +49,9 @@ public class InsertExerciseUseCase : IInsertExerciseUseCase
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "{UseCase} - An unexpected error has occurred;",
-                nameof(InsertExerciseUseCase));
+            _logger.LogError(e, "{UseCase} - An unexpected error has occurred.", nameof(InsertExerciseUseCase));
 
-            output
-                .AddError($"An unexpected error occurred while inserting the user")
-                .SetErrorType(EErrorType.Unexpected);
+            output.AddError(Error.Unexpected());
         }
 
         return output;
