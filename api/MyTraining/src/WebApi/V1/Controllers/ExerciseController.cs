@@ -26,7 +26,9 @@ public class ExerciseController : MainController
     private readonly IUpdateExerciseUseCase _updateExerciseUseCase;
 
     public ExerciseController(ICurrentUserService currentUserService, ILogger<ExerciseController> logger,
-        IInsertExerciseUseCase insertExerciseUseCase, ISearchExerciseByIdUseCase searchExerciseByIdUseCase, ISearchAllExercisesUseCase searchAllExercisesUseCase, IUpdateExerciseUseCase updateExerciseUseCase) : base(currentUserService)
+        IInsertExerciseUseCase insertExerciseUseCase, ISearchExerciseByIdUseCase searchExerciseByIdUseCase,
+        ISearchAllExercisesUseCase searchAllExercisesUseCase,
+        IUpdateExerciseUseCase updateExerciseUseCase) : base(currentUserService)
     {
         _logger = logger;
         _insertExerciseUseCase = insertExerciseUseCase;
@@ -46,10 +48,8 @@ public class ExerciseController : MainController
         {
             var output = await _insertExerciseUseCase.ExecuteAsync(input.MapToApplication(this.CurrentUser.UserId),
                 cancellationToken);
-            
-            return output.IsValid ? 
-                CreatedAtAction(nameof(Get), null) : 
-                CustomResponse(output);
+
+            return CustomResponse(output);
         }
         catch (Exception e)
         {
@@ -60,7 +60,8 @@ public class ExerciseController : MainController
 
     [HttpPatch("{id:guid}")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateExerciseInput input, CancellationToken cancellationToken)
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateExerciseInput input,
+        CancellationToken cancellationToken)
     {
         try
         {
@@ -70,13 +71,13 @@ public class ExerciseController : MainController
         catch (Exception e)
         {
             _logger.LogError(e, "An unexpected error occurred.");
-            return BadRequest();
+            return InternalServerError("An unexpected error occurred.");
         }
     }
 
     [HttpGet("{id:guid}")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public async Task<IActionResult> Get(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
     {
         try
         {
@@ -86,9 +87,9 @@ public class ExerciseController : MainController
             return CustomResponse(output);
         }
         catch (Exception e)
-        { 
+        {
             _logger.LogError(e, "An unexpected error occurred");
-            return BadRequest();
+            return InternalServerError("An unexpected error occurred.");
         }
     }
 
@@ -100,13 +101,15 @@ public class ExerciseController : MainController
     {
         try
         {
-            var output = await _searchAllExercisesUseCase.ExecuteAsync(search.MapToApplication(CurrentUser.UserId), cancellationToken);
+            var output =
+                await _searchAllExercisesUseCase.ExecuteAsync(search.MapToApplication(CurrentUser.UserId),
+                    cancellationToken);
             return CustomResponse(output);
         }
         catch (Exception e)
         {
             _logger.LogError(e, "An unexpected error occurred");
-            return BadRequest();
+            return InternalServerError("An unexpected error occurred.");
         }
     }
 }

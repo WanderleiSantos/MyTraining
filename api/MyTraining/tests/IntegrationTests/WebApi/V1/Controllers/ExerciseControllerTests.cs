@@ -10,11 +10,11 @@ using Application.Shared.Models;
 using Application.UseCases.Auth.SignIn.Responses;
 using Application.UseCases.Exercises.InsertExercise.Responses;
 using Application.UseCases.Exercises.SearchAllExercises.Responses;
-using Application.UseCases.Exercises.SearchExerciseById;
 using Application.UseCases.Exercises.SearchExerciseById.Responses;
 using Bogus;
 using FluentAssertions;
 using SharedTests.Extensions;
+using WebApi.Shared.Error;
 using WebApi.V1.Models;
 using Xunit;
 
@@ -156,7 +156,7 @@ public class ExerciseControllerTests : IAsyncLifetime
 
         //Act
         var response = await _httpClient.PostAsync(UriRequestExercise, data);
-        var errorMessages = JsonSerializer.Deserialize<List<Notification>>(
+        var errorMessages = JsonSerializer.Deserialize<List<ErrorOutput>>(
             await response.Content.ReadAsStringAsync(),
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
