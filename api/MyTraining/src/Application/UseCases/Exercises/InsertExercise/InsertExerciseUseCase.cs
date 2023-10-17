@@ -52,7 +52,9 @@ public class InsertExerciseUseCase : IInsertExerciseUseCase
             _logger.LogError(e, "{UseCase} - An unexpected error has occurred;",
                 nameof(InsertExerciseUseCase));
 
-            output.AddErrorMessage($"An unexpected error occurred while inserting the exercise");
+            output
+                .AddError($"An unexpected error occurred while inserting the user")
+                .SetErrorType(EErrorType.Unexpected);
         }
 
         return output;

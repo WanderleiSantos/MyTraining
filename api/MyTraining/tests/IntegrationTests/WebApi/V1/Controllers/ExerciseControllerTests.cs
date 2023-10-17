@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -138,6 +139,29 @@ public class ExerciseControllerTests : IAsyncLifetime
         paginatedResponse?.PageSize.Should().Be(50);
         paginatedResponse?.Items.Should().HaveCount(50);
         paginatedResponse?.TotalItemCount.Should().Be(132);
+    }
+
+    [Fact]
+    public async Task ShouldReturnErrorCreateExerciseIfInputIsEmpty()
+    {
+        // Given
+        var user = await InsertUser();
+        var accessToken = await GetAccessToken(user.Email, user.Password);
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+
+        var input = new InsertExerciseInput();
+        var data = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, MediaType);
+
+        //Act
+        var response = await _httpClient.PostAsync(UriRequestExercise, data);
+        var errorMessages = JsonSerializer.Deserialize<List<Notification>>(
+            await response.Content.ReadAsStringAsync(),
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        errorMessages.Should().NotBeNull();
     }
 
 
