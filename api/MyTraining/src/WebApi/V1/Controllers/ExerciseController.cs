@@ -46,13 +46,15 @@ public class ExerciseController : MainController
         {
             var output = await _insertExerciseUseCase.ExecuteAsync(input.MapToApplication(this.CurrentUser.UserId),
                 cancellationToken);
-
-            return CustomResponse(output);
+            
+            return output.IsValid ? 
+                CreatedAtAction(nameof(Get), null) : 
+                CustomResponse(output);
         }
         catch (Exception e)
         {
             _logger.LogError(e, "An unexpected error occurred.");
-            return BadRequest();
+            return InternalServerError("An unexpected error occurred.");
         }
     }
 
