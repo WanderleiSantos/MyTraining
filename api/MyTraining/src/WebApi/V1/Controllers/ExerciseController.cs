@@ -1,5 +1,6 @@
 using Application.Shared.Authentication;
 using Application.UseCases.Exercises.InsertExercise;
+using Application.UseCases.Exercises.InsertExercise.Responses;
 using Application.UseCases.Exercises.SearchAllExercises;
 using Application.UseCases.Exercises.SearchExerciseById;
 using Application.UseCases.Exercises.SearchExerciseById.Commands;
@@ -49,7 +50,9 @@ public class ExerciseController : MainController
             var output = await _insertExerciseUseCase.ExecuteAsync(input.MapToApplication(this.CurrentUser.UserId),
                 cancellationToken);
 
-            return CustomResponse(output);
+            return output.IsValid ? 
+                CreatedAtAction(nameof(GetById), new {id = ((InsertExerciseResponse) output.Result!).Id}, output.Result) : 
+                CustomResponse(output);
         }
         catch (Exception e)
         {

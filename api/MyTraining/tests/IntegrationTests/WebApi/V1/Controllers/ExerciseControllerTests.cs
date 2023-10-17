@@ -58,7 +58,7 @@ public class ExerciseControllerTests : IAsyncLifetime
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
         //Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
         exerciseResponse.Should().NotBeNull();
         exerciseResponse?.Id.Should().NotBeEmpty();
         exerciseResponse?.Name.Should().Be(input.Name);
