@@ -2,7 +2,7 @@ using Application.Shared.Authentication;
 using Application.Shared.Models;
 using Core.Shared.Errors;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Shared.Error;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace WebApi.Controllers;
 
@@ -16,29 +16,40 @@ public abstract class MainController : ControllerBase
         CurrentUser = currentUser;
     }
     
-    protected ActionResult CustomResponse(Output output)
+    protected IActionResult CustomResponse(Output output)
     {
         if (output.IsValid)
             return Ok(output.Result);
 
-        return output.FirstError switch
+        return output.Errors.First().Type == ErrorType.Validation ? ValidationProblems(output.Errors) : Problems(output.Errors.First());
+    }
+
+    protected IActionResult InternalServerError(string description)
+    {
+        return Problem(statusCode: StatusCodes.Status500InternalServerError, title: description);
+    }
+    
+    private IActionResult Problems(Error error)
+    {
+        var statusCode = error.Type switch
         {
-            null => BadRequest(output.Errors),
-            ErrorType.Validation => BadRequest(ErrorMapping(output.Errors)),
-            ErrorType.Conflict => Conflict(ErrorMapping(output.Errors)),
-            ErrorType.NotFound => NotFound(ErrorMapping(output.Errors)),
-            ErrorType.Unauthorized => Unauthorized(ErrorMapping(output.Errors)),
-            _ => InternalServerError(ErrorMapping(output.Errors))
+            ErrorType.Conflict => StatusCodes.Status409Conflict,
+            ErrorType.Validation => StatusCodes.Status400BadRequest,
+            ErrorType.NotFound => StatusCodes.Status404NotFound,
+            ErrorType.Unauthorized => StatusCodes.Status401Unauthorized,
+            _ => StatusCodes.Status500InternalServerError
         };
-    }
 
-    protected ActionResult InternalServerError(object? error)
-    {
-        return StatusCode(StatusCodes.Status500InternalServerError, error);
+        return Problem(statusCode: statusCode, title: error.Description);
     }
-
-    private static List<ErrorOutput> ErrorMapping(IEnumerable<Error> errors)
+    
+    private IActionResult ValidationProblems(IEnumerable<Error> errors)
     {
-        return errors.Select(e => new ErrorOutput(e.Code, e.Description)).ToList();
+        var modelStateDictionary = new ModelStateDictionary();
+        foreach (var error in errors)
+        {
+            modelStateDictionary.AddModelError(error.Code, error.Description);
+        }
+        return ValidationProblem(modelStateDictionary);
     }
 }

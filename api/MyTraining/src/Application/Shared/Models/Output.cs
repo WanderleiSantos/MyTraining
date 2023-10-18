@@ -9,7 +9,7 @@ public class Output
     
     public object? Result { get; private set; }
     public bool IsValid => !_errors.Any();
-    public IReadOnlyCollection<Error> Errors => _errors;
+    public IEnumerable<Error> Errors => _errors;
     public ErrorType? FirstError => _errors.Any() ? _errors[0].Type : null;
     public string? CreatedId { get; private set; }
 

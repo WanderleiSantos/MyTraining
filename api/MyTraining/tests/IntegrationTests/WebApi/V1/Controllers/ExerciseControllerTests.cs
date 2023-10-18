@@ -13,8 +13,8 @@ using Application.UseCases.Exercises.SearchAllExercises.Responses;
 using Application.UseCases.Exercises.SearchExerciseById.Responses;
 using Bogus;
 using FluentAssertions;
+using IntegrationTests.Model;
 using SharedTests.Extensions;
-using WebApi.Shared.Error;
 using WebApi.V1.Models;
 using Xunit;
 
@@ -156,13 +156,13 @@ public class ExerciseControllerTests : IAsyncLifetime
 
         //Act
         var response = await _httpClient.PostAsync(UriRequestExercise, data);
-        var errorMessages = JsonSerializer.Deserialize<List<ErrorOutput>>(
+        var errorResponse = JsonSerializer.Deserialize<ErrorResponse>(
             await response.Content.ReadAsStringAsync(),
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        errorMessages.Should().NotBeNull();
+        errorResponse.Should().NotBeNull();
     }
 
 

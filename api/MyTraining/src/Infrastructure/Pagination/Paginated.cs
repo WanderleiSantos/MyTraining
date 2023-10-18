@@ -40,7 +40,7 @@ public class Paginated<T> : IPaginated<T>
     {
         pageNumber = pageNumber <= 0 ? 1 : pageNumber;
         pageSize = pageSize <= 0 ? 10 : pageSize;
-        var count = await source.CountAsync();
+        var count = await source.CountAsync(cancellationToken: cancellationToken);
         var items = await source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
         return new Paginated<T>(items, count, pageNumber, pageSize);
     }

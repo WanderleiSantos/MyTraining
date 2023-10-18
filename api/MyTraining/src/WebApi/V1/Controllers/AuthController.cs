@@ -4,6 +4,7 @@ using Application.UseCases.Auth.SignIn;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Controllers;
+using WebApi.Shared;
 using WebApi.V1.Mappers;
 using WebApi.V1.Models;
 
@@ -39,8 +40,8 @@ public class AuthController : MainController
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An unexpected error occurred.");
-            return InternalServerError("An unexpected error occurred.");
+            _logger.LogError(ex, Constants.UnexpectedErrorDescription);
+            return InternalServerError(Constants.UnexpectedErrorDescription);
         }
     }
     
@@ -58,8 +59,8 @@ public class AuthController : MainController
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An unexpected error occurred.");
-            return InternalServerError("An unexpected error occurred.");
+            _logger.LogError(ex, Constants.UnexpectedErrorDescription);
+            return InternalServerError(Constants.UnexpectedErrorDescription);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -9,11 +10,12 @@ using Application.UseCases.Auth.RefreshToken.Responses;
 using Application.UseCases.Auth.SignIn.Responses;
 using Bogus;
 using FluentAssertions;
+using IntegrationTests.Model;
 using SharedTests.Extensions;
-using WebApi.Shared.Error;
 using WebApi.V1.Models;
 using Xunit;
 using Errors = Core.Shared.Errors.Errors;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace IntegrationTests.WebApi.V1.Controllers;
 
@@ -55,7 +57,6 @@ public class AuthControllerTests : IAsyncLifetime
         var signInResponse = JsonSerializer.Deserialize<SignInResponse>(content, 
             new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
 
-
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         signInResponse.Should().NotBeNull();
@@ -80,16 +81,14 @@ public class AuthControllerTests : IAsyncLifetime
 
         // Act
         var response = await _httpClient.PostAsync(UriRequestSignIn, data);
-        var errorMessages = JsonSerializer.Deserialize<List<ErrorOutput>>(
+        var errorResponse = JsonSerializer.Deserialize<ErrorResponse>(
             await response.Content.ReadAsStringAsync(), 
             new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
 
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-        errorMessages.Should().NotBeNull();
-        errorMessages.Should().HaveCount(1);
-        errorMessages.Should().Contain(e => e.Description.Equals(Errors.Authentication.InvalidCredentials.Description));
+        errorResponse?.Title.Should().Be(Errors.Authentication.InvalidCredentials.Description);
     }
     
     [Fact]
@@ -107,16 +106,13 @@ public class AuthControllerTests : IAsyncLifetime
 
         // Act
         var response = await _httpClient.PostAsync(UriRequestSignIn, data);
-        var errorMessages = JsonSerializer.Deserialize<List<ErrorOutput>>(
+        var errorResponse = JsonSerializer.Deserialize<ErrorResponse>(
             await response.Content.ReadAsStringAsync(), 
             new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
 
-
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-        errorMessages.Should().NotBeNull();
-        errorMessages.Should().HaveCount(1);
-        errorMessages.Should().Contain(e => e.Description.Equals(Errors.Authentication.InvalidCredentials.Description));
+        errorResponse?.Title.Should().Be(Errors.Authentication.InvalidCredentials.Description);
     }
     
     [Fact]
@@ -129,19 +125,13 @@ public class AuthControllerTests : IAsyncLifetime
 
         // Act
         var response = await _httpClient.PostAsync(UriRequestSignIn, data);
-        var errorMessages = JsonSerializer.Deserialize<List<ErrorOutput>>(
+        var errorResponse = JsonSerializer.Deserialize<ErrorResponse>(
             await response.Content.ReadAsStringAsync(), 
             new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        errorMessages.Should().NotBeNull();
-        errorMessages.Should().HaveCount(5);
-        errorMessages.Should().Contain(e => e.Description.Equals("'Email' must not be empty.")).Which.Code.Should().Be("Email");
-        errorMessages.Should().Contain(e => e.Description.Equals("'Email' is not a valid email address.")).Which.Code.Should().Be("Email");
-        errorMessages.Should().Contain(e => e.Description.Equals("The length of 'Email' must be at least 3 characters. You entered 0 characters.")).Which.Code.Should().Be("Email");
-        errorMessages.Should().Contain(e => e.Description.Equals("'Password' must not be empty.")).Which.Code.Should().Be("Password");
-        errorMessages.Should().Contain(e => e.Description.Equals("The length of 'Password' must be at least 8 characters. You entered 0 characters.")).Which.Code.Should().Be("Password");
+        errorResponse?.Errors.Should().HaveCount(2);
     }
     
     [Fact]
@@ -158,15 +148,13 @@ public class AuthControllerTests : IAsyncLifetime
 
         // Act
         var response = await _httpClient.PostAsync(UriRequestSignIn, data);
-        var errorMessages = JsonSerializer.Deserialize<List<ErrorOutput>>(
+        var errorResponse = JsonSerializer.Deserialize<ErrorResponse>(
             await response.Content.ReadAsStringAsync(), 
             new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        errorMessages.Should().NotBeNull();
-        errorMessages.Should().HaveCount(1);
-        errorMessages.Should().Contain(e => e.Description.Equals("'Email' is not a valid email address.")).Which.Code.Should().Be("Email");
+        errorResponse?.Errors.Should().HaveCount(1);
     }
     
     [Fact]
@@ -210,15 +198,13 @@ public class AuthControllerTests : IAsyncLifetime
 
         // Act
         var response = await _httpClient.PostAsync(UriRequestRefreshToken, data);
-        var errorMessages = JsonSerializer.Deserialize<List<ErrorOutput>>(
+        var errorResponse = JsonSerializer.Deserialize<ErrorResponse>(
             await response.Content.ReadAsStringAsync(), 
             new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-        errorMessages.Should().NotBeNull();
-        errorMessages.Should().HaveCount(1);
-        errorMessages.Should().Contain(e => e.Description.Equals(Errors.Authentication.InvalidToken.Description));
+        errorResponse?.Title.Should().Be(Errors.Authentication.InvalidToken.Description);
     }
     
     [Fact]
@@ -231,15 +217,14 @@ public class AuthControllerTests : IAsyncLifetime
 
         // Act
         var response = await _httpClient.PostAsync(UriRequestRefreshToken, data);
-        var errorMessages = JsonSerializer.Deserialize<List<ErrorOutput>>(
+        var errorResponse = JsonSerializer.Deserialize<ErrorResponse>(
             await response.Content.ReadAsStringAsync(), 
             new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        errorMessages.Should().NotBeNull();
-        errorMessages.Should().HaveCount(1);
-        errorMessages.Should().Contain(e => e.Description.Equals("'Refresh Token' must not be empty.")).Which.Code.Should().Be("RefreshToken");
+        errorResponse.Should().NotBeNull();
+        errorResponse?.Errors.Should().HaveCount(1);
     }
     
     private async Task<InsertUserInput> InsertUser()

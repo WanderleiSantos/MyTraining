@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Controllers;
+using WebApi.Shared;
 using WebApi.V1.Mappers;
 using WebApi.V1.Models;
 using WebApi.V1.Queries;
@@ -56,8 +57,8 @@ public class ExerciseController : MainController
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "An unexpected error occurred.");
-            return InternalServerError("An unexpected error occurred.");
+            _logger.LogError(e, Constants.UnexpectedErrorDescription);
+            return InternalServerError(Constants.UnexpectedErrorDescription);
         }
     }
 
@@ -73,8 +74,8 @@ public class ExerciseController : MainController
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "An unexpected error occurred.");
-            return InternalServerError("An unexpected error occurred.");
+            _logger.LogError(e, Constants.UnexpectedErrorDescription);
+            return InternalServerError(Constants.UnexpectedErrorDescription);
         }
     }
 
@@ -91,8 +92,8 @@ public class ExerciseController : MainController
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "An unexpected error occurred");
-            return InternalServerError("An unexpected error occurred.");
+            _logger.LogError(e, Constants.UnexpectedErrorDescription);
+            return InternalServerError(Constants.UnexpectedErrorDescription);
         }
     }
 
@@ -111,8 +112,8 @@ public class ExerciseController : MainController
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "An unexpected error occurred");
-            return InternalServerError("An unexpected error occurred.");
+            _logger.LogError(e, Constants.UnexpectedErrorDescription);
+            return InternalServerError(Constants.UnexpectedErrorDescription);
         }
     }
 }

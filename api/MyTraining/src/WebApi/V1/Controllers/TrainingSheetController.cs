@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Controllers;
+using WebApi.Shared;
 using WebApi.V1.Mappers;
 using WebApi.V1.Models;
 
@@ -39,8 +40,8 @@ public class TrainingSheetController : MainController
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "An unexpected error occurred.");
-            return BadRequest();
+            _logger.LogError(e, Constants.UnexpectedErrorDescription);
+            return InternalServerError(Constants.UnexpectedErrorDescription);
         }
     }
 }
