@@ -51,9 +51,7 @@ public class ExerciseController : MainController
             var output = await _insertExerciseUseCase.ExecuteAsync(input.MapToApplication(this.CurrentUser.UserId),
                 cancellationToken);
 
-            return output.IsValid ? 
-                CreatedAtAction(nameof(GetById), new { id = output.CreatedId}, output.Result) : 
-                CustomResponse(output);
+            return CustomResponseCreatedAtAction(output, nameof(GetById), new { id = output.CreatedId });
         }
         catch (Exception e)
         {

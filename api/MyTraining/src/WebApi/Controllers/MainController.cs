@@ -18,15 +18,22 @@ public abstract class MainController : ControllerBase
     
     protected IActionResult CustomResponse(Output output)
     {
-        if (output.IsValid)
-            return Ok(output.Result);
-
-        return output.Errors.First().Type == ErrorType.Validation ? ValidationProblems(output.Errors) : Problems(output.Errors.First());
+        return output.IsValid ? Ok(output.Result) : HandleProblem(output);
     }
 
+    protected IActionResult CustomResponseCreatedAtAction(Output output, string actionName, object? routeValues)
+    {
+        return output.IsValid ? CreatedAtAction(actionName, routeValues, output.Result) : HandleProblem(output);
+    }
+    
     protected IActionResult InternalServerError(string description)
     {
         return Problem(statusCode: StatusCodes.Status500InternalServerError, title: description);
+    }
+    
+    private IActionResult HandleProblem(Output output)
+    {
+        return output.Errors.First().Type == ErrorType.Validation ? ValidationProblems(output.Errors) : Problems(output.Errors.First());
     }
     
     private IActionResult Problems(Error error)

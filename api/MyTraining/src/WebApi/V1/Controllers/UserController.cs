@@ -44,9 +44,7 @@ public class UserController : MainController
         {
             var output = await _insertUserUseCase.ExecuteAsync(input.MapToApplication(), cancellationToken);
             
-            return output.IsValid ? 
-                CreatedAtAction(nameof(GetById), null) : 
-                CustomResponse(output);
+            return CustomResponseCreatedAtAction(output, nameof(GetById), null);
         }
         catch (Exception ex)
         {
