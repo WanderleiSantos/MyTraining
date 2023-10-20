@@ -16,25 +16,22 @@ namespace WebApi.V1.Controllers;
 public class AuthController : MainController
 {
     private readonly ILogger<AuthController> _logger;
-    private readonly ISignInUseCase _signInUseCase;
-    private readonly IRefreshTokenUseCase _refreshTokenUseCase;
 
-    public AuthController(ICurrentUserService currentUser, ILogger<AuthController> logger, ISignInUseCase signInUseCase, IRefreshTokenUseCase refreshTokenUseCase) : base(currentUser)
+    public AuthController(ICurrentUserService currentUser, ILogger<AuthController> logger) : base(currentUser)
     {
         _logger = logger;
-        _signInUseCase = signInUseCase;
-        _refreshTokenUseCase = refreshTokenUseCase;
     }
 
     [HttpPost("sign-in")]
     [AllowAnonymous]
     public async Task<IActionResult> SignIn(
+        [FromServices] ISignInUseCase signInUseCase,
         [FromBody] SignInInput input,
         CancellationToken cancellationToken)
     {
         try
         {
-            var output = await _signInUseCase.ExecuteAsync(input.MapToApplication(), cancellationToken);
+            var output = await signInUseCase.ExecuteAsync(input.MapToApplication(), cancellationToken);
 
             return CustomResponse(output);
         }
@@ -48,12 +45,13 @@ public class AuthController : MainController
     [HttpPost("refresh-token")]
     [AllowAnonymous]
     public async Task<IActionResult> RefreshToken(
+        [FromServices] IRefreshTokenUseCase refreshTokenUseCase,
         [FromBody] RefreshTokenInput input,
         CancellationToken cancellationToken)
     {
         try
         {
-            var output = await _refreshTokenUseCase.ExecuteAsync(input.MapToApplication(), cancellationToken);
+            var output = await refreshTokenUseCase.ExecuteAsync(input.MapToApplication(), cancellationToken);
 
             return CustomResponse(output);
         }

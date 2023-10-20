@@ -20,29 +20,22 @@ namespace WebApi.V1.Controllers;
 public class UserController : MainController
 {
     private readonly ILogger<UserController> _logger;
-    private readonly IInsertUserUseCase _insertUserUseCase;
-    private readonly ISearchUserByIdUseCase _searchUserByIdUseCase;
-    private readonly IUpdateUserUseCase _updateUserUseCase;
-    private readonly IChangeUserPasswordUseCase _changeUserPasswordUseCase;
 
-    public UserController(ICurrentUserService currentUserService, ILogger<UserController> logger, IInsertUserUseCase insertUserUseCase, ISearchUserByIdUseCase searchUserByIdUseCase, IUpdateUserUseCase updateUserUseCase, IChangeUserPasswordUseCase changeUserPasswordUseCase) : base(currentUserService)
+    public UserController(ICurrentUserService currentUserService, ILogger<UserController> logger) : base(currentUserService)
     {
         _logger = logger;
-        _insertUserUseCase = insertUserUseCase;
-        _searchUserByIdUseCase = searchUserByIdUseCase;
-        _updateUserUseCase = updateUserUseCase;
-        _changeUserPasswordUseCase = changeUserPasswordUseCase;
     }
 
     [HttpPost]
     [AllowAnonymous]
     public async Task<IActionResult> Create(
+        [FromServices] IInsertUserUseCase insertUserUseCase,
         [FromBody] InsertUserInput input,
         CancellationToken cancellationToken)
     {
         try
         {
-            var output = await _insertUserUseCase.ExecuteAsync(input.MapToApplication(), cancellationToken);
+            var output = await insertUserUseCase.ExecuteAsync(input.MapToApplication(), cancellationToken);
             
             return CustomResponseCreatedAtAction(output, nameof(GetById), null);
         }
@@ -55,12 +48,14 @@ public class UserController : MainController
     
     [HttpGet()]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public async Task<IActionResult> GetById(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetById(
+        [FromServices] ISearchUserByIdUseCase searchUserByIdUseCase,
+        CancellationToken cancellationToken)
     {
         try
         {
             var command = new SearchUserByIdCommand() { Id = CurrentUser.UserId };
-            var output = await _searchUserByIdUseCase.ExecuteAsync(command, cancellationToken);
+            var output = await searchUserByIdUseCase.ExecuteAsync(command, cancellationToken);
 
             return CustomResponse(output);
         }
@@ -74,12 +69,13 @@ public class UserController : MainController
     [HttpPut()]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Update(
+        [FromServices] IUpdateUserUseCase updateUserUseCase,
         [FromBody] UpdateUserInput input,
         CancellationToken cancellationToken)
     {
         try
         {
-            var output = await _updateUserUseCase.ExecuteAsync(input.MapToApplication(CurrentUser.UserId), cancellationToken);
+            var output = await updateUserUseCase.ExecuteAsync(input.MapToApplication(CurrentUser.UserId), cancellationToken);
 
             return CustomResponse(output);
         }
@@ -93,12 +89,13 @@ public class UserController : MainController
     [HttpPut( "password")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> ChangePassword(
+        [FromServices] IChangeUserPasswordUseCase changeUserPasswordUseCase,
         [FromBody] ChangeUserPasswordInput input,
         CancellationToken cancellationToken)
     {
         try
         {
-            var output = await _changeUserPasswordUseCase.ExecuteAsync(input.MapToApplication(CurrentUser.UserId), cancellationToken);
+            var output = await changeUserPasswordUseCase.ExecuteAsync(input.MapToApplication(CurrentUser.UserId), cancellationToken);
 
             return CustomResponse(output);
         }
