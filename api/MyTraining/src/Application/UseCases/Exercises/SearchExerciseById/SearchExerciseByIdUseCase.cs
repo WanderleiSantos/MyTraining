@@ -36,7 +36,7 @@ public class SearchExerciseByIdUseCase : ISearchExerciseByIdUseCase
             _logger.LogInformation("{UseCase} - Search exercise by id: {id}", nameof(SearchExerciseByIdUseCase),
                 command.Id);
 
-            var result = await _repository.GetByIdAsync(command.Id, cancellationToken);
+            var result = await _repository.GetByIdAsync(command.Id, command.UserId, cancellationToken);
 
             _logger.LogInformation("{UseCase} - Search Exercise finish successfully, id: {id}",
                 nameof(SearchExerciseByIdUseCase), command.Id);

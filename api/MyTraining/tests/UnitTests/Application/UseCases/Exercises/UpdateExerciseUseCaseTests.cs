@@ -48,9 +48,10 @@ public class UpdateExerciseUseCaseTests
 
         //Assert
         output.IsValid.Should().BeFalse();
-        output.Errors.Should().HaveCount(2);
+        output.Errors.Should().HaveCount(3);
         output.Errors.Should().Contain(e => e.Description.Equals("'Id' must not be empty."));
         output.Errors.Should().Contain(e => e.Description.Equals("'Name' must not be empty."));
+        output.Errors.Should().Contain(e => e.Description.Equals("'User Id' must not be empty."));
     }
 
     [Fact]
@@ -60,7 +61,7 @@ public class UpdateExerciseUseCaseTests
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
 
-        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, A<CancellationToken>._)).Returns((Exercise?)null);
+        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id,  command.UserId, A<CancellationToken>._)).Returns((Exercise?)null);
 
         //Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
@@ -77,7 +78,7 @@ public class UpdateExerciseUseCaseTests
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
 
-        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, A<CancellationToken>._)).Throws(new Exception("ex"));
+        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id,   command.UserId,A<CancellationToken>._)).Throws(new Exception("ex"));
 
         //Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
@@ -97,7 +98,7 @@ public class UpdateExerciseUseCaseTests
         var cancellationToken = CancellationToken.None;
  
         A.CallTo(() => _repositoryMock.UnitOfWork.CommitAsync()).Returns(true);
-        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, A<CancellationToken>._)).Returns(fakeExercise);
+        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, command.UserId, A<CancellationToken>._)).Returns(fakeExercise);
         
         //Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
@@ -115,14 +116,16 @@ public class UpdateExerciseUseCaseTests
     {
         Id = fakeExerciseId,
         Link = _faker.Internet.Url(),
-        Name = _faker.Random.String2(10)
+        Name = _faker.Random.String2(10),
+        UserId = _faker.Random.Guid()
     };
 
     private UpdateExerciseCommand CreateCommand() => new UpdateExerciseCommand()
     {
         Id = _faker.Random.Guid(),
         Link = _faker.Internet.Url(),
-        Name = _faker.Random.String2(10)
+        Name = _faker.Random.String2(10),
+        UserId = _faker.Random.Guid()
     };
 
     private Exercise CreateExercise() => new Exercise(

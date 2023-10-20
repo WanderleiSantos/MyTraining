@@ -23,16 +23,16 @@ public class ExerciseRepository : Repository<Exercise>, IExerciseRepository
         await DbSet.AddRangeAsync(exercises, cancellationToken);
     }
 
-    public async Task<Exercise?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<Exercise?> GetByIdAsync(Guid id, Guid userId, CancellationToken cancellationToken)
     {
-        return await DbSet.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
+        return await DbSet.SingleOrDefaultAsync(x => x.Id == id && x.UserId == userId, cancellationToken);
     }
 
     public async Task<IPaginated<Exercise>> GetAllAsync(Guid idUser, IQuerySort search, int pageNumber, int pageSize,
         CancellationToken cancellationToken)
     {
         return await PrepareQuery(search, search.Sort)
-            .Where(x => x.IdUser == idUser)
+            .Where(x => x.UserId == idUser)
             .ToPaginatedAsync(pageNumber, pageSize, cancellationToken);
     }
 }

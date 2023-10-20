@@ -67,7 +67,7 @@ public class ExerciseController : MainController
     {
         try
         {
-            var output = await _updateExerciseUseCase.ExecuteAsync(input.MapToApplication(id), cancellationToken);
+            var output = await _updateExerciseUseCase.ExecuteAsync(input.MapToApplication(id, CurrentUser.UserId), cancellationToken);
             return CustomResponse(output);
         }
         catch (Exception e)
@@ -83,7 +83,7 @@ public class ExerciseController : MainController
     {
         try
         {
-            var command = new SearchExerciseByIdCommand() { Id = id };
+            var command = new SearchExerciseByIdCommand() { Id = id, UserId = CurrentUser.UserId};
             var output = await _searchExerciseByIdUseCase.ExecuteAsync(command, cancellationToken);
 
             return CustomResponse(output);

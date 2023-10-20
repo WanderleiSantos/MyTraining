@@ -51,7 +51,7 @@ public class SearchExerciseByIdUseCaseTests
 
         //Assert
         output.IsValid.Should().BeFalse();
-        output.Errors.Should().HaveCount(1);
+        output.Errors.Should().HaveCount(2);
         output.Errors.Should().Contain(e => e.Description.Equals("'Id' must not be empty."));
     }
 
@@ -63,7 +63,7 @@ public class SearchExerciseByIdUseCaseTests
         var cancellationToken = CancellationToken.None;
 
 
-        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, A<CancellationToken>._))
+        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, command.UserId, A<CancellationToken>._))
             .Returns((Exercise?)null);
 
         //Act
@@ -82,7 +82,7 @@ public class SearchExerciseByIdUseCaseTests
         var command = CreateCommand(exercise.Id);
         var cancellationToken = CancellationToken.None;
 
-        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, A<CancellationToken>._))
+        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, command.UserId, A<CancellationToken>._))
             .Returns(exercise);
 
         //Act
@@ -101,7 +101,8 @@ public class SearchExerciseByIdUseCaseTests
         var command = CreateCommand();
         var cancellationToken = CancellationToken.None;
 
-        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, A<CancellationToken>._)).Throws(new Exception("ex"));
+        A.CallTo(() => _repositoryMock.GetByIdAsync(command.Id, command.UserId, A<CancellationToken>._))
+            .Throws(new Exception("ex"));
 
         //Act
         var output = await _useCase.ExecuteAsync(command, cancellationToken);
@@ -114,12 +115,14 @@ public class SearchExerciseByIdUseCaseTests
 
     private static SearchExerciseByIdCommand CreateCommand() => new SearchExerciseByIdCommand()
     {
-        Id = Guid.NewGuid()
+        Id = Guid.NewGuid(),
+        UserId = Guid.NewGuid()
     };
 
     private static SearchExerciseByIdCommand CreateCommand(Guid id) => new SearchExerciseByIdCommand()
     {
-        Id = id
+        Id = id,
+        UserId = Guid.NewGuid()
     };
 
     private Exercise CreateFakeExercise() => new Exercise(

@@ -8,5 +8,6 @@ public class SearchExerciseByIdValidator : AbstractValidator<SearchExerciseByIdC
     public SearchExerciseByIdValidator()
     {
         RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.UserId).NotEmpty();
     }
 }

@@ -17,7 +17,7 @@ public class ExerciseMapping : IEntityTypeConfiguration<Exercise>
             .HasColumnName("id");
 
         builder
-            .Property(x => x.IdUser)
+            .Property(x => x.UserId)
             .HasColumnName("user_id")
             .IsRequired();
 
@@ -51,7 +51,7 @@ public class ExerciseMapping : IEntityTypeConfiguration<Exercise>
         builder
             .HasOne(exercise => exercise.User)
             .WithMany(user => user.Exercises)
-            .HasForeignKey(exercise => exercise.IdUser)
+            .HasForeignKey(exercise => exercise.UserId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

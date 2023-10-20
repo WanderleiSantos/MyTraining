@@ -36,7 +36,7 @@ public class UpdateExerciseUseCase : IUpdateExerciseUseCase
             _logger.LogInformation("{UseCase} - Updating Exercise; Name: {Name}", nameof(UpdateExerciseUseCase),
                 command.Name);
 
-            var exercise = await _repository.GetByIdAsync(command.Id, cancellationToken);
+            var exercise = await _repository.GetByIdAsync(command.Id, command.UserId, cancellationToken);
             
             if (exercise == null)
             {

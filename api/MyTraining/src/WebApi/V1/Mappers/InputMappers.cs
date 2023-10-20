@@ -54,12 +54,13 @@ public static class InputMappers
             UserId = userId
         };
 
-    public static UpdateExerciseCommand MapToApplication(this UpdateExerciseInput input, Guid id) =>
+    public static UpdateExerciseCommand MapToApplication(this UpdateExerciseInput input, Guid id, Guid userId) =>
         new UpdateExerciseCommand()
         {
             Id = id,
             Link = input.Link,
-            Name = input.Name
+            Name = input.Name,
+            UserId = userId
         };
 
     public static InsertTrainingSheetCommand MapToApplication(this InsertTrainingSheetInput input, Guid userId) =>

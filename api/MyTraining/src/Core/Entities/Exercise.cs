@@ -2,11 +2,11 @@ namespace Core.Entities;
 
 public class Exercise : BaseEntity
 {
-    public Exercise(string name, string? link, Guid idUser)
+    public Exercise(string name, string? link, Guid userId)
     {
         Name = name;
         Link = link;
-        IdUser = idUser;
+        UserId = userId;
         Active = true;
         SeriesPlannings = new List<SeriesPlanning>();
     }
@@ -14,7 +14,7 @@ public class Exercise : BaseEntity
     public string Name { get; private set; }
     public string? Link { get; private set; }
     public bool Active { get; private set; }
-    public Guid IdUser { get; private set; }
+    public Guid UserId { get; private set; }
     public User? User { get; private set; }
     public ICollection<SeriesPlanning> SeriesPlannings { get; private set; }
     

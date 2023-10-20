@@ -9,5 +9,6 @@ public class UpdateExerciseValidator : AbstractValidator<UpdateExerciseCommand>
     {
         RuleFor(x => x.Id).NotEmpty();
         RuleFor(x => x.Name).NotEmpty();
+        RuleFor(x => x.UserId).NotEmpty();
     }
 }
