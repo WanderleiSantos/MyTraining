@@ -1,5 +1,6 @@
 using Application.Shared.Authentication;
 using Application.UseCases.TrainingSheets.InsertTrainingSheet;
+using Application.UseCases.TrainingSheetSerie.InsertTrainingSheetSeries;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,12 +18,14 @@ public class TrainingSheetController : MainController
 {
     private readonly ILogger<TrainingSheetController> _logger;
     private readonly IInsertTrainingSheetUseCase _insertTrainingSheetUseCase;
+    private readonly IInsertTrainingSheetSeriesUseCase _insertTrainingSheetSeriesUseCase;
 
     public TrainingSheetController(ICurrentUserService currentUserService, ILogger<TrainingSheetController> logger,
-        IInsertTrainingSheetUseCase insertTrainingSheetUseCase) : base(currentUserService)
+        IInsertTrainingSheetUseCase insertTrainingSheetUseCase, IInsertTrainingSheetSeriesUseCase insertTrainingSheetSeriesUseCase) : base(currentUserService)
     {
         _logger = logger;
         _insertTrainingSheetUseCase = insertTrainingSheetUseCase;
+        _insertTrainingSheetSeriesUseCase = insertTrainingSheetSeriesUseCase;
     }
 
     [HttpPost]
@@ -44,4 +47,26 @@ public class TrainingSheetController : MainController
             return InternalServerError(Constants.UnexpectedErrorDescription);
         }
     }
+    
+    [HttpPost("{id:guid}/serie")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> CreateSerie(Guid id,[FromBody] InsertTrainingSheetSeriesInput input,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var output =
+                await _insertTrainingSheetSeriesUseCase.ExecuteAsync(input.MapToApplication(this.CurrentUser.UserId),
+                    cancellationToken);
+
+            return CustomResponse(output);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, Constants.UnexpectedErrorDescription);
+            return InternalServerError(Constants.UnexpectedErrorDescription);
+        }
+    }
+    
+    
 }

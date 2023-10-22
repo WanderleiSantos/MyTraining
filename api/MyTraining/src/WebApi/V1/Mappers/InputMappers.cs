@@ -3,6 +3,7 @@ using Application.UseCases.Auth.SignIn.Commands;
 using Application.UseCases.Exercises.InsertExercise.Commands;
 using Application.UseCases.Exercises.UpdateExercise.Commands;
 using Application.UseCases.TrainingSheets.InsertTrainingSheet.Commands;
+using Application.UseCases.TrainingSheetSerie.InsertTrainingSheetSeries.Commands;
 using Application.UseCases.Users.ChangeUserPassword.Commands;
 using Application.UseCases.Users.InsertUser.Commands;
 using Application.UseCases.Users.UpdateUser.Commands;
@@ -69,5 +70,13 @@ public static class InputMappers
             Name = input.Name,
             TimeExchange = input.TimeExchange,
             UserId = userId
+        };
+
+    public static InsertTrainingSheetSeriesCommand MapToApplication(this InsertTrainingSheetSeriesInput input,
+        Guid userId) =>
+        new InsertTrainingSheetSeriesCommand()
+        {
+            Name = input.Name,
+            TrainingSheetId = input.TrainingSheetId
         };
 }
