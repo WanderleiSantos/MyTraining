@@ -17,10 +17,16 @@ using Application.UseCases.Exercises.SearchExerciseById.Validations;
 using Application.UseCases.Exercises.UpdateExercise;
 using Application.UseCases.Exercises.UpdateExercise.Commands;
 using Application.UseCases.Exercises.UpdateExercise.Validations;
+using Application.UseCases.SeriesPlannings.InsertSeriesPlanning;
+using Application.UseCases.SeriesPlannings.InsertSeriesPlanning.Commands;
+using Application.UseCases.SeriesPlannings.InsertSeriesPlanning.Validations;
 using Application.UseCases.TrainingSheets.InsertTrainingSheet;
 using Application.UseCases.TrainingSheets.InsertTrainingSheet.Commands;
 using Application.UseCases.TrainingSheets.InsertTrainingSheet.Validations;
 using Application.UseCases.TrainingSheets.Services;
+using Application.UseCases.TrainingSheetSerie.InsertTrainingSheetSeries;
+using Application.UseCases.TrainingSheetSerie.InsertTrainingSheetSeries.Commands;
+using Application.UseCases.TrainingSheetSerie.InsertTrainingSheetSeries.Validations;
 using Application.UseCases.Users.ChangeUserPassword;
 using Application.UseCases.Users.ChangeUserPassword.Commands;
 using Application.UseCases.Users.ChangeUserPassword.Validations;
@@ -67,6 +73,8 @@ public static class DependencyInjection
         services.AddScoped<ISearchAllExercisesUseCase, SearchAllExercisesUseCase>();
         services.AddScoped<IUpdateExerciseUseCase, UpdateExerciseUseCase>();
         services.AddScoped<IInsertTrainingSheetUseCase, InsertTrainingSheetUseCase>();
+        services.AddScoped<IInsertTrainingSheetSeriesUseCase, InsertTrainingSheetSeriesUseCase>();
+        services.AddScoped<IInsertSeriesPlanningUseCase, InsertSeriesPlanningUseCase>();
         
         return services;
     }
@@ -86,6 +94,8 @@ public static class DependencyInjection
         services.AddScoped<IValidator<SearchAllExercisesCommand>, SearchAllExercisesValidator>();
         services.AddScoped<IValidator<UpdateExerciseCommand>, UpdateExerciseValidator>();
         services.AddScoped<IValidator<InsertTrainingSheetCommand>, InsertTrainingSheetCommandValidator>();
+        services.AddScoped<IValidator<InsertTrainingSheetSeriesCommand>, InsertTrainingSheetSeriesCommandValidator>();
+        services.AddScoped<IValidator<InsertSeriesPlanningCommand>, InsertSeriesPlanningCommandServiceValidator>();
         
         return services;
     }

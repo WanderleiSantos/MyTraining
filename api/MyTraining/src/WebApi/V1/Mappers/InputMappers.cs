@@ -2,6 +2,8 @@ using Application.UseCases.Auth.RefreshToken.Commands;
 using Application.UseCases.Auth.SignIn.Commands;
 using Application.UseCases.Exercises.InsertExercise.Commands;
 using Application.UseCases.Exercises.UpdateExercise.Commands;
+using Application.UseCases.SeriesPlannings.InsertSeriesPlanning.Commands;
+using Application.UseCases.SeriesPlannings.InsertSeriesPlanning.Models;
 using Application.UseCases.TrainingSheets.InsertTrainingSheet.Commands;
 using Application.UseCases.TrainingSheetSerie.InsertTrainingSheetSeries.Commands;
 using Application.UseCases.Users.ChangeUserPassword.Commands;
@@ -72,11 +74,36 @@ public static class InputMappers
             UserId = userId
         };
 
-    public static InsertTrainingSheetSeriesCommand MapToApplication(this InsertTrainingSheetSeriesInput input,
-        Guid userId) =>
+    public static InsertTrainingSheetSeriesCommand
+        MapToApplication(this InsertTrainingSheetSeriesInput input, Guid id) =>
         new InsertTrainingSheetSeriesCommand()
         {
             Name = input.Name,
-            TrainingSheetId = input.TrainingSheetId
+            TrainingSheetId = id
         };
+
+    public static InsertSeriesPlanningCommand MapToApplication(this List<InsertSeriesPlanningInput> input,
+        Guid trainingSheetSeriesId, Guid userId)
+    {
+        var command = new InsertSeriesPlanningCommand();
+        
+        foreach (var planning in input)
+        {
+            var seriesPlanningInput = new SeriesPlanningInput()
+            {
+                Machine = planning.Machine,
+                SeriesNumber = planning.SeriesNumber,
+                Repetitions = planning.Repetitions,
+                Charge = planning.Charge,
+                Interval = planning.Interval,
+                TrainingSheetSeriesId = trainingSheetSeriesId,
+                UserId = userId,
+                ExercisesIds = planning.ExercisesIds
+            };
+
+            command.SeriesPlanningInputs.Add(seriesPlanningInput);
+        }
+
+        return command;
+    }
 }

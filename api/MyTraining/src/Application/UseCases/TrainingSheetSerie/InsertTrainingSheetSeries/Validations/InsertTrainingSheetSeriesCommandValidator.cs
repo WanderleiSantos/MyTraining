@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace Application.UseCases.TrainingSheetSerie.InsertTrainingSheetSeries.Validations;
 
-public class InsertTrainingSheetSeriesValidator : AbstractValidator<InsertTrainingSheetSeriesCommand>
+public class InsertTrainingSheetSeriesCommandValidator : AbstractValidator<InsertTrainingSheetSeriesCommand>
 {
-    public InsertTrainingSheetSeriesValidator()
+    public InsertTrainingSheetSeriesCommandValidator()
     {
         RuleFor(x => x.Name).NotEmpty();
         RuleFor(x => x.TrainingSheetId).NotEmpty();

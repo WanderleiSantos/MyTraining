@@ -1,4 +1,5 @@
 using Application.Shared.Authentication;
+using Application.UseCases.SeriesPlannings.InsertSeriesPlanning;
 using Application.UseCases.TrainingSheets.InsertTrainingSheet;
 using Application.UseCases.TrainingSheetSerie.InsertTrainingSheetSeries;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -19,13 +20,15 @@ public class TrainingSheetController : MainController
     private readonly ILogger<TrainingSheetController> _logger;
     private readonly IInsertTrainingSheetUseCase _insertTrainingSheetUseCase;
     private readonly IInsertTrainingSheetSeriesUseCase _insertTrainingSheetSeriesUseCase;
+    private readonly IInsertSeriesPlanningUseCase _insertSeriesPlanningUseCase;
 
     public TrainingSheetController(ICurrentUserService currentUserService, ILogger<TrainingSheetController> logger,
-        IInsertTrainingSheetUseCase insertTrainingSheetUseCase, IInsertTrainingSheetSeriesUseCase insertTrainingSheetSeriesUseCase) : base(currentUserService)
+        IInsertTrainingSheetUseCase insertTrainingSheetUseCase, IInsertTrainingSheetSeriesUseCase insertTrainingSheetSeriesUseCase, IInsertSeriesPlanningUseCase insertSeriesPlanningUseCase) : base(currentUserService)
     {
         _logger = logger;
         _insertTrainingSheetUseCase = insertTrainingSheetUseCase;
         _insertTrainingSheetSeriesUseCase = insertTrainingSheetSeriesUseCase;
+        _insertSeriesPlanningUseCase = insertSeriesPlanningUseCase;
     }
 
     [HttpPost]
@@ -56,7 +59,27 @@ public class TrainingSheetController : MainController
         try
         {
             var output =
-                await _insertTrainingSheetSeriesUseCase.ExecuteAsync(input.MapToApplication(this.CurrentUser.UserId),
+                await _insertTrainingSheetSeriesUseCase.ExecuteAsync(input.MapToApplication(id),
+                    cancellationToken);
+
+            return CustomResponse(output);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, Constants.UnexpectedErrorDescription);
+            return InternalServerError(Constants.UnexpectedErrorDescription);
+        }
+    }
+    
+    [HttpPost("{trainingSheetId:guid}/serie/{serieId:guid}/planning")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> CreateSeriesPlanning(Guid trainingSheetId, Guid serieId, [FromBody] List<InsertSeriesPlanningInput> input,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var output =
+                await _insertSeriesPlanningUseCase.ExecuteAsync(input.MapToApplication(serieId, this.CurrentUser.UserId),
                     cancellationToken);
 
             return CustomResponse(output);
