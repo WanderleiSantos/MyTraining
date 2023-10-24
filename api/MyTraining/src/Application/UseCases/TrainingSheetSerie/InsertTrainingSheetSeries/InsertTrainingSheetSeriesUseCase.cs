@@ -32,6 +32,9 @@ public class InsertTrainingSheetSeriesUseCase : IInsertTrainingSheetSeriesUseCas
             var validationResult = await _validator.ValidateAsync(command, cancellationToken);
             output.AddValidationResult(validationResult);
 
+            if (!output.IsValid)
+                return output;
+
             _logger.LogInformation("{UseCase} - Insert TrainingSheetSeries; Name: {Name}",
                 typeof(InsertTrainingSheetSeriesUseCase), command.Name);
 
