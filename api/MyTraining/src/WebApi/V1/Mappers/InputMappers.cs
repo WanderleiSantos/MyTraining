@@ -85,22 +85,22 @@ public static class InputMappers
     public static InsertSeriesPlanningCommand MapToApplication(this List<InsertSeriesPlanningInput> input,
         Guid trainingSheetSeriesId, Guid userId)
     {
-        var command = new InsertSeriesPlanningCommand();
-        
-        foreach (var planning in input)
+        var command = new InsertSeriesPlanningCommand
         {
-            var seriesPlanningInput = new SeriesPlanningInput()
-            {
-                Machine = planning.Machine,
-                SeriesNumber = planning.SeriesNumber,
-                Repetitions = planning.Repetitions,
-                Charge = planning.Charge,
-                Interval = planning.Interval,
-                TrainingSheetSeriesId = trainingSheetSeriesId,
-                UserId = userId,
-                ExercisesIds = planning.ExercisesIds
-            };
+            UserId = userId,
+            TrainingSheetSeriesId = trainingSheetSeriesId
+        };
 
+        foreach (var seriesPlanningInput in input.Select(planning => new SeriesPlanningInput()
+                 {
+                     Machine = planning.Machine,
+                     SeriesNumber = planning.SeriesNumber,
+                     Repetitions = planning.Repetitions,
+                     Charge = planning.Charge,
+                     Interval = planning.Interval,
+                     ExercisesIds = planning.ExercisesIds
+                 }))
+        {
             command.SeriesPlanningInputs.Add(seriesPlanningInput);
         }
 

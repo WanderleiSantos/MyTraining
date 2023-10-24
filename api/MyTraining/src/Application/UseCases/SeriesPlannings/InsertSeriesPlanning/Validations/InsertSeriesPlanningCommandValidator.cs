@@ -8,12 +8,10 @@ public class InsertSeriesPlanningCommandValidator : AbstractValidator<SeriesPlan
 {
     public InsertSeriesPlanningCommandValidator()
     {
-        RuleFor(x => x.SeriesNumber).NotEmpty();
+        RuleFor(x => x.SeriesNumber).GreaterThan(0);
         RuleFor(x => x.Charge).NotEmpty();
-        RuleFor(x => x.TrainingSheetSeriesId).NotEmpty();
         RuleFor(x => x.Repetitions).NotEmpty();
         RuleFor(x => x.Interval).NotEmpty();
-        RuleFor(x => x.UserId).NotEmpty();
         RuleFor(x => x.ExercisesIds).NotNull();
     }
 }
@@ -22,6 +20,8 @@ public class InsertSeriesPlanningCommandServiceValidator : AbstractValidator<Ins
 {
     public InsertSeriesPlanningCommandServiceValidator()
     {
+        RuleFor(x => x.TrainingSheetSeriesId).NotEmpty();
+        RuleFor(x => x.UserId).NotEmpty();
         RuleForEach(x => x.SeriesPlanningInputs).SetValidator(new InsertSeriesPlanningCommandValidator());
     }
 }

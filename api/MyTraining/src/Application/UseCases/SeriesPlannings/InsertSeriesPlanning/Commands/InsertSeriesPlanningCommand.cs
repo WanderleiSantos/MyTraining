@@ -8,6 +8,8 @@ public class InsertSeriesPlanningCommand
     {
         SeriesPlanningInputs = new List<SeriesPlanningInput>();
     }
-
+    
+    public Guid TrainingSheetSeriesId { get; set; }
+    public Guid UserId { get; set; }
     public List<SeriesPlanningInput> SeriesPlanningInputs { get; set; }
 }

@@ -40,12 +40,12 @@ public class InsertSeriesPlanningUseCase : IInsertSeriesPlanningUseCase
             foreach (var commandItem in command.SeriesPlanningInputs)
             {
                 var seriesPlanning = new SeriesPlanning(commandItem.Machine, commandItem.SeriesNumber, commandItem.Repetitions,
-                    commandItem.Charge, commandItem.Interval, commandItem.TrainingSheetSeriesId);
+                    commandItem.Charge, commandItem.Interval, command.TrainingSheetSeriesId);
 
                 foreach (var exerciseId in commandItem.ExercisesIds)
                 {
                     var exercise =
-                        await _exerciseRepository.GetByIdAsync(exerciseId, commandItem.UserId, cancellationToken);
+                        await _exerciseRepository.GetByIdAsync(exerciseId, command.UserId, cancellationToken);
                     seriesPlanning.Exercises.Add(exercise);
                 }
 
