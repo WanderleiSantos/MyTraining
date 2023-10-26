@@ -42,7 +42,7 @@ public class RefreshTokenUseCase : IRefreshTokenUseCase
 
             var (validToken, email) = _jwtTokenGenerator.ValidateRefreshToken(command.RefreshToken);
 
-            if (!validToken || email == null)
+            if (!validToken || email is null)
             {
                 _logger.LogWarning("{UseCase} - Token is expired or User is not valid;", nameof(RefreshTokenUseCase));
 

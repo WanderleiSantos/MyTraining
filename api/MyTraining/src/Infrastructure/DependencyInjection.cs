@@ -19,7 +19,7 @@ public static class DependencyInjection
     
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        if (services == null) throw new ArgumentNullException(nameof(services));
+        if (services is null) throw new ArgumentNullException(nameof(services));
 
         services
             .AddAuth(configuration)    

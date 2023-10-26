@@ -38,7 +38,7 @@ public class UpdateExerciseUseCase : IUpdateExerciseUseCase
 
             var exercise = await _repository.GetByIdAsync(command.Id, command.UserId, cancellationToken);
             
-            if (exercise == null)
+            if (exercise is null)
             {
                 output.AddError(Errors.Exercise.DoesNotExist);
                 _logger.LogWarning("Exercise does not exist.");

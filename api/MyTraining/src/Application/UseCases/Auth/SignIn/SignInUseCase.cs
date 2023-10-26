@@ -43,7 +43,7 @@ public class SignInUseCase : ISignInUseCase
 
             var user = await _repository.GetByEmailAsync(command.Email, cancellationToken);
 
-            if (user == null || !command.Password.VerifyPassword(user.Password))
+            if (user is null || !command.Password.VerifyPassword(user.Password))
             {
                 _logger.LogWarning("{UseCase} - Invalid credentials;", nameof(SignInUseCase));
                 
