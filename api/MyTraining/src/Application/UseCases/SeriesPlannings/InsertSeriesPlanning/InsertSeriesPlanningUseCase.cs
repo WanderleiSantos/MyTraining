@@ -46,6 +46,13 @@ public class InsertSeriesPlanningUseCase : IInsertSeriesPlanningUseCase
                 {
                     var exercise =
                         await _exerciseRepository.GetByIdAsync(exerciseId, command.UserId, cancellationToken);
+                    
+                    if (exercise is null)
+                    {
+                        output.AddError(Errors.Exercise.DoesNotExist);
+                        return output;
+                    }
+                    
                     seriesPlanning.Exercises.Add(exercise);
                 }
 
